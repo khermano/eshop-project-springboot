@@ -20,7 +20,7 @@ public class UserServiceImpl implements UserService {
     private UserDao userDao;
 
     // Argon2 is the best Key Derivation Function since 2015
-    private final PasswordEncoder encoder = new Argon2PasswordEncoder();
+    private final PasswordEncoder encoder = Argon2PasswordEncoder.defaultsForSpringSecurity_v5_8();
 
     @Override
     public void registerUser(User u, String unencryptedPassword) {
