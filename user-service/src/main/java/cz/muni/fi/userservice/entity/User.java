@@ -1,21 +1,26 @@
 package cz.muni.fi.userservice.entity;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+
 import java.util.Date;
 
 @Entity
-//In Derby, its forbiden to 'USER' is reserved keyword, we need to rename table 
-@Table(name="Users")
 public class User {
-	
+
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
-	
+
 	private String passwordHash;
-	
+
 	@Column(nullable=false,unique=true)
 	@Pattern(regexp=".+@.+\\....?")
 	@NotNull
@@ -24,71 +29,71 @@ public class User {
 	private String givenName;
 	@NotNull
 	private String surname;
-	
+
 	@Pattern(regexp="\\+?\\d+")
 	private String phone;
 
-    @NotNull
-    private String address;
-	
+	@NotNull
+	private String address;
+
 	@NotNull
 	@Temporal(TemporalType.DATE)
 	private Date joinedDate;
 
-    private boolean admin;
+	private boolean admin;
 
-	public Long getId() {
-		return id;
-	}
+    public Long getId() {
+        return id;
+    }
 
     public void setId(Long id) {
         this.id = id;
     }
 
     public String getPasswordHash() {
-		return passwordHash;
-	}
+        return passwordHash;
+    }
 
-	public void setPasswordHash(String passwordHash) {
-		this.passwordHash = passwordHash;
-	}
+    public void setPasswordHash(String passwordHash) {
+        this.passwordHash = passwordHash;
+    }
 
-	public String getEmail() {
-		return email;
-	}
+    public String getEmail() {
+        return email;
+    }
 
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
-	
-	public String getGivenName() {
-		return givenName;
-	}
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
 
-	public void setGivenName(String givenName) {
-		this.givenName = givenName;
-	}
+    public String getGivenName() {
+        return givenName;
+    }
 
 
-	public String getSurname() {
-		return surname;
-	}
+    public void setGivenName(String givenName) {
+        this.givenName = givenName;
+    }
 
 
-	public void setSurname(String surname) {
-		this.surname = surname;
-	}
+    public String getSurname() {
+        return surname;
+    }
 
 
-	public String getPhone() {
-		return phone;
-	}
+    public void setSurname(String surname) {
+        this.surname = surname;
+    }
 
-	public void setPhone(String phone) {
-		this.phone = phone;
-	}
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
 
     public String getAddress() {
         return address;
@@ -99,12 +104,12 @@ public class User {
     }
 
     public Date getJoinedDate() {
-		return joinedDate;
-	}
+        return joinedDate;
+    }
 
-	public void setJoinedDate(Date joinedDate) {
-		this.joinedDate = joinedDate;
-	}
+    public void setJoinedDate(Date joinedDate) {
+        this.joinedDate = joinedDate;
+    }
 
     public boolean isAdmin() {
         return admin;
@@ -115,29 +120,29 @@ public class User {
     }
 
     @Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((email == null) ? 0 : email.hashCode());
-		return result;
-	}
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((email == null) ? 0 : email.hashCode());
+        return result;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (!(obj instanceof User))
-			return false;
-		User other = (User) obj;
-		if (email == null) {
-			if (other.getEmail() != null)
-				return false;
-		} else if (!email.equals(other.getEmail()))
-			return false;
-		return true;
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (!(obj instanceof User))
+            return false;
+        User other = (User) obj;
+        if (email == null) {
+            if (other.getEmail() != null)
+                return false;
+        } else if (!email.equals(other.getEmail()))
+            return false;
+        return true;
+    }
 
     @Override
     public String toString() {
