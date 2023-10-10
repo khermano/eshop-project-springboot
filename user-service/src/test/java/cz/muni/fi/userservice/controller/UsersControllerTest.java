@@ -1,21 +1,17 @@
 package cz.muni.fi.userservice.controller;
 
-import cz.fi.muni.pa165.RootWebContext;
-import cz.fi.muni.pa165.dto.UserDTO;
-import cz.fi.muni.pa165.facade.UserFacade;
+import cz.muni.fi.userservice.entity.User;
+import cz.muni.fi.userservice.service.UserService;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
-import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
-
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -25,20 +21,18 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
 
-@WebAppConfiguration
-@ContextConfiguration(classes = {RootWebContext.class})
-public class UsersControllerTest extends AbstractTestNGSpringContextTests {
+@ExtendWith(MockitoExtension.class)
+public class UsersControllerTest {
 
     @Mock
-    private UserFacade userFacade;
+    private UserService userService;
 
-    @Autowired
     @InjectMocks
     private UsersController usersController;
 
     private MockMvc mockMvc;
 
-    @BeforeClass
+    @BeforeEach
     public void setup() {
         MockitoAnnotations.initMocks(this);
         mockMvc = standaloneSetup(usersController).setMessageConverters(new MappingJackson2HttpMessageConverter()).build();
@@ -48,7 +42,7 @@ public class UsersControllerTest extends AbstractTestNGSpringContextTests {
     @Test
     public void getAllUsers() throws Exception {
 
-        doReturn(Collections.unmodifiableList(this.createUsers())).when(userFacade).getAllUsers();
+        doReturn(Collections.unmodifiableList(this.createUsers())).when(userService).getAllUsers();
 
         mockMvc.perform(get("/users"))
                 .andExpect(status().isOk())
@@ -62,10 +56,10 @@ public class UsersControllerTest extends AbstractTestNGSpringContextTests {
     @Test
     public void getValidUser() throws Exception {
 
-        List<UserDTO> users = this.createUsers();
+        List<User> users = this.createUsers();
 
-        doReturn(users.get(0)).when(userFacade).findUserById(1l);
-        doReturn(users.get(1)).when(userFacade).findUserById(2l);
+        doReturn(users.get(0)).when(userService).findUserById(1l);
+        doReturn(users.get(1)).when(userService).findUserById(2l);
 
         mockMvc.perform(get("/users/1"))
                 .andExpect(status().isOk())
@@ -83,7 +77,7 @@ public class UsersControllerTest extends AbstractTestNGSpringContextTests {
 
      @Test
     public void getInvalidUser() throws Exception {
-        doReturn(null).when(userFacade).findUserById(1l);
+        doReturn(null).when(userService).findUserById(1l);
         
 
         mockMvc.perform(get("/users/1"))
@@ -91,13 +85,13 @@ public class UsersControllerTest extends AbstractTestNGSpringContextTests {
 
     }
 
-    private List<UserDTO> createUsers() {
-        UserDTO userOne = new UserDTO();
+    private List<User> createUsers() {
+        User userOne = new User();
         userOne.setId(1l);
         userOne.setGivenName("John");
         userOne.setSurname("Smith");
-        
-        UserDTO userTwo = new UserDTO();
+
+        User userTwo = new User();
         userTwo.setId(2l);
         userTwo.setGivenName("Mary");
         userTwo.setSurname("Williams");
