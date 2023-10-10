@@ -1,14 +1,14 @@
 package cz.muni.fi.userservice.service;
 
-import cz.fi.muni.pa165.entity.User;
-import org.springframework.stereotype.Service;
+import cz.muni.fi.userservice.entity.User;
+//import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 /**
  * An interface that defines a service access to the {@link User} entity.
  */
-@Service
+//@Service
 public interface UserService {
 
 	/**

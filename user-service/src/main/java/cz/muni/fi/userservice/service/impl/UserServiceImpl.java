@@ -1,7 +1,8 @@
 package cz.muni.fi.userservice.service.impl;
 
-import cz.fi.muni.pa165.dao.UserDao;
-import cz.fi.muni.pa165.entity.User;
+import cz.muni.fi.userservice.entity.User;
+import cz.muni.fi.userservice.repository.UserRepository;
+import cz.muni.fi.userservice.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -16,20 +17,20 @@ import java.util.List;
 @Service
 public class UserServiceImpl implements UserService {
     @Autowired
-    private UserDao userDao;
+    private UserRepository userRepository;
 
     // Argon2 is the best Key Derivation Function since 2015
-    private final PasswordEncoder encoder = new Argon2PasswordEncoder();
+    private final PasswordEncoder encoder = Argon2PasswordEncoder.defaultsForSpringSecurity_v5_8();
 
     @Override
     public void registerUser(User u, String unencryptedPassword) {
         u.setPasswordHash(encoder.encode(unencryptedPassword));
-        userDao.create(u);
+        userRepository.save(u);
     }
 
     @Override
     public List<User> getAllUsers() {
-        return userDao.findAll();
+        return userRepository.findAll();
     }
 
     @Override
@@ -45,12 +46,16 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findUserById(Long userId) {
-        return userDao.findById(userId);
+        if (userRepository.findById(userId).isPresent()) {
+            return userRepository.findById(userId).get();
+        } else {
+            throw new IllegalArgumentException("Can't find user because of invalid id");
+        }
     }
 
     @Override
     public User findUserByEmail(String email) {
-        return userDao.findUserByEmail(email);
+        return userRepository.findByEmail(email);
     }
 
 }
