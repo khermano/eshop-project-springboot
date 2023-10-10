@@ -1,18 +1,14 @@
 package cz.muni.fi.userservice.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 
 import java.util.Date;
 
 @Entity
+//In Derby, its forbiden to 'USER' is reserved keyword, we need to rename table (It seems like in H2 the same situation)
+@Table(name="Users")
 public class User {
 
 	@Id
