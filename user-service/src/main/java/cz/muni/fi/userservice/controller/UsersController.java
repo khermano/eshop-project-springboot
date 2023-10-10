@@ -1,47 +1,42 @@
 package cz.muni.fi.userservice.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import cz.fi.muni.pa165.dto.UserDTO;
-import cz.fi.muni.pa165.facade.UserFacade;
-import cz.fi.muni.pa165.rest.ApiUris;
-import cz.fi.muni.pa165.rest.exceptions.ResourceNotFoundException;
+import cz.muni.fi.userservice.entity.User;
+import cz.muni.fi.userservice.exception.ResourceNotFoundException;
+import cz.muni.fi.userservice.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import javax.inject.Inject;
 import java.util.Collection;
 
 /**
  * REST Controller for Users
- * 
- * @author brossi
+ *
  */
 @RestController
-@RequestMapping(ApiUris.ROOT_URI_USERS)
+@RequestMapping("/users")
 public class UsersController {
     
     final static Logger logger = LoggerFactory.getLogger(UsersController.class);
 
-    @Inject
-    private UserFacade userFacade;
+    @Autowired
+    private UserService userService;
+
 
     /**
-     * returns all users according to a Summary View
-     * {@link cz.fi.muni.pa165.views.View}
+     * returns all users
      *
-     * @return list of UserDTOs
+     * @return list of Users
      * @throws JsonProcessingException
      */
-    @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public final Collection<UserDTO> getUsers() throws JsonProcessingException {
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    public final Collection<User> getUsers() throws JsonProcessingException {
         
         logger.debug("rest getUsers()");
-        return userFacade.getAllUsers();
+        return userService.getAllUsers();
     }
 
     /**
@@ -49,18 +44,18 @@ public class UsersController {
      * getting user according to id
      * 
      * @param id user identifier
-     * @return UserDTO
+     * @return User
      * @throws ResourceNotFoundException
      */
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public final UserDTO getUser(@PathVariable("id") long id) throws Exception {
+    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public final User getUser(@PathVariable("id") long id) throws Exception {
 
         logger.debug("rest getUser({})", id);
-         UserDTO userDTO = userFacade.findUserById(id);
-         if (userDTO == null){
+         User user = userService.findUserById(id);
+         if (user == null){
             throw new ResourceNotFoundException();
          }
-         return userDTO;
+         return user;
         
 
     }
