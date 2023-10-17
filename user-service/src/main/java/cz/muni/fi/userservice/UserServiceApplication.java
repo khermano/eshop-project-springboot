@@ -10,4 +10,9 @@ public class UserServiceApplication {
 		SpringApplication.run(UserServiceApplication.class, args);
 	}
 
+//	@Bean
+//	public UserService method() {
+//		return new UserServiceImpl();
+//	}
+
 }

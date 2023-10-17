@@ -25,7 +25,6 @@ public class UsersController {
     @Autowired
     private UserService userService;
 
-
     /**
      * returns all users
      *
