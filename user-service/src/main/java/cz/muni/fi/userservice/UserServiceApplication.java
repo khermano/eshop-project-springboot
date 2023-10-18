@@ -10,7 +10,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 // For now, I excluded security autoconfiguration, maybe removed after ProtectFilter functionality migration
 @SpringBootApplication(exclude = { SecurityAutoConfiguration.class })
 public class UserServiceApplication {
-
 	public static void main(String[] args) {
 		SpringApplication.run(UserServiceApplication.class, args);
 	}

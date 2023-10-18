@@ -15,15 +15,15 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-
 import static org.mockito.Mockito.doReturn;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
 
 @ExtendWith(MockitoExtension.class)
 public class UsersControllerTest {
-
     @Mock
     private UserService userService;
 
@@ -32,16 +32,15 @@ public class UsersControllerTest {
 
     private MockMvc mockMvc;
 
+
     @BeforeEach
     public void setup() {
         MockitoAnnotations.initMocks(this);
         mockMvc = standaloneSetup(usersController).setMessageConverters(new MappingJackson2HttpMessageConverter()).build();
-        
     }
 
     @Test
     public void getAllUsers() throws Exception {
-
         doReturn(Collections.unmodifiableList(this.createUsers())).when(userService).getAllUsers();
 
         mockMvc.perform(get("/users"))
@@ -50,12 +49,10 @@ public class UsersControllerTest {
                         content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(jsonPath("$.[?(@.id==1)].surname").value("Smith"))
                 .andExpect(jsonPath("$.[?(@.id==2)].surname").value("Williams"));
-
     }
 
     @Test
     public void getValidUser() throws Exception {
-
         List<User> users = this.createUsers();
 
         doReturn(users.get(0)).when(userService).findUserById(1l);
@@ -72,17 +69,15 @@ public class UsersControllerTest {
                 .andExpect(
                         content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(jsonPath("$.surname").value("Williams"));
-
     }
 
-     @Test
+    @Test
     public void getInvalidUser() throws Exception {
         doReturn(null).when(userService).findUserById(1l);
         
 
         mockMvc.perform(get("/users/1"))
                 .andExpect(status().is4xxClientError());
-
     }
 
     private List<User> createUsers() {

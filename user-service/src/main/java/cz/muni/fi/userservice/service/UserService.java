@@ -1,16 +1,12 @@
 package cz.muni.fi.userservice.service;
 
 import cz.muni.fi.userservice.entity.User;
-//import org.springframework.stereotype.Service;
-
 import java.util.List;
 
 /**
  * An interface that defines a service access to the {@link User} entity.
  */
-//@Service
 public interface UserService {
-
 	/**
 	 * Register the given user with the given unencrypted password.
 	 */

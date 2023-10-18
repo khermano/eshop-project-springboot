@@ -7,7 +7,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Date;
@@ -16,7 +15,9 @@ import java.util.Date;
 public class SampleDataLoading {
     @Autowired
     private UserService userService;
+
     final static Logger log = LoggerFactory.getLogger(SampleDataLoading.class);
+
 
     private static Date toDate(int year, int month, int day) {
         return Date.from(LocalDate.of(year, month, day).atStartOfDay(ZoneId.systemDefault()).toInstant());

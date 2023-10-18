@@ -1,16 +1,21 @@
 package cz.muni.fi.userservice.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Table;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
+import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
-
 import java.util.Date;
 
 @Entity
 //In Derby, its forbiden to 'USER' is reserved keyword, we need to rename table (It seems like in H2 the same situation)
 @Table(name="Users")
 public class User {
-
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
@@ -21,8 +26,10 @@ public class User {
 	@Pattern(regexp=".+@.+\\....?")
 	@NotNull
 	private String email;
+
 	@NotNull
 	private String givenName;
+
 	@NotNull
 	private String surname;
 
@@ -37,6 +44,7 @@ public class User {
 	private Date joinedDate;
 
 	private boolean admin;
+
 
     public Long getId() {
         return id;
@@ -62,26 +70,21 @@ public class User {
         this.email = email;
     }
 
-
     public String getGivenName() {
         return givenName;
     }
-
 
     public void setGivenName(String givenName) {
         this.givenName = givenName;
     }
 
-
     public String getSurname() {
         return surname;
     }
 
-
     public void setSurname(String surname) {
         this.surname = surname;
     }
-
 
     public String getPhone() {
         return phone;

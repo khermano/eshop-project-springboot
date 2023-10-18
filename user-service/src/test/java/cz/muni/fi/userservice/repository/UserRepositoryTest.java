@@ -6,17 +6,17 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-
 import java.util.Date;
 
 @DataJpaTest
 public class UserRepositoryTest{
-
 	@Autowired
 	private UserRepository userRepository;
 
 	private User u1 ;
+
 	private User u2;
+
 
 	@BeforeEach
 	public void createUsers() {
@@ -49,5 +49,4 @@ public class UserRepositoryTest{
 	public void findByNonExistentEmail() {
 		Assertions.assertNull(userRepository.findByEmail("asdfasdfasd"));
 	}
-
 }
