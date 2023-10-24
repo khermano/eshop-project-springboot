@@ -19,10 +19,10 @@ import java.util.Collection;
  *
  */
 @RestController
-@RequestMapping("/users")
-public class UsersController {
+@RequestMapping("/user")
+public class UserController {
     
-    final static Logger logger = LoggerFactory.getLogger(UsersController.class);
+    final static Logger logger = LoggerFactory.getLogger(UserController.class);
 
     @Autowired
     private UserService userService;

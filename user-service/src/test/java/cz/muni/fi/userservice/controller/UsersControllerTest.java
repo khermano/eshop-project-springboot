@@ -28,7 +28,7 @@ public class UsersControllerTest {
     private UserService userService;
 
     @InjectMocks
-    private UsersController usersController;
+    private UserController usersController;
 
     private MockMvc mockMvc;
 
@@ -43,7 +43,7 @@ public class UsersControllerTest {
     public void getAllUsers() throws Exception {
         doReturn(Collections.unmodifiableList(this.createUsers())).when(userService).getAllUsers();
 
-        mockMvc.perform(get("/users"))
+        mockMvc.perform(get("/user"))
                 .andExpect(status().isOk())
                 .andExpect(
                         content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON_VALUE))
@@ -58,13 +58,13 @@ public class UsersControllerTest {
         doReturn(users.get(0)).when(userService).findUserById(1l);
         doReturn(users.get(1)).when(userService).findUserById(2l);
 
-        mockMvc.perform(get("/users/1"))
+        mockMvc.perform(get("/user/1"))
                 .andExpect(status().isOk())
                 .andExpect(
                         content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(jsonPath("$.surname").value("Smith"));
 
-        mockMvc.perform(get("/users/2"))
+        mockMvc.perform(get("/user/2"))
                 .andExpect(status().isOk())
                 .andExpect(
                         content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON_VALUE))
@@ -76,7 +76,7 @@ public class UsersControllerTest {
         doReturn(null).when(userService).findUserById(1l);
         
 
-        mockMvc.perform(get("/users/1"))
+        mockMvc.perform(get("/user/1"))
                 .andExpect(status().is4xxClientError());
     }
 
