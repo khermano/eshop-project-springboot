@@ -37,7 +37,7 @@ public class UserSecurityConfig {
     private UserDetails createAdmin(User user) {
         return org.springframework.security.core.userdetails.User.withUsername(user.getEmail())
                 .password(user.getPasswordHash())
-                .roles("USER", "ADMIN")
+                .roles("ADMIN")
                 .build();
     }
 
@@ -53,7 +53,9 @@ public class UserSecurityConfig {
         http.authorizeHttpRequests(requests -> requests
                 .requestMatchers("/user/*").hasRole("ADMIN")
                                 .anyRequest().permitAll())
-                .httpBasic(Customizer.withDefaults());
+                .httpBasic(Customizer.withDefaults())
+                .exceptionHandling(exception -> exception.authenticationEntryPoint(new CustomAuthenticationHandler())); //https://stackoverflow.com/questions/76798038/how-to-return-a-custom-401-unauthorized-response-spring-boot-3-1-2-and-spring-se
+
 
         return http.build();
     }
