@@ -1,6 +1,8 @@
 package cz.muni.fi.userservice.service;
 
 import cz.muni.fi.userservice.entity.User;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
 import java.util.List;
 
 /**
@@ -30,4 +32,13 @@ public interface UserService {
 	User findUserById(Long userId);
 
 	User findUserByEmail(String email);
+
+	/**
+	 * This method is not part of the original project
+	 * It needed to be added here because of circle dependencies which we were creating when trying to define encoder
+	 * in the UserSecurityConfig class
+	 *
+	 * @return instance of PasswordEncoder
+	 */
+	PasswordEncoder getPasswordEncoder();
 }

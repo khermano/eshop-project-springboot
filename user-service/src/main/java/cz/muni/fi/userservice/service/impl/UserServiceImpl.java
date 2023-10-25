@@ -20,7 +20,6 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-
     @Override
     public void registerUser(User u, String unencryptedPassword) {
         u.setPasswordHash(passwordEncoder.encode(unencryptedPassword));
@@ -55,5 +54,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findUserByEmail(String email) {
         return userRepository.findByEmail(email);
+    }
+
+    public PasswordEncoder getPasswordEncoder() {
+        return passwordEncoder;
     }
 }
