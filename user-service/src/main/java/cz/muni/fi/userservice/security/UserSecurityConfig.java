@@ -20,10 +20,6 @@ public class UserSecurityConfig {
     @Autowired
     UserService userService;
 
-//    @Bean
-//    public PasswordEncoder encoder() {
-//        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
-//    }
     @Bean
     public InMemoryUserDetailsManager userDetailsService() {
         Set<UserDetails> users = new HashSet<>();
@@ -40,14 +36,14 @@ public class UserSecurityConfig {
 
     private UserDetails createAdmin(User user) {
         return org.springframework.security.core.userdetails.User.withUsername(user.getEmail())
-                .password(userService.getPasswordEncoder().encode("admin")) //encoder zamen za cisty hash nech nepouzivas priamo heslo
+                .password(user.getPasswordHash())
                 .roles("USER", "ADMIN")
                 .build();
     }
 
     private UserDetails createUser(User user) {
         return org.springframework.security.core.userdetails.User.withUsername(user.getEmail())
-                .password(userService.getPasswordEncoder().encode("heslo")) //encoder zamen za cisty hash nech nepouzivas priamo heslo
+                .password(user.getPasswordHash())
                 .roles("USER")
                 .build();
     }
