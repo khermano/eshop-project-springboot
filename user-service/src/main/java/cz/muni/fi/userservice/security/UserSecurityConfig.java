@@ -51,7 +51,7 @@ public class UserSecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(requests -> requests
-                .requestMatchers("/user/*").hasRole("ADMIN") //skontroluj si v starom projekte cesty!!!! co vsetko bolo povolene a co zakazane, pretoze ty to mas inak
+                .requestMatchers("/user/*").hasRole("ADMIN")
                                 .anyRequest().permitAll())
                 .httpBasic(Customizer.withDefaults());
 

@@ -34,6 +34,7 @@ public class UserController {
      * @throws JsonProcessingException
      */
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping("/list")
     public final Collection<User> getUsers() throws JsonProcessingException {
         
         logger.debug("rest getUsers()");
