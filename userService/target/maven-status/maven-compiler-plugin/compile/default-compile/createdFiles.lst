@@ -1,9 +1,0 @@
-cz/muni/fi/userservice/exception/ResourceNotFoundException.class
-cz/muni/fi/userservice/entity/User.class
-cz/muni/fi/userservice/controller/UserController.class
-cz/muni/fi/userservice/repository/UserRepository.class
-cz/muni/fi/userservice/service/impl/UserServiceImpl.class
-cz/muni/fi/userservice/service/UserService.class
-cz/muni/fi/userservice/security/UserSecurityConfig.class
-cz/muni/fi/userservice/UserServiceApplication.class
-cz/muni/fi/userservice/sampledata/SampleDataLoading.class
