@@ -1,6 +1,9 @@
-HELP.md
-target/
-!.mvn/wrapper/maven-wrapper.jar
+userService/HELP.md
+categoryService/HELP.md
+userService/target/
+categoryService/target/
+!userService/.mvn/wrapper/maven-wrapper.jar
+!categoryService/.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
 
