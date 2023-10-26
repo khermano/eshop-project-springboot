@@ -1,0 +1,9 @@
+/home/khermano/School/eshop-project-springboot/userService/src/main/java/cz/muni/fi/userservice/service/impl/UserServiceImpl.java
+/home/khermano/School/eshop-project-springboot/userService/src/main/java/cz/muni/fi/userservice/service/UserService.java
+/home/khermano/School/eshop-project-springboot/userService/src/main/java/cz/muni/fi/userservice/controller/UserController.java
+/home/khermano/School/eshop-project-springboot/userService/src/main/java/cz/muni/fi/userservice/repository/UserRepository.java
+/home/khermano/School/eshop-project-springboot/userService/src/main/java/cz/muni/fi/userservice/sampledata/SampleDataLoading.java
+/home/khermano/School/eshop-project-springboot/userService/src/main/java/cz/muni/fi/userservice/entity/User.java
+/home/khermano/School/eshop-project-springboot/userService/src/main/java/cz/muni/fi/userservice/exception/ResourceNotFoundException.java
+/home/khermano/School/eshop-project-springboot/userService/src/main/java/cz/muni/fi/userservice/UserServiceApplication.java
+/home/khermano/School/eshop-project-springboot/userService/src/main/java/cz/muni/fi/userservice/security/UserSecurityConfig.java
