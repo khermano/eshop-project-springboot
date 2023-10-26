@@ -43,7 +43,7 @@ public class UsersControllerTest {
     public void getAllUsers() throws Exception {
         doReturn(Collections.unmodifiableList(this.createUsers())).when(userService).getAllUsers();
 
-        mockMvc.perform(get("/user"))
+        mockMvc.perform(get("/user/list"))
                 .andExpect(status().isOk())
                 .andExpect(
                         content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON_VALUE))
