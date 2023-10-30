@@ -1,39 +1,22 @@
 package cz.muni.fi.priceService.repository;
 
+import cz.muni.fi.priceService.entity.Price;
+import cz.muni.fi.priceService.enums.Currency;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.Optional;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-
-import cz.fi.muni.pa165.enums.Currency;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.annotation.DirtiesContext.ClassMode;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.TestExecutionListeners;
-import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
-import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
-import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
-import org.springframework.transaction.annotation.Transactional;
-import org.testng.Assert;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
-
-import cz.fi.muni.pa165.PersistenceSampleApplicationContext;
-import cz.fi.muni.pa165.entity.Price;
-
-@ContextConfiguration(classes=PersistenceSampleApplicationContext.class)
-@TestExecutionListeners(TransactionalTestExecutionListener.class)
-@Transactional
-public class PriceRepositoryTest  extends AbstractTestNGSpringContextTests{
+@DataJpaTest
+public class PriceRepositoryTest{
     @Autowired
     public PriceRepository priceRepository;
     private Price savedPrice;
 
-    @BeforeMethod
+    @BeforeEach
     public void createPrice(){
         Price p = new Price();
         p.setCurrency(Currency.CZK);
@@ -46,14 +29,13 @@ public class PriceRepositoryTest  extends AbstractTestNGSpringContextTests{
     @Test
     public void create(){
         Price foundPrice = priceRepository.findById(savedPrice.getId()).orElseThrow(() -> new RuntimeException("price not found"));
-        Assert.assertEquals(savedPrice.getPriceStart(), foundPrice.getPriceStart());
+        Assertions.assertEquals(savedPrice.getPriceStart(), foundPrice.getPriceStart());
     }
 
     @Test
     public void update(){
         savedPrice.setValue(new BigDecimal("2"));
         Price found = priceRepository.findById(savedPrice.getId()).orElseThrow(() -> new RuntimeException("price not found"));
-        Assert.assertEquals(new BigDecimal("2"), found.getValue());
-
+        Assertions.assertEquals(new BigDecimal("2"), found.getValue());
     }
 }
