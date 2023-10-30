@@ -1,9 +1,9 @@
 package cz.muni.fi.priceService.service.impl;
 
-import cz.fi.muni.pa165.enums.Currency;
-import cz.fi.muni.pa165.utils.Tuple;
+import cz.muni.fi.priceService.enums.Currency;
+import cz.muni.fi.priceService.service.ExchangeService;
+import cz.muni.fi.priceService.utils.Tuple;
 import org.springframework.stereotype.Service;
-
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
