@@ -5,5 +5,5 @@ import java.math.BigDecimal;
 
 public interface ExchangeService {
 
-	public BigDecimal getCurrencyRate(Currency currencyFrom, Currency currencyTo);
+	BigDecimal getCurrencyRate(Currency currencyFrom, Currency currencyTo);
 }
