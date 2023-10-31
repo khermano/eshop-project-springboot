@@ -1,7 +1,6 @@
 package cz.muni.fi.userservice.sampledata;
 
 import cz.muni.fi.userservice.entity.User;
-import cz.muni.fi.userservice.repository.UserRepository;
 import cz.muni.fi.userservice.service.UserService;
 import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
@@ -16,8 +15,6 @@ import java.util.Date;
 public class SampleDataLoading {
     @Autowired
     private UserService userService;
-    @Autowired
-    private UserRepository userRepository;
 
     final static Logger log = LoggerFactory.getLogger(SampleDataLoading.class);
 
@@ -51,14 +48,5 @@ public class SampleDataLoading {
             userService.registerUser(eva, pepaJiriEvaPassword);
             userService.registerUser(admin, adminPassword);
             log.info("Loaded eShop users.");
-
-            // fetch all users
-            // THIS IS ONLY THE CONTROL STATEMENT AND IT'S MEANT TO BE REMOVED LATER
-            System.out.println("Users found with findAll():");
-            System.out.println("---------------------------");
-            for (User user : userRepository.findAll()) {
-                System.out.println(user.toString());
-            }
-            System.out.println();
     }
 }
