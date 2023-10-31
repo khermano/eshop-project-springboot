@@ -29,8 +29,6 @@ public interface UserService {
 	 */
 	boolean isAdmin(User u);
 
-	User findUserByEmail(String email);
-
 	/**
 	 * This method is not part of the original project
 	 * It needed to be added here because of circle dependencies which we were creating when trying to define encoder
