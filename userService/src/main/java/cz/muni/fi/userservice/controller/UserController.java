@@ -3,6 +3,7 @@ package cz.muni.fi.userservice.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import cz.muni.fi.userservice.entity.User;
 import cz.muni.fi.userservice.exception.ResourceNotFoundException;
+import cz.muni.fi.userservice.repository.UserRepository;
 import cz.muni.fi.userservice.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,6 +27,8 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+    @Autowired
+    private UserRepository userRepository;
 
     /**
      * returns all users
@@ -52,10 +55,11 @@ public class UserController {
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public final User getUser(@PathVariable("id") long id) throws Exception {
         logger.debug("rest getUser({})", id);
-         User user = userService.findUserById(id);
-         if (user == null){
+        if (userRepository.findById(id).isPresent()) {
+            return userRepository.findById(id).get();
+        }
+        else {
             throw new ResourceNotFoundException();
          }
-         return user;
     }
 }

@@ -38,14 +38,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean isAdmin(User u) {
-        //must get a fresh copy from database
-        return findUserById(u.getId()).isAdmin();
-    }
-
-    @Override
-    public User findUserById(Long userId) {
-        if (userRepository.findById(userId).isPresent()) {
-            return userRepository.findById(userId).get();
+        if (userRepository.findById(u.getId()).isPresent()) {
+            return userRepository.findById(u.getId()).get().isAdmin();
         } else {
             throw new IllegalArgumentException("Can't find user because of invalid id");
         }

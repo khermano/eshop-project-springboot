@@ -1,6 +1,7 @@
 package cz.muni.fi.userservice.controller;
 
 import cz.muni.fi.userservice.entity.User;
+import cz.muni.fi.userservice.repository.UserRepository;
 import cz.muni.fi.userservice.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,6 +16,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
+
 import static org.mockito.Mockito.doReturn;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -26,7 +29,8 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standal
 public class UsersControllerTest {
     @Mock
     private UserService userService;
-
+    @Mock
+    private UserRepository userRepository;
     @InjectMocks
     private UserController usersController;
 
@@ -53,10 +57,10 @@ public class UsersControllerTest {
 
     @Test
     public void getValidUser() throws Exception {
-        List<User> users = this.createUsers();
+        List<Optional<User>> users = this.createUsers();
 
-        doReturn(users.get(0)).when(userService).findUserById(1l);
-        doReturn(users.get(1)).when(userService).findUserById(2l);
+        doReturn(users.get(0)).when(userRepository).findById(1l);
+        doReturn(users.get(1)).when(userRepository).findById(2l);
 
         mockMvc.perform(get("/user/1"))
                 .andExpect(status().isOk())
@@ -73,14 +77,13 @@ public class UsersControllerTest {
 
     @Test
     public void getInvalidUser() throws Exception {
-        doReturn(null).when(userService).findUserById(1l);
-        
+        doReturn(Optional.empty()).when(userRepository).findById(1l);
 
         mockMvc.perform(get("/user/1"))
                 .andExpect(status().is4xxClientError());
     }
 
-    private List<User> createUsers() {
+    private List<Optional<User>> createUsers() {
         User userOne = new User();
         userOne.setId(1l);
         userOne.setGivenName("John");
@@ -91,6 +94,6 @@ public class UsersControllerTest {
         userTwo.setGivenName("Mary");
         userTwo.setSurname("Williams");
         
-        return Arrays.asList(userOne, userTwo);
+        return Arrays.asList(Optional.of(userOne), Optional.of(userTwo));
     }
 }
