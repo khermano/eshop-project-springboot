@@ -6,7 +6,6 @@ import cz.muni.fi.userservice.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import java.util.List;
 
 /**
  * Implementation of the {@link UserService}. This class is part of the service module of the application that provides the implementation of the
@@ -24,11 +23,6 @@ public class UserServiceImpl implements UserService {
     public void registerUser(User u, String unencryptedPassword) {
         u.setPasswordHash(passwordEncoder.encode(unencryptedPassword));
         userRepository.save(u);
-    }
-
-    @Override
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
     }
 
     @Override

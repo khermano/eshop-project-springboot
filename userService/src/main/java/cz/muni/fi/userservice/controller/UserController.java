@@ -1,10 +1,8 @@
 package cz.muni.fi.userservice.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import cz.muni.fi.userservice.entity.User;
 import cz.muni.fi.userservice.exception.ResourceNotFoundException;
 import cz.muni.fi.userservice.repository.UserRepository;
-import cz.muni.fi.userservice.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,9 +22,6 @@ import java.util.Collection;
 public class UserController {
     
     final static Logger logger = LoggerFactory.getLogger(UserController.class);
-
-    @Autowired
-    private UserService userService;
     @Autowired
     private UserRepository userRepository;
 
@@ -34,14 +29,13 @@ public class UserController {
      * returns all users
      *
      * @return list of Users
-     * @throws JsonProcessingException
      */
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @RequestMapping("/list")
-    public final Collection<User> getUsers() throws JsonProcessingException {
+    public final Collection<User> getUsers() {
         
         logger.debug("rest getUsers()");
-        return userService.getAllUsers();
+        return userRepository.findAll();
     }
 
     /**
@@ -53,7 +47,7 @@ public class UserController {
      * @throws ResourceNotFoundException
      */
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public final User getUser(@PathVariable("id") long id) throws Exception {
+    public final User getUser(@PathVariable("id") long id) {
         logger.debug("rest getUser({})", id);
         if (userRepository.findById(id).isPresent()) {
             return userRepository.findById(id).get();

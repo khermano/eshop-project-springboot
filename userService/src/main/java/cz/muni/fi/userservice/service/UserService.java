@@ -3,8 +3,6 @@ package cz.muni.fi.userservice.service;
 import cz.muni.fi.userservice.entity.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.util.List;
-
 /**
  * An interface that defines a service access to the {@link User} entity.
  */
@@ -13,11 +11,6 @@ public interface UserService {
 	 * Register the given user with the given unencrypted password.
 	 */
 	void registerUser(User u, String unencryptedPassword);
-
-	/**
-	 * Get all registered users
-	 */
-	List<User> getAllUsers();
 
 	/**
 	 * Try to authenticate a user. Return true only if the hashed password matches the records.

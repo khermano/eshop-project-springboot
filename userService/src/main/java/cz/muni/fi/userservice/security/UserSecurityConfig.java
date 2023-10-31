@@ -1,6 +1,6 @@
 package cz.muni.fi.userservice.security;
 
-import cz.muni.fi.userservice.service.UserService;
+import cz.muni.fi.userservice.repository.UserRepository;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import cz.muni.fi.userservice.entity.User;
@@ -22,12 +22,12 @@ import java.util.Set;
 @EnableWebSecurity
 public class UserSecurityConfig {
     @Autowired
-    UserService userService;
+    UserRepository userRepository;
 
     @Bean
     public InMemoryUserDetailsManager userDetailsService() {
         Set<UserDetails> users = new HashSet<>();
-        for (User u: userService.getAllUsers()) {
+        for (User u: userRepository.findAll()) {
             if (u.isAdmin()) {
                 users.add(createAdmin(u));
             } else {

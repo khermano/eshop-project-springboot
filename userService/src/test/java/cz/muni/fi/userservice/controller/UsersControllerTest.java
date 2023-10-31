@@ -2,7 +2,6 @@ package cz.muni.fi.userservice.controller;
 
 import cz.muni.fi.userservice.entity.User;
 import cz.muni.fi.userservice.repository.UserRepository;
-import cz.muni.fi.userservice.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,7 +16,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-
 import static org.mockito.Mockito.doReturn;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -27,8 +25,6 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standal
 
 @ExtendWith(MockitoExtension.class)
 public class UsersControllerTest {
-    @Mock
-    private UserService userService;
     @Mock
     private UserRepository userRepository;
     @InjectMocks
@@ -45,7 +41,7 @@ public class UsersControllerTest {
 
     @Test
     public void getAllUsers() throws Exception {
-        doReturn(Collections.unmodifiableList(this.createUsers())).when(userService).getAllUsers();
+        doReturn(Collections.unmodifiableList(this.createUsers())).when(userRepository).findAll();
 
         mockMvc.perform(get("/user/list"))
                 .andExpect(status().isOk())
