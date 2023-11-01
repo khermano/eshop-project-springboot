@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import java.util.Collection;
+import java.util.Optional;
 
 /**
  * REST Controller for Users
@@ -48,8 +49,9 @@ public class UserController {
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public final User getUser(@PathVariable("id") long id) {
         logger.debug("rest getUser({})", id);
-        if (userRepository.findById(id).isPresent()) {
-            return userRepository.findById(id).get();
+        Optional<User> user = userRepository.findById(id);
+        if (user.isPresent()) {
+            return user.get();
         }
         else {
             throw new ResourceNotFoundException();
