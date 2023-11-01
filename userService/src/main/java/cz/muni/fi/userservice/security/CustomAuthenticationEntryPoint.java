@@ -5,8 +5,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.www.BasicAuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
-
 import java.io.IOException;
+import java.io.PrintWriter;
 
 @Component
 public class CustomAuthenticationEntryPoint extends BasicAuthenticationEntryPoint {
@@ -16,11 +16,13 @@ public class CustomAuthenticationEntryPoint extends BasicAuthenticationEntryPoin
             throws IOException{
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setHeader("WWW-Authenticate", "Basic realm=\"type email and password\"");
-        response.getWriter().println("<html><body><h1>401 Unauthorized</h1> Go away ...</body></html>");
+        response.setContentType("text/html");
+        PrintWriter printWriter = response.getWriter();
+        printWriter.println("<html><body><h1>401 Unauthorized</h1> Go away ...</body></html>");
     }
 
     @Override
-    public void afterPropertiesSet() /*throws Exception*/ {
+    public void afterPropertiesSet() {
         setRealmName("type email and password");
         super.afterPropertiesSet();
     }
