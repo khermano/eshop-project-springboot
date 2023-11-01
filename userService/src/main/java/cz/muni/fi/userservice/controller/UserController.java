@@ -30,8 +30,7 @@ public class UserController {
      *
      * @return list of Users
      */
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    @RequestMapping("/list")
+    @GetMapping(value = "/list", produces = MediaType.APPLICATION_JSON_VALUE)
     public final Collection<User> getUsers() {
         
         logger.debug("rest getUsers()");
