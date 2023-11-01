@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 /**
  * Implementation of the {@link UserService}. This class is part of the service module of the application that provides the implementation of the
  * business logic (main logic of the application).
@@ -32,8 +34,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean isAdmin(User u) {
-        if (userRepository.findById(u.getId()).isPresent()) {
-            return userRepository.findById(u.getId()).get().isAdmin();
+        Optional<User> user = userRepository.findById(u.getId());
+        if (user.isPresent()) {
+            return user.get().isAdmin();
         } else {
             throw new IllegalArgumentException("Can't find user because of invalid id");
         }
