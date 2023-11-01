@@ -1,6 +1,11 @@
 # eshop-project-springboot
 
-***Run user-service:***
-- `cd user-service`
+***Run userService:***
+- `cd userService`
+- `mvn clean install`
+- `./mvnw spring-boot:run`
+
+***Run priceService:***
+- `cd priceService`
 - `mvn clean install`
 - `./mvnw spring-boot:run`
