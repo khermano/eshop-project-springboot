@@ -56,7 +56,7 @@ public class UserSecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(requests -> requests
                 .requestMatchers("/user/*").hasRole("ADMIN")
-                                .anyRequest().permitAll())
+                                .anyRequest().hasRole("USER"))
                 .exceptionHandling(x -> x.authenticationEntryPoint(authenticationEntryPoint))
                 .exceptionHandling(x -> x.accessDeniedHandler(customAccessDeniedHandler))
                 .httpBasic(Customizer.withDefaults());
