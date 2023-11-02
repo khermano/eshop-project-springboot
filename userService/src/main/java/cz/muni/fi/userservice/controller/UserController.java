@@ -16,18 +16,16 @@ import java.util.Optional;
 
 /**
  * REST Controller for Users
- *
  */
 @RestController
 @RequestMapping("/user")
 public class UserController {
-    
     final static Logger logger = LoggerFactory.getLogger(UserController.class);
     @Autowired
     private UserRepository userRepository;
 
     /**
-     * returns all users
+     * Returns all users
      *
      * @return list of Users
      */
@@ -39,12 +37,11 @@ public class UserController {
     }
 
     /**
-     *
-     * getting user according to id
+     * Getting user according to id
      * 
      * @param id user identifier
      * @return User
-     * @throws ResourceNotFoundException
+     * @throws ResourceNotFoundException HTTP Status 404
      */
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public final User getUser(@PathVariable("id") long id) {

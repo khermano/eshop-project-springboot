@@ -13,12 +13,6 @@ public class UserServiceApplication {
 		SpringApplication.run(UserServiceApplication.class, args);
 	}
 
-	/**
-	 * Because the encoder is used by UserService as well as the UserServiceConfig, we needed to define this bean
-	 * elsewhere, so we do not create circle dependecies
-	 *
-	 * @return instance of PasswordEncoder
-	 */
 	@Bean
 	public PasswordEncoder encoder() {
 		return PasswordEncoderFactories.createDelegatingPasswordEncoder();
