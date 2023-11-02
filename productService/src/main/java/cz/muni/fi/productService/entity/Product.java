@@ -1,18 +1,29 @@
 package cz.muni.fi.productService.entity;
 
-import cz.fi.muni.pa165.enums.Color;
-import cz.fi.muni.pa165.validation.AllOrNothing;
-
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import java.util.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.Lob;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.OrderBy;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
+import jakarta.validation.constraints.NotNull;
+import java.util.Date;
 
 @Entity
 @AllOrNothing(members={"image", "imageMimeType"})
 public class Product {
 	
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@GeneratedValue(strategy= GenerationType.IDENTITY)
 	private Long id;
 
 	@Lob
