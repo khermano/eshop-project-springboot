@@ -24,7 +24,7 @@ public class UserSecurityConfig {
     @Autowired
     private CustomAuthenticationEntryPoint authenticationEntryPoint;
     @Autowired
-    private CustomAccessDeniedHandler customAccessDeniedHandler;
+    private CustomAccessDeniedHandler accessDeniedHandler;
 
     private UserDetails createUserDetails(User user, String role) {
         return org.springframework.security.core.userdetails.User.withUsername(user.getEmail())
@@ -53,7 +53,7 @@ public class UserSecurityConfig {
                 .requestMatchers("/user/*").hasRole(ADMIN)
                                 .anyRequest().hasRole(USER))
                 .exceptionHandling(x -> x.authenticationEntryPoint(authenticationEntryPoint))
-                .exceptionHandling(x -> x.accessDeniedHandler(customAccessDeniedHandler))
+                .exceptionHandling(x -> x.accessDeniedHandler(accessDeniedHandler))
                 .httpBasic(Customizer.withDefaults());
 
         return http.build();

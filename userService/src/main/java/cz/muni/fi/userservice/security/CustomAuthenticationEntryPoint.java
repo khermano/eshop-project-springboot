@@ -1,24 +1,20 @@
 package cz.muni.fi.userservice.security;
 
+import cz.muni.fi.userservice.utils.Utils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.www.BasicAuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
 import java.io.IOException;
-import java.io.PrintWriter;
 
 @Component
 public class CustomAuthenticationEntryPoint extends BasicAuthenticationEntryPoint {
+    private final Utils utils = new Utils();
+
     @Override
-    public void commence(
-            HttpServletRequest request, HttpServletResponse response, AuthenticationException authEx)
-            throws IOException{
-        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-        response.setHeader("WWW-Authenticate", "Basic realm=\"type email and password\"");
-        response.setContentType("text/html");
-        PrintWriter printWriter = response.getWriter();
-        printWriter.println("<html><body><h1>401 Unauthorized</h1> Go away ...</body></html>");
+    public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authEx) throws IOException{
+        utils.response401(response);
     }
 
     @Override
