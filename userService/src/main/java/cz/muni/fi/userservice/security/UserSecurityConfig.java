@@ -17,6 +17,8 @@ import java.util.Set;
 @Configuration
 @EnableWebSecurity
 public class UserSecurityConfig {
+    private static final String ADMIN = "ADMIN";
+    private static final String USER = "USER";
     @Autowired
     private UserRepository userRepository;
     @Autowired
@@ -24,39 +26,32 @@ public class UserSecurityConfig {
     @Autowired
     private CustomAccessDeniedHandler customAccessDeniedHandler;
 
+    private UserDetails createUserDetails(User user, String role) {
+        return org.springframework.security.core.userdetails.User.withUsername(user.getEmail())
+                .password(user.getPasswordHash())
+                .roles(role)
+                .build();
+    }
+
     @Bean
     public InMemoryUserDetailsManager userDetailsService() {
         Set<UserDetails> users = new HashSet<>();
         for (User u: userRepository.findAll()) {
             if (u.isAdmin()) {
-                users.add(createAdmin(u));
+                users.add(createUserDetails(u, ADMIN));
             } else {
-                users.add(createUser(u));
+                users.add(createUserDetails(u, USER));
             }
         }
 
         return new InMemoryUserDetailsManager(users);
     }
 
-    private UserDetails createAdmin(User user) {
-        return org.springframework.security.core.userdetails.User.withUsername(user.getEmail())
-                .password(user.getPasswordHash())
-                .roles("ADMIN")
-                .build();
-    }
-
-    private UserDetails createUser(User user) {
-        return org.springframework.security.core.userdetails.User.withUsername(user.getEmail())
-                .password(user.getPasswordHash())
-                .roles("USER")
-                .build();
-    }
-
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(requests -> requests
-                .requestMatchers("/user/*").hasRole("ADMIN")
-                                .anyRequest().hasRole("USER"))
+                .requestMatchers("/user/*").hasRole(ADMIN)
+                                .anyRequest().hasRole(USER))
                 .exceptionHandling(x -> x.authenticationEntryPoint(authenticationEntryPoint))
                 .exceptionHandling(x -> x.accessDeniedHandler(customAccessDeniedHandler))
                 .httpBasic(Customizer.withDefaults());
