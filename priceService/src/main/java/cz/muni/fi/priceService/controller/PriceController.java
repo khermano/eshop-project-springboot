@@ -13,6 +13,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import java.util.Optional;
 
+/**
+ * REST Controller for Users
+ */
 @RestController
 @RequestMapping("/price")
 public class PriceController {
@@ -23,11 +26,11 @@ public class PriceController {
 
     /**
      *
-     * getting price according to id
+     * Getting price according to id
      *
      * @param id price identifier
      * @return User
-     * @throws ResourceNotFoundException
+     * @throws ResourceNotFoundException HTTP Status 404
      */
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public final Price getPrice(@PathVariable("id") long id) {
