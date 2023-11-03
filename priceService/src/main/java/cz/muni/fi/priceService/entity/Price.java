@@ -7,10 +7,13 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OrderBy;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 public class Price {
@@ -30,6 +33,10 @@ public class Price {
 	@Enumerated
 	@NotNull
 	private Currency currency;
+
+	@OneToMany()
+	@OrderBy("priceStart DESC")
+	private List<Price> historicalPrices;
 
 	public BigDecimal getValue() {
 		return value;
@@ -58,6 +65,14 @@ public class Price {
 
 	public Long  getId() {
 		return id;
+	}
+
+	public List<Price> getHistoricalPrices() {
+		return historicalPrices;
+	}
+
+	public void setHistoricalPrices(List<Price> historicalPrices) {
+		this.historicalPrices = historicalPrices;
 	}
 
 	@Override
@@ -103,6 +118,7 @@ public class Price {
 				", value=" + value +
 				", priceStart=" + priceStart +
 				", currency=" + currency +
+//				", historicalPrices= " + historicalPrices +
 				'}';
 	}
 }
