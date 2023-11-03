@@ -1,6 +1,8 @@
 package cz.muni.fi.userservice.security;
 
 import cz.muni.fi.userservice.repository.UserRepository;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import cz.muni.fi.userservice.entity.User;
 import org.springframework.context.annotation.Bean;
@@ -8,9 +10,13 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.www.BasicAuthenticationEntryPoint;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -21,10 +27,6 @@ public class UserSecurityConfig {
     private static final String USER = "USER";
     @Autowired
     private UserRepository userRepository;
-    @Autowired
-    private CustomAuthenticationEntryPoint authenticationEntryPoint;
-    @Autowired
-    private CustomAccessDeniedHandler accessDeniedHandler;
 
     private UserDetails createUserDetails(User user, String role) {
         return org.springframework.security.core.userdetails.User.withUsername(user.getEmail())
@@ -50,12 +52,25 @@ public class UserSecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(requests -> requests
-                .requestMatchers("/user/*").hasRole(ADMIN)
-                                .anyRequest().hasRole(USER))
-                .exceptionHandling(x -> x.authenticationEntryPoint(authenticationEntryPoint))
-                .exceptionHandling(x -> x.accessDeniedHandler(accessDeniedHandler))
+                        .requestMatchers("/user/*").hasRole(ADMIN)
+                        .anyRequest().hasRole(USER))
+                .exceptionHandling(x -> x.authenticationEntryPoint(new BasicAuthenticationEntryPoint() {
+                    @Override
+                    public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException {
+                        response401(response);
+                    }
+                }))
+                .exceptionHandling(x -> x.accessDeniedHandler((request, response, accessDeniedException) -> response401(response)))
                 .httpBasic(Customizer.withDefaults());
 
         return http.build();
+    }
+
+    private void response401(HttpServletResponse response) throws IOException {
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.setHeader("WWW-Authenticate", "Basic realm=\"type email and password\"");
+        response.setContentType("text/html");
+        PrintWriter printWriter = response.getWriter();
+        printWriter.println("<html><body><h1>401 Unauthorized</h1> Go away ...</body></html>");
     }
 }
