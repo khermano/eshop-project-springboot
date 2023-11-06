@@ -1,5 +1,7 @@
 package cz.muni.fi.productService.entity;
 
+import cz.muni.fi.productService.validation.AllOrNothing;
+import cz.muni.fi.productService.enums.Color;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Enumerated;
@@ -9,14 +11,17 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.Lob;
-import jakarta.persistence.ManyToMany;
+//import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.OrderBy;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import jakarta.validation.constraints.NotNull;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @AllOrNothing(members={"image", "imageMimeType"})
@@ -46,8 +51,8 @@ public class Product {
 	@Temporal(TemporalType.DATE)
 	private Date addedDate;
 	
-	@ManyToMany
-	private Set<Category> categories = new HashSet<Category>();
+	/*@ManyToMany
+	private Set<Category> categories = new HashSet<Category>();*/
 
 
 	@OneToOne
@@ -63,19 +68,19 @@ public class Product {
 		this.id = id;
 	}
 	
-	public void removeCategory(Category category)
-	{
-		this.categories.remove(category);
-	}
+//	public void removeCategory(Category category)
+//	{
+//		this.categories.remove(category);
+//	}
 
-	public Set<Category> getCategories() {
+	/*public Set<Category> getCategories() {
 		return Collections.unmodifiableSet(categories);
 	}
 	
 	public void addCategory(Category c) {
 		categories.add(c);
 		c.addProduct(this);
-	}
+	}*/
 
 
 	public Date getAddedDate() {
@@ -191,7 +196,7 @@ public class Product {
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", addedDate=" + addedDate +
-                ", categories=" + categories +
+//                ", categories=" + categories +
                 ", currentPrice=" + currentPrice +
                 ", priceHistory=" + priceHistory +
                 ", color=" + color +
