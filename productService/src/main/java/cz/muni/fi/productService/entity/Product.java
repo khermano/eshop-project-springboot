@@ -21,7 +21,9 @@ import jakarta.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @AllOrNothing(members={"image", "imageMimeType"})
@@ -51,8 +53,8 @@ public class Product {
 	@Temporal(TemporalType.DATE)
 	private Date addedDate;
 	
-	/*@ManyToMany
-	private Set<Category> categories = new HashSet<Category>();*/
+	//@ManyToMany
+	private Set<Long> categoriesId = new HashSet<>();
 
 
 	@OneToOne
@@ -68,19 +70,19 @@ public class Product {
 		this.id = id;
 	}
 	
-//	public void removeCategory(Category category)
-//	{
-//		this.categories.remove(category);
-//	}
+	public void removeCategoryId(Long categoryId)
+	{
+		this.categoriesId.remove(categoryId);
+	}
 
-	/*public Set<Category> getCategories() {
-		return Collections.unmodifiableSet(categories);
+	public Set<Long> getCategoriesId() {
+		return Collections.unmodifiableSet(categoriesId);
 	}
 	
-	public void addCategory(Category c) {
-		categories.add(c);
-		c.addProduct(this);
-	}*/
+	public void addCategoryId(Long categoryId) {
+		categoriesId.add(categoryId);
+		// TODO categoryId.addProduct(this); TOTO PREPIS NA HTTP CALL AZ BUDE EXISTOVAT CATEGORYSERVICE
+	}
 
 
 	public Date getAddedDate() {
@@ -196,7 +198,7 @@ public class Product {
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", addedDate=" + addedDate +
-//                ", categories=" + categories +
+                ", categoriesId=" + categoriesId +
                 ", currentPrice=" + currentPrice +
                 ", priceHistory=" + priceHistory +
                 ", color=" + color +
