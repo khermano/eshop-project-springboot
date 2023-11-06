@@ -58,13 +58,13 @@ public class Product {
 
 
 	@OneToOne
-	@JoinTable(name="CURRENT_PRICE")
+//	@JoinTable(name="CURRENT_PRICE")
 	private Price currentPrice;
 	
 	@OneToMany()
 	@OrderBy("priceStart DESC")
 	@JoinColumn(name="Product_FK")
-	private List<Price> priceHistory = new ArrayList<Price>();
+	private List<Price> priceHistory = new ArrayList<>();
 	
 	public void setId(Long id){
 		this.id = id;
