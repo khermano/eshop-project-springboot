@@ -20,10 +20,8 @@ import java.util.List;
  * service module of the application that provides the implementation of the
  * business logic (main logic of the application).
  */
-
 @Service
 public class ProductServiceImpl implements ProductService {
-
 	@Autowired
 	private ProductRepository productRepository;
 
@@ -33,46 +31,25 @@ public class ProductServiceImpl implements ProductService {
 	@Autowired
 	private ExchangeService exchangeService;
 
-
 	@Override
-	public Product findById(Long id) {
-		return productRepository.findById(id).get();
-	}
-
-	@Override
-	public List<Product> findAll() {
-		return productRepository.findAll();
-	}
-
-	@Override
-	public Product createProduct(Product p) {
-        List<Price> priceHistory = p.getPriceHistory();
+	public Product createProduct(Product product) {
+        List<Price> priceHistory = product.getPriceHistory();
         for (Price price : priceHistory) {
 			priceRepository.save(price);
 		}
-		productRepository.save(p);
-		return p;
+		productRepository.save(product);
+		return product;
 	}
-
-	@Override
-	public void deleteProduct(Product p) {
-		productRepository.delete(p);
-	}
-
-
 
 	@Override
 	public BigDecimal getPriceValueInCurrency(Product p, Currency currency) {
 		BigDecimal convertRate = exchangeService.getCurrencyRate(
 				p.getCurrentPrice().getCurrency(), currency);
 
-		BigDecimal convertedValue = p.getCurrentPrice().getValue().multiply(convertRate)
+        return p.getCurrentPrice().getValue().multiply(convertRate)
 				.setScale(2, RoundingMode.HALF_UP);
-		
-		return convertedValue;
 	}
 
-	
 	@Override
 	public void changePrice(Product p, Price newPrice) {
 		BigDecimal oldPriceInNewCurrency = getPriceValueInCurrency(p, newPrice.getCurrency());
@@ -108,5 +85,4 @@ public class ProductServiceImpl implements ProductService {
 		product.removeCategoryId(categoryId);
 		//TODO same as up
 	}
-
 }
