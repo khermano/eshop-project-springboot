@@ -12,5 +12,5 @@ public interface ProductService {
 	void removeCategory(Product product, Long categoryId);
 	void changePrice(Product product, Price newPrice);
 	BigDecimal getPriceValueInCurrency(Product p, Currency currency);
-	
+	BigDecimal getCurrencyRate(Currency currencyFrom, Currency currencyTo);
 }
