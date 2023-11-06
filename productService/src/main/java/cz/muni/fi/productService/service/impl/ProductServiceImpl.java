@@ -1,17 +1,18 @@
 package cz.muni.fi.productService.service.impl;
 
-import cz.fi.muni.pa165.dao.PriceRepository;
-import cz.fi.muni.pa165.dao.ProductDao;
-import cz.fi.muni.pa165.entity.Category;
-import cz.fi.muni.pa165.entity.Price;
-import cz.fi.muni.pa165.entity.Product;
-import cz.fi.muni.pa165.enums.Currency;
-import cz.fi.muni.pa165.exceptions.EshopServiceException;
+import cz.muni.fi.productService.entity.Price;
+import cz.muni.fi.productService.entity.Product;
+import cz.muni.fi.productService.enums.Currency;
+import cz.muni.fi.productService.exceptions.EshopServiceException;
+import cz.muni.fi.productService.repository.PriceRepository;
+import cz.muni.fi.productService.repository.ProductRepository;
+import cz.muni.fi.productService.service.ExchangeService;
+import cz.muni.fi.productService.service.ProductService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import javax.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -23,27 +24,24 @@ import java.util.List;
 @Service
 public class ProductServiceImpl implements ProductService {
 
-	@Inject
-	private ProductDao productDao;
+	@Autowired
+	private ProductRepository productRepository;
 
-	@Inject
+	@Autowired
 	private PriceRepository priceRepository;
-
-	@Inject
-	private TimeService timeService;
 	
-	@Inject
+	@Autowired
 	private ExchangeService exchangeService;
-	
-	
+
+
 	@Override
 	public Product findById(Long id) {
-		return productDao.findById(id);
+		return productRepository.findById(id).get();
 	}
 
 	@Override
 	public List<Product> findAll() {
-		return productDao.findAll();
+		return productRepository.findAll();
 	}
 
 	@Override
@@ -52,13 +50,13 @@ public class ProductServiceImpl implements ProductService {
         for (Price price : priceHistory) {
 			priceRepository.save(price);
 		}
-		productDao.create(p);
+		productRepository.save(p);
 		return p;
 	}
 
 	@Override
 	public void deleteProduct(Product p) {
-		productDao.remove(p);
+		productRepository.delete(p);
 	}
 
 
@@ -87,26 +85,28 @@ public class ProductServiceImpl implements ProductService {
 			throw new EshopServiceException(
 					"It is not allowed to change the price by more than 10%");
 		}
-		newPrice.setPriceStart(timeService.getCurrentTime());
+		newPrice.setPriceStart(new Date());
 		priceRepository.save(newPrice);
 		p.addHistoricalPrice(p.getCurrentPrice());
 		p.setCurrentPrice(newPrice);
 	}
 
 	@Override
-	public void addCategory(Product product, Category category) {
-		if (product.getCategories().contains(category)) {
+	public void addCategory(Product product, Long categoryId) {
+		if (product.getCategoriesId().contains(categoryId)) {
 			throw new EshopServiceException(
-					"Product already contais this category. Product: "
-							+ product.getId() + ", category: "
-							+ category.getId());
+					"Product already contains this category. Product: "
+							+ product.getId() + ", categoryId: "
+							+ categoryId);
 		}
-		product.addCategory(category);
+		product.addCategoryId(categoryId);
+		//TODO we need to make sure that category is created in the categoryService, not only we ID stores in this service
 	}
 
 	@Override
-	public void removeCategory(Product product, Category category) {
-		product.removeCategory(category);
+	public void removeCategory(Product product, Long categoryId) {
+		product.removeCategoryId(categoryId);
+		//TODO same as up
 	}
 
 }
