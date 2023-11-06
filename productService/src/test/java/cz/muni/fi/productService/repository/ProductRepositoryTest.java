@@ -4,7 +4,7 @@ import cz.muni.fi.productService.entity.Price;
 import cz.muni.fi.productService.entity.Product;
 import cz.muni.fi.productService.enums.Color;
 import cz.muni.fi.productService.enums.Currency;
-import org.hibernate.exception.ConstraintViolationException;
+import jakarta.validation.ConstraintViolationException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,17 +17,11 @@ import java.util.Optional;
 
 @DataJpaTest
 public class ProductRepositoryTest {
-//	@PersistenceContext
-//	public EntityManager em;
-
 	@Autowired
 	public ProductRepository productRepository;
 
 	@Autowired
 	public PriceRepository priceRepository;
-
-//	@Autowired
-//	public CategoryDao categoryDao;
 
 	private Product p1;
 	private Product p2;
@@ -48,10 +42,6 @@ public class ProductRepositoryTest {
 		priceLow.setCurrency(Currency.CZK);
 		priceLow.setValue(BigDecimal.TEN);
 		priceRepository.save(priceLow);
-
-//		Category cat = new Category();
-//		cat.setName("cat");
-//		categoryDao.create(cat);
 
 		p1.setName("p1");
 		p2.setName("p2");
@@ -121,7 +111,6 @@ public class ProductRepositoryTest {
 		Product p = new Product();
 		p.setName("LCD TV");
 		p.setImageMimeType("X");
-		productRepository.save(p);
 		Assertions.assertThrows(ConstraintViolationException.class, () -> {
 			productRepository.save(p);
 		});

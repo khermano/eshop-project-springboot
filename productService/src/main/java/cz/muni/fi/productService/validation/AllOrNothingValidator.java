@@ -7,7 +7,6 @@ import org.slf4j.LoggerFactory;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 
-
 public class AllOrNothingValidator implements ConstraintValidator<AllOrNothing, Object> {
     final static Logger log = LoggerFactory.getLogger(AllOrNothingValidator.class);
 
@@ -45,7 +44,7 @@ public class AllOrNothingValidator implements ConstraintValidator<AllOrNothing, 
 					}
 				}				
 			} catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
-				throw new RuntimeException("Error while reading member "+member + " on class " +annotatedObject.getClass().getName() );
+				throw new RuntimeException("Error while reading member " + member + " on class " + annotatedObject.getClass().getName());
 			}
 		}
 		return true;
