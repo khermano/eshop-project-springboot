@@ -11,7 +11,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.Lob;
-//import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.OrderBy;
@@ -52,13 +51,12 @@ public class Product {
 	 */
 	@Temporal(TemporalType.DATE)
 	private Date addedDate;
-	
-	//@ManyToMany
+
 	private Set<Long> categoriesId = new HashSet<>();
 
 
 	@OneToOne
-//	@JoinTable(name="CURRENT_PRICE")
+	@JoinTable(name="CURRENT_PRICE")
 	private Price currentPrice;
 	
 	@OneToMany()
