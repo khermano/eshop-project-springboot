@@ -80,6 +80,6 @@ public class ProductServiceTest {
         
         verify(priceRepository).save(newPrice);
         Assertions.assertEquals(testProduct.getCurrentPrice(), newPrice);
-//        Assertions.assertEquals(testProduct.getCurrentPrice().getPriceStart(), newPrice.getPriceStart());
+        Assertions.assertEquals(testProduct.getCurrentPrice().getPriceStart(), newPrice.getPriceStart());
     }
 }
