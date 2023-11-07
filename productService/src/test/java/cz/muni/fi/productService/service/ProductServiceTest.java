@@ -10,7 +10,6 @@ import cz.muni.fi.productService.repository.PriceRepository;
 import cz.muni.fi.productService.service.impl.ProductServiceImpl;
 import org.hibernate.service.spi.ServiceException;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,14 +17,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
 
 @ExtendWith(MockitoExtension.class)
 public class ProductServiceTest {
     @Mock
     private PriceRepository priceRepository;
 
-//    @Autowired
     @InjectMocks
     private ProductServiceImpl productService;
 
@@ -55,10 +52,10 @@ public class ProductServiceTest {
         p.setCurrentPrice(price);
         
         BigDecimal value = productService.getPriceValueInCurrency(p, Currency.CZK);
-        Assertions.assertTrue(value.compareTo(BigDecimal.valueOf(27, 0)) == 0);
-        
+        Assertions.assertEquals(0, value.compareTo(BigDecimal.valueOf(27, 0)));
+
         value = productService.getPriceValueInCurrency(p, Currency.EUR);
-        Assertions.assertTrue(value.compareTo(BigDecimal.valueOf(1, 0)) == 0,value.toPlainString());
+        Assertions.assertEquals(1, value.compareTo(BigDecimal.valueOf(1, 0)), value.toPlainString());
     }
 
     @Test
