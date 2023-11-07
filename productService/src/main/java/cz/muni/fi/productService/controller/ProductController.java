@@ -1,22 +1,23 @@
 package cz.muni.fi.productService.controller;
 
-import cz.fi.muni.pa165.dto.CategoryDTO;
-import cz.fi.muni.pa165.dto.NewPriceDTO;
-import cz.fi.muni.pa165.dto.ProductCreateDTO;
-import cz.fi.muni.pa165.dto.ProductDTO;
-import cz.fi.muni.pa165.exceptions.EshopServiceException;
-import cz.fi.muni.pa165.facade.ProductFacade;
-import cz.fi.muni.pa165.rest.ApiUris;
-import cz.fi.muni.pa165.rest.exceptions.InvalidParameterException;
-import cz.fi.muni.pa165.rest.exceptions.ResourceAlreadyExistingException;
-import cz.fi.muni.pa165.rest.exceptions.ResourceNotFoundException;
+import cz.muni.fi.productService.entity.Product;
+import cz.muni.fi.productService.exceptions.EshopServiceException;
+import cz.muni.fi.productService.exceptions.InvalidParameterException;
+import cz.muni.fi.productService.exceptions.ResourceAlreadyExistingException;
+import cz.muni.fi.productService.exceptions.ResourceNotFoundException;
+import cz.muni.fi.productService.repository.ProductRepository;
+import cz.muni.fi.productService.service.ProductService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.*;
-
-import javax.inject.Inject;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * REST Controller for Products
@@ -24,13 +25,16 @@ import java.util.List;
  * @author brossi
  */
 @RestController
-@RequestMapping(ApiUris.ROOT_URI_PRODUCTS)
+@RequestMapping("/product")
 public class ProductController {
 
-    final static Logger logger = LoggerFactory.getLogger(ProductsController.class);
+    final static Logger logger = LoggerFactory.getLogger(ProductController.class);
 
-    @Inject
-    private ProductFacade productFacade;
+    @Autowired
+    private ProductService productService;
+
+    @Autowired
+    private ProductRepository productRepository;
 
     /**
      * Get list of Products curl -i -X GET
@@ -39,9 +43,10 @@ public class ProductController {
      * @return ProductDTO
      */
     @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public final List<ProductDTO> getProducts() {
+    public final List<Product> getProducts() {
         logger.debug("rest getProducts()");
-        return productFacade.getAllProducts();
+
+        return productRepository.findAll();
     }
 
     /**
@@ -54,15 +59,15 @@ public class ProductController {
      * @throws ResourceNotFoundException
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public final ProductDTO getProduct(@PathVariable("id") long id) throws Exception {
+    public final Product getProduct(@PathVariable("id") long id) {
         logger.debug("rest getProduct({})", id);
-        ProductDTO productDTO = productFacade.getProductWithId(id);
-        if (productDTO != null) {
-            return productDTO;
+
+        Optional<Product> product = productRepository.findById(id);
+        if (product.isPresent()) {
+            return product.get();
         } else {
             throw new ResourceNotFoundException();
         }
-
     }
 
     /**
@@ -73,10 +78,11 @@ public class ProductController {
      * @throws ResourceNotFoundException
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public final void deleteProduct(@PathVariable("id") long id) throws Exception {
+    public final void deleteProduct(@PathVariable("id") long id) {
         logger.debug("rest deleteProduct({})", id);
+
         try {
-            productFacade.deleteProduct(id);
+            productRepository.deleteById(id);
         } catch (Exception ex) {
             throw new ResourceNotFoundException();
         }
@@ -95,13 +101,12 @@ public class ProductController {
      */
     @RequestMapping(value = "/create", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public final ProductDTO createProduct(@RequestBody ProductCreateDTO product) throws Exception {
-
+    public final Product createProduct(@RequestBody ProductCreateDTO product) {
         logger.debug("rest createProduct()");
 
         try {
-            Long id = productFacade.createProduct(product);
-            return productFacade.getProductWithId(id);
+            Long id = productService.createProduct(product);
+            return productRepository.findById(id).get();
         } catch (Exception ex) {
             throw new ResourceAlreadyExistingException();
         }
@@ -119,37 +124,34 @@ public class ProductController {
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public final ProductDTO changePrice(@PathVariable("id") long id, @RequestBody NewPriceDTO newPrice) throws Exception {
-
+    public final Product changePrice(@PathVariable("id") long id, @RequestBody NewPriceDTO newPrice) {
         logger.debug("rest changePrice({})", id);
 
         try {
             newPrice.setProductId(id);
-            productFacade.changePrice(newPrice);
-            return productFacade.getProductWithId(id);
+            productService.changePrice(newPrice);
+            return productRepository.findById(id);
         } catch (EshopServiceException esse) {
             throw new InvalidParameterException();
         }
-
     }
 
     /**
      * Add a new category by POST Method
      *
      * @param id the identifier of the Product to have the Category added
-     * @param category the category to be added
+     * @param categoryId the id of category to be added
      * @return the updated product as defined by ProductDTO
      * @throws InvalidParameterException
      */
     @RequestMapping(value = "/{id}/categories", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public final ProductDTO addCategory(@PathVariable("id") long id, @RequestBody CategoryDTO category) throws Exception {
-
+    public final Product addCategory(@PathVariable("id") long id, @RequestBody Long categoryId) {
         logger.debug("rest addCategory({})", id);
 
         try {
-            productFacade.addCategory(id, category.getId());
-            return productFacade.getProductWithId(id);
+            productService.addCategory(id, categoryId);
+            return productRepository.findById(id).get();
         } catch (Exception ex) {
             throw new InvalidParameterException();
         }
