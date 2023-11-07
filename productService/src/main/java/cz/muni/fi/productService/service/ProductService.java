@@ -1,7 +1,6 @@
 package cz.muni.fi.productService.service;
 
 import java.math.BigDecimal;
-import java.util.List;
 import cz.muni.fi.productService.entity.Price;
 import cz.muni.fi.productService.entity.Product;
 import cz.muni.fi.productService.enums.Currency;

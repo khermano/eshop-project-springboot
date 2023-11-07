@@ -54,17 +54,17 @@ public class ProductServiceImpl implements ProductService {
 		AbstractMap.SimpleEntry<Currency, Currency> eur_eur = new AbstractMap.SimpleEntry<>(Currency.EUR,
 				Currency.EUR);
 
-		currencyRateCache.put(czk_czk, BigDecimal.valueOf(1, 0));
-		currencyRateCache.put(czk_eur, BigDecimal.valueOf(4, 2));
-		currencyRateCache.put(czk_usd, BigDecimal.valueOf(4, 2));
+		currencyRateCache.put(czk_czk, BigDecimal.valueOf(1));
+		currencyRateCache.put(czk_eur, BigDecimal.valueOf(0.04));
+		currencyRateCache.put(czk_usd, BigDecimal.valueOf(0.04));
 
-		currencyRateCache.put(usd_czk, BigDecimal.valueOf(27, 0));
-		currencyRateCache.put(usd_eur, BigDecimal.valueOf(1, 0));
-		currencyRateCache.put(usd_usd, BigDecimal.valueOf(1, 0));
+		currencyRateCache.put(usd_czk, BigDecimal.valueOf(27));
+		currencyRateCache.put(usd_eur, BigDecimal.valueOf(1));
+		currencyRateCache.put(usd_usd, BigDecimal.valueOf(1));
 
-		currencyRateCache.put(eur_czk, BigDecimal.valueOf(27, 0));
-		currencyRateCache.put(eur_eur, BigDecimal.valueOf(1, 0));
-		currencyRateCache.put(eur_usd, BigDecimal.valueOf(1, 0));
+		currencyRateCache.put(eur_czk, BigDecimal.valueOf(27));
+		currencyRateCache.put(eur_eur, BigDecimal.valueOf(1));
+		currencyRateCache.put(eur_usd, BigDecimal.valueOf(1));
 	}
 
 	@Override
@@ -94,7 +94,7 @@ public class ProductServiceImpl implements ProductService {
 				.subtract(newPrice.getValue());
 		BigDecimal percents = difference.abs().divide(
 				oldPriceInNewCurrency, 5, RoundingMode.HALF_UP);
-		if (percents.compareTo(new BigDecimal("0.1")) > 0) {
+		if (percents.compareTo(BigDecimal.valueOf(0.1)) > 0) {
 			throw new EshopServiceException(
 					"It is not allowed to change the price by more than 10%");
 		}

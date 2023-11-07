@@ -39,7 +39,7 @@ public class ProductServiceTest {
     	testProduct = new Product();
         Price price = new Price();
         price.setCurrency(Currency.EUR);
-        price.setValue(new BigDecimal(10));
+        price.setValue(BigDecimal.valueOf(10));
         testProduct.setCurrentPrice(price);
     }
     
@@ -48,14 +48,14 @@ public class ProductServiceTest {
     	Product p = new Product();
         Price price = new Price();
         price.setCurrency(Currency.CZK);
-        price.setValue(new BigDecimal(27));
+        price.setValue(BigDecimal.valueOf(27));
         p.setCurrentPrice(price);
         
         BigDecimal value = productService.getPriceValueInCurrency(p, Currency.CZK);
-        Assertions.assertEquals(0, value.compareTo(BigDecimal.valueOf(27, 0)));
+        Assertions.assertEquals(0, value.compareTo(BigDecimal.valueOf(27)));
 
         value = productService.getPriceValueInCurrency(p, Currency.EUR);
-        Assertions.assertEquals(1, value.compareTo(BigDecimal.valueOf(1, 0)), value.toPlainString());
+        Assertions.assertEquals(1, value.compareTo(BigDecimal.valueOf(1)), value.toPlainString());
     }
 
     @Test

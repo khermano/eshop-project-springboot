@@ -21,7 +21,7 @@ public class PriceRepositoryTest{
         Price p = new Price();
         p.setCurrency(Currency.CZK);
         p.setPriceStart(new Date());
-        p.setValue(new BigDecimal("1001"));
+        p.setValue(BigDecimal.valueOf(1001));
 
         savedPrice = priceRepository.save(p);
     }
@@ -34,8 +34,8 @@ public class PriceRepositoryTest{
 
     @Test
     public void update(){
-        savedPrice.setValue(new BigDecimal("2"));
+        savedPrice.setValue(BigDecimal.valueOf(2));
         Price found = priceRepository.findById(savedPrice.getId()).orElseThrow(() -> new RuntimeException("price not found"));
-        Assertions.assertEquals(new BigDecimal("2"), found.getValue());
+        Assertions.assertEquals(BigDecimal.valueOf(2), found.getValue());
     }
 }
