@@ -24,6 +24,7 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -73,7 +74,7 @@ public class ProductControllerTest {
 
 	@Test
 	public void getValidProduct() throws Exception {
-		List<Product> products = this.createProducts();
+		List<Optional<Product>> products = this.createProducts();
 
 		doReturn(products.get(0)).when(productRepository).findById(10l);
 		doReturn(products.get(1)).when(productRepository).findById(20l);
@@ -92,7 +93,7 @@ public class ProductControllerTest {
 
 	@Test
 	public void getInvalidProduct() throws Exception {
-		doReturn(null).when(productRepository).findById(1l);
+		doReturn(Optional.empty()).when(productRepository).findById(1l);
 
 		mockMvc.perform(get("/product/1")).andExpect(
 				status().is4xxClientError());
@@ -100,16 +101,12 @@ public class ProductControllerTest {
 
 	@Test
 	public void deleteProduct() throws Exception {
-		List<Product> products = this.createProducts(); //TODO remove?
-                
 		mockMvc.perform(delete("/product/10"))
 				.andExpect(status().isOk());
 	}
         
 	@Test
 	public void deleteProductNonExisting() throws Exception {
-		List<Product> products = this.createProducts(); //TODO remove?
-
 		doThrow(new RuntimeException("the product does not exist")).when(productRepository).deleteById(20l);
 
 		mockMvc.perform(delete("/product/20"))
@@ -118,10 +115,16 @@ public class ProductControllerTest {
 
 	@Test
 	public void createProduct() throws Exception {
+//		List<Optional<Product>> products = this.createProducts();
+
 		ProductCreateDTO productCreateDTO = new ProductCreateDTO();
 		productCreateDTO.setName("Raspberry PI");
 
-		doReturn(1l).when(productService).createProduct(
+		Product mockedProduct = new Product();
+		mockedProduct.setName("Raspberry PI");
+		mockedProduct.setId(1l);
+
+		doReturn(mockedProduct).when(productService).createProduct(
 				any(Product.class));
 
 		String json = this.convertObjectToJsonBytes(productCreateDTO);
@@ -136,10 +139,9 @@ public class ProductControllerTest {
 
 	@Test
 	public void updateProduct() throws Exception {
-		List<Product> products = this.createProducts();
+		List<Optional<Product>> products = this.createProducts();
 
 		doReturn(products.get(0)).when(productRepository).findById(10l);
-		doReturn(products.get(1)).when(productRepository).findById(20l);
 
 		doNothing().when(productService).changePrice(any(Product.class), any(Price.class));
 		Price newPrice = new Price();
@@ -154,10 +156,9 @@ public class ProductControllerTest {
 
 	@Test
 	public void addCategory() throws Exception {
-		List<Product> products = this.createProducts();
+		List<Optional<Product>> products = this.createProducts();
 
 		doReturn(products.get(0)).when(productRepository).findById(10l);
-		doReturn(products.get(1)).when(productRepository).findById(20l);
 
 		Long categoryId = 1l;
 
@@ -171,7 +172,7 @@ public class ProductControllerTest {
 		// TODO: need to check JSON response
 	}
 
-	private List<Product> createProducts() {
+	private List<Optional<Product>> createProducts() {
 		Product productOne = new Product();
 		productOne.setId(10L);
 		productOne.setName("Raspberry PI");
@@ -190,7 +191,7 @@ public class ProductControllerTest {
 		productTwo.setCurrentPrice(price);
 		productTwo.setColor(Color.WHITE);
 
-		return Arrays.asList(productOne, productTwo);
+		return Arrays.asList(Optional.of(productOne), Optional.of(productTwo));
 	}
 
 	private static String convertObjectToJsonBytes(Object object)
