@@ -8,6 +8,7 @@ import cz.muni.fi.productService.exceptions.InvalidParameterException;
 import cz.muni.fi.productService.exceptions.ResourceAlreadyExistingException;
 import cz.muni.fi.productService.exceptions.ResourceNotFoundException;
 import cz.muni.fi.productService.repository.ProductRepository;
+import cz.muni.fi.productService.service.BeanMappingService;
 import cz.muni.fi.productService.service.ProductService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,6 +37,9 @@ public class ProductController {
 
     @Autowired
     private ProductRepository productRepository;
+
+    @Autowired
+    private BeanMappingService beanMappingService;
 
     /**
      * Get list of Products curl -i -X GET
@@ -95,7 +100,7 @@ public class ProductController {
      * "currency":"CZK", "categoryId":"1"}' 
      * http://localhost:8080/eshop-rest/products/create
      * 
-     * @param product ProductCreateDTO with required fields for creation
+     * @param productInfo ProductCreateDTO with required fields for creation
      * @return the created product ProductDTO
      * @throws ResourceAlreadyExistingException
      */
@@ -104,9 +109,21 @@ public class ProductController {
     public final Product createProduct(@RequestBody ProductCreateDTO productInfo) {
         logger.debug("rest createProduct()");
 
-
-
         try {
+            Product product = beanMappingService.mapTo(productInfo, Product.class);
+            //map price DTO to entity
+            Price price = new Price();
+            price.setValue(productInfo.getPriceValue());
+            price.setCurrency(productInfo.getCurrency());
+            Date now = new Date();
+            price.setPriceStart(now);
+            product.setAddedDate(now);
+            //set price on product entity
+            product.setCurrentPrice(price);
+            product.addHistoricalPrice(price);
+            //add to category
+            product.addCategoryId(productInfo.getCategoryId());
+            //save product
             Long id = productService.createProduct(product).getId();
             return productRepository.findById(id).get();
         } catch (Exception ex) {
