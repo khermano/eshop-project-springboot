@@ -2,238 +2,189 @@ package cz.muni.fi.productService.controller;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import cz.fi.muni.pa165.RootWebContext;
-import cz.fi.muni.pa165.dto.*;
-import cz.fi.muni.pa165.enums.Color;
-import cz.fi.muni.pa165.enums.Currency;
-import cz.fi.muni.pa165.facade.ProductFacade;
-import cz.fi.muni.pa165.rest.controllers.GlobalExceptionController;
-import cz.fi.muni.pa165.rest.controllers.ProductsController;
+import cz.muni.fi.productService.dto.ProductCreateDTO;
+import cz.muni.fi.productService.entity.Price;
+import cz.muni.fi.productService.entity.Product;
+import cz.muni.fi.productService.enums.Color;
+import cz.muni.fi.productService.enums.Currency;
+import cz.muni.fi.productService.repository.ProductRepository;
+import cz.muni.fi.productService.service.ProductService;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
-import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.method.HandlerMethod;
-import org.springframework.web.method.annotation.ExceptionHandlerMethodResolver;
-import org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver;
-import org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
-
 import java.io.IOException;
-import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
 
-
-@WebAppConfiguration
-@ContextConfiguration(classes = { RootWebContext.class})
-public class ProductsControllerTest extends AbstractTestNGSpringContextTests {
+@ExtendWith(MockitoExtension.class)
+public class ProductControllerTest {
+	@Mock
+	private ProductService productService;
 
 	@Mock
-	private ProductFacade productFacade;
+	private ProductRepository productRepository;
 
-	@Autowired
 	@InjectMocks
-	private ProductsController productsController;
-        
-         @Autowired
-        private WebApplicationContext webApplicationContext;
+	private ProductController productController;
 
 	private MockMvc mockMvc;
         
 
-	@BeforeClass
+	@BeforeEach
 	public void setup() {
-		MockitoAnnotations.initMocks(this);
-		mockMvc = standaloneSetup(productsController).setMessageConverters(new MappingJackson2HttpMessageConverter()).build();          
-    }
-        
-        
-      
-    /**
-     * Registering the GlobalExceptionController if @ControllerAdvice is used
-     * this can be used in SetHandlerExceptionResolvers() standaloneSetup()
-     * Note that new Spring version from 4.2 has already a setControllerAdvice() method on 
-     * MockMVC builders, so in that case it is only needed to pass one or more
-     * @ControllerAdvice(s) configured within the application
-     * 
-     * @return
-     */
-    private ExceptionHandlerExceptionResolver createExceptionResolver() {
-        ExceptionHandlerExceptionResolver exceptionResolver = new ExceptionHandlerExceptionResolver() {
-            protected ServletInvocableHandlerMethod getExceptionHandlerMethod(HandlerMethod handlerMethod, Exception exception) {
-                Method method = new ExceptionHandlerMethodResolver(GlobalExceptionController.class).resolveMethod(exception);
-                return new ServletInvocableHandlerMethod(new GlobalExceptionController(), method);
-            }
-        };
-        exceptionResolver.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
-        exceptionResolver.afterPropertiesSet();
-        return exceptionResolver;
+		MockitoAnnotations.openMocks(this);
+		mockMvc = standaloneSetup(productController).setMessageConverters(new MappingJackson2HttpMessageConverter()).build();
     }
 
 	@Test
 	public void debugTest() throws Exception {
 		doReturn(Collections.unmodifiableList(this.createProducts())).when(
-				productFacade).getAllProducts();
-		mockMvc.perform(get("/products"));//.andDo(print());
+				productRepository).findAll();
+		mockMvc.perform(get("/product"));
 	}
 
 	@Test
 	public void getAllProducts() throws Exception {
-
 		doReturn(Collections.unmodifiableList(this.createProducts())).when(
-				productFacade).getAllProducts();
+				productRepository).findAll();
 
-		mockMvc.perform(get("/products"))
+		mockMvc.perform(get("/product"))
 				.andExpect(status().isOk())
 				.andExpect(
 						content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON_VALUE))
 				.andExpect(
 						jsonPath("$.[?(@.id==10)].name").value("Raspberry PI"))
 				.andExpect(jsonPath("$.[?(@.id==20)].name").value("Arduino"));
-
 	}
 
 	@Test
 	public void getValidProduct() throws Exception {
+		List<Product> products = this.createProducts();
 
-		List<ProductDTO> products = this.createProducts();
+		doReturn(products.get(0)).when(productRepository).findById(10l);
+		doReturn(products.get(1)).when(productRepository).findById(20l);
 
-		doReturn(products.get(0)).when(productFacade).getProductWithId(10l);
-		doReturn(products.get(1)).when(productFacade).getProductWithId(20l);
-
-		mockMvc.perform(get("/products/10"))
+		mockMvc.perform(get("/product/10"))
 				.andExpect(status().isOk())
 				.andExpect(
 						content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON_VALUE))
 				.andExpect(jsonPath("$.name").value("Raspberry PI"));
-		mockMvc.perform(get("/products/20"))
+		mockMvc.perform(get("/product/20"))
 				.andExpect(status().isOk())
 				.andExpect(
 						content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON_VALUE))
 				.andExpect(jsonPath("$.name").value("Arduino"));
-
 	}
 
 	@Test
 	public void getInvalidProduct() throws Exception {
-		doReturn(null).when(productFacade).getProductWithId(1l);
+		doReturn(null).when(productRepository).findById(1l);
 
-		mockMvc.perform(get("/products/1")).andExpect(
+		mockMvc.perform(get("/product/1")).andExpect(
 				status().is4xxClientError());
-
 	}
 
 	@Test
 	public void deleteProduct() throws Exception {
-
-		List<ProductDTO> products = this.createProducts();
+		List<Product> products = this.createProducts(); //TODO remove?
                 
-		mockMvc.perform(delete("/products/10"))
+		mockMvc.perform(delete("/product/10"))
 				.andExpect(status().isOk());
-
 	}
         
-        @Test
+	@Test
 	public void deleteProductNonExisting() throws Exception {
+		List<Product> products = this.createProducts(); //TODO remove?
 
-		List<ProductDTO> products = this.createProducts();
+		doThrow(new RuntimeException("the product does not exist")).when(productRepository).deleteById(20l);
 
-		doThrow(new RuntimeException("the product does not exist")).when(productFacade).deleteProduct(20l);
-
-		mockMvc.perform(delete("/products/20"))
+		mockMvc.perform(delete("/product/20"))
 				.andExpect(status().isNotFound());
-
 	}
 
 	@Test
 	public void createProduct() throws Exception {
-
 		ProductCreateDTO productCreateDTO = new ProductCreateDTO();
 		productCreateDTO.setName("Raspberry PI");
 
-		doReturn(1l).when(productFacade).createProduct(
-				any(ProductCreateDTO.class));
+		doReturn(1l).when(productService).createProduct(
+				any(Product.class));
 
 		String json = this.convertObjectToJsonBytes(productCreateDTO);
 
 		System.out.println(json);
 
 		mockMvc.perform(
-				post("/products/create").contentType(MediaType.APPLICATION_JSON)
-						.content(json))//.andDo(print())
+				post("/product/create").contentType(MediaType.APPLICATION_JSON)
+						.content(json))
 				.andExpect(status().isOk());
 	}
 
 	@Test
 	public void updateProduct() throws Exception {
-		List<ProductDTO> products = this.createProducts();
+		List<Product> products = this.createProducts();
 
-		doReturn(products.get(0)).when(productFacade).getProductWithId(10l);
-		doReturn(products.get(1)).when(productFacade).getProductWithId(20l);
+		doReturn(products.get(0)).when(productRepository).findById(10l);
+		doReturn(products.get(1)).when(productRepository).findById(20l);
 
-		doNothing().when(productFacade).changePrice(any(NewPriceDTO.class));
-		NewPriceDTO newPrice = new NewPriceDTO();
+		doNothing().when(productService).changePrice(any(Product.class), any(Price.class));
+		Price newPrice = new Price();
 		
 		String json = this.convertObjectToJsonBytes(newPrice);
 
 		mockMvc.perform(
-				put("/products/10").contentType(MediaType.APPLICATION_JSON)
-						.content(json))//.andDo(print())
+				put("/product/10").contentType(MediaType.APPLICATION_JSON)
+						.content(json))
 				.andExpect(status().isOk());
-
 	}
 
 	@Test
 	public void addCategory() throws Exception {
-		List<ProductDTO> products = this.createProducts();
+		List<Product> products = this.createProducts();
 
-		doReturn(products.get(0)).when(productFacade).getProductWithId(10l);
-		doReturn(products.get(1)).when(productFacade).getProductWithId(20l);
+		doReturn(products.get(0)).when(productRepository).findById(10l);
+		doReturn(products.get(1)).when(productRepository).findById(20l);
 
-		CategoryDTO category = new CategoryDTO();
-		category.setId(1l);
+		Long categoryId = 1l;
 
-		String json = this.convertObjectToJsonBytes(category);
+		String json = this.convertObjectToJsonBytes(categoryId);
 
 		mockMvc.perform(
-				post("/products/10/categories").contentType(
+				post("/product/10/categories").contentType(
 						MediaType.APPLICATION_JSON).content(json))
-				//.andDo(print())
 				.andExpect(status().isOk());
 
 		// TODO: need to check JSON response
 	}
 
-	private List<ProductDTO> createProducts() {
-		ProductDTO productOne = new ProductDTO();
+	private List<Product> createProducts() {
+		Product productOne = new Product();
 		productOne.setId(10L);
 		productOne.setName("Raspberry PI");
-		PriceDTO currentPrice = new PriceDTO();
+		Price currentPrice = new Price();
 		currentPrice.setCurrency(Currency.EUR);
 		currentPrice.setValue(new BigDecimal("34"));
 		productOne.setCurrentPrice(currentPrice);
 		productOne.setColor(Color.BLACK);
 
-		ProductDTO productTwo = new ProductDTO();
+		Product productTwo = new Product();
 		productTwo.setId(20L);
 		productTwo.setName("Arduino");
-		PriceDTO price = new PriceDTO();
+		Price price = new Price();
 		price.setCurrency(Currency.EUR);
 		price.setValue(new BigDecimal("44"));
 		productTwo.setCurrentPrice(price);
