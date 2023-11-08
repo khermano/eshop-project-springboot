@@ -1,5 +1,7 @@
 package cz.muni.fi.productService.controller;
 
+import cz.muni.fi.productService.dto.ProductCreateDTO;
+import cz.muni.fi.productService.entity.Price;
 import cz.muni.fi.productService.entity.Product;
 import cz.muni.fi.productService.exceptions.EshopServiceException;
 import cz.muni.fi.productService.exceptions.InvalidParameterException;
@@ -21,8 +23,6 @@ import java.util.Optional;
 
 /**
  * REST Controller for Products
- *
- * @author brossi
  */
 @RestController
 @RequestMapping("/product")
@@ -101,11 +101,13 @@ public class ProductController {
      */
     @RequestMapping(value = "/create", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public final Product createProduct(@RequestBody ProductCreateDTO product) {
+    public final Product createProduct(@RequestBody ProductCreateDTO productInfo) {
         logger.debug("rest createProduct()");
 
+
+
         try {
-            Long id = productService.createProduct(product);
+            Long id = productService.createProduct(product).getId();
             return productRepository.findById(id).get();
         } catch (Exception ex) {
             throw new ResourceAlreadyExistingException();
@@ -124,14 +126,13 @@ public class ProductController {
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public final Product changePrice(@PathVariable("id") long id, @RequestBody NewPriceDTO newPrice) {
+    public final Product changePrice(@PathVariable("id") long id, @RequestBody Price newPrice) {
         logger.debug("rest changePrice({})", id);
 
         try {
-            newPrice.setProductId(id);
-            productService.changePrice(newPrice);
-            return productRepository.findById(id);
-        } catch (EshopServiceException esse) {
+            productService.changePrice(productRepository.findById(id).get(), newPrice);
+            return productRepository.findById(id).get();
+        } catch (EshopServiceException e) {
             throw new InvalidParameterException();
         }
     }
@@ -150,7 +151,7 @@ public class ProductController {
         logger.debug("rest addCategory({})", id);
 
         try {
-            productService.addCategory(id, categoryId);
+            productService.addCategory(productRepository.findById(id).get(), categoryId);
             return productRepository.findById(id).get();
         } catch (Exception ex) {
             throw new InvalidParameterException();
