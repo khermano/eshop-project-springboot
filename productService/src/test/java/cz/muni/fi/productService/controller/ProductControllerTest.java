@@ -8,6 +8,7 @@ import cz.muni.fi.productService.entity.Product;
 import cz.muni.fi.productService.enums.Color;
 import cz.muni.fi.productService.enums.Currency;
 import cz.muni.fi.productService.repository.ProductRepository;
+import cz.muni.fi.productService.service.BeanMappingService;
 import cz.muni.fi.productService.service.ProductService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -38,6 +39,9 @@ public class ProductControllerTest {
 
 	@Mock
 	private ProductRepository productRepository;
+
+	@Mock
+	private BeanMappingService beanMappingService;
 
 	@InjectMocks
 	private ProductController productController;
@@ -115,17 +119,18 @@ public class ProductControllerTest {
 
 	@Test
 	public void createProduct() throws Exception {
-//		List<Optional<Product>> products = this.createProducts();
-
 		ProductCreateDTO productCreateDTO = new ProductCreateDTO();
 		productCreateDTO.setName("Raspberry PI");
+		productCreateDTO.setPriceValue(BigDecimal.valueOf(999));
+		productCreateDTO.setCurrency(Currency.CZK);
+		productCreateDTO.setCategoryId(1l);
 
-		Product mockedProduct = new Product();
-		mockedProduct.setName("Raspberry PI");
-		mockedProduct.setId(1l);
+		Product mockedProduct = this.createProducts().get(0).get();
 
-		doReturn(mockedProduct).when(productService).createProduct(
-				any(Product.class));
+		doReturn(mockedProduct).when(beanMappingService).mapTo(productCreateDTO, Product.class);
+		doReturn(createProducts().get(0).get()).when(productService).createProduct(mockedProduct);
+		//because createProducts().get(0).getId() is 10L
+		doReturn(createProducts().get(0)).when(productRepository).findById(10L);
 
 		String json = this.convertObjectToJsonBytes(productCreateDTO);
 
@@ -168,8 +173,6 @@ public class ProductControllerTest {
 				post("/product/10/categories").contentType(
 						MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isOk());
-
-		// TODO: need to check JSON response
 	}
 
 	private List<Optional<Product>> createProducts() {
