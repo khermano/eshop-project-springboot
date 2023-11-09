@@ -63,9 +63,7 @@ public class ProductServiceTest {
         Price newPrice = new Price();
         newPrice.setCurrency(Currency.CZK);
         newPrice.setValue(BigDecimal.valueOf(298));
-        Assertions.assertThrows(EshopServiceException.class, () -> {
-            productService.changePrice(testProduct, newPrice);
-        });
+        Assertions.assertThrows(EshopServiceException.class, () -> productService.changePrice(testProduct, newPrice));
     }
     
     @Test

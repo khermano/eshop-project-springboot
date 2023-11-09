@@ -28,14 +28,14 @@ public class PriceRepositoryTest{
 
     @Test
     public void create(){
-        Price foundPrice = priceRepository.findById(savedPrice.getId()).orElseThrow(() -> new RuntimeException("price not found"));
+        Price foundPrice = priceRepository.findById(savedPrice.getId()).orElseThrow(() -> new RuntimeException("Price not found"));
         Assertions.assertEquals(savedPrice.getPriceStart(), foundPrice.getPriceStart());
     }
 
     @Test
     public void update(){
         savedPrice.setValue(BigDecimal.valueOf(2));
-        Price found = priceRepository.findById(savedPrice.getId()).orElseThrow(() -> new RuntimeException("price not found"));
+        Price found = priceRepository.findById(savedPrice.getId()).orElseThrow(() -> new RuntimeException("Price not found"));
         Assertions.assertEquals(BigDecimal.valueOf(2), found.getValue());
     }
 }

@@ -43,9 +43,9 @@ public class ProductController {
 
     /**
      * Get list of Products curl -i -X GET
-     * http://localhost:8080/eshop-rest/products
+     * http://localhost:8082/eshop-rest/products
      *
-     * @return ProductDTO
+     * @return list of Products
      */
     @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public final List<Product> getProducts() {
@@ -55,13 +55,12 @@ public class ProductController {
     }
 
     /**
-     *
      * Get Product by identifier id curl -i -X GET
-     * http://localhost:8080/eshop-rest/products/1
+     * http://localhost:8082/eshop-rest/products/1
      *
      * @param id identifier for a product
-     * @return ProductDTO
-     * @throws ResourceNotFoundException
+     * @return Product with given id
+     * @throws ResourceNotFoundException if product with given id does not exist
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public final Product getProduct(@PathVariable("id") long id) {
@@ -77,10 +76,10 @@ public class ProductController {
 
     /**
      * Delete one product by id curl -i -X DELETE
-     * http://localhost:8080/eshop-rest/products/1
+     * http://localhost:8082/eshop-rest/products/1
      *
      * @param id identifier for product
-     * @throws ResourceNotFoundException
+     * @throws ResourceNotFoundException if for some reason we fail to delete product with given id
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
     public final void deleteProduct(@PathVariable("id") long id) {
@@ -98,11 +97,11 @@ public class ProductController {
      * curl -X POST -i -H "Content-Type: application/json" --data 
      * '{"name":"test","description":"test","color":"UNDEFINED","price":"200",
      * "currency":"CZK", "categoryId":"1"}' 
-     * http://localhost:8080/eshop-rest/products/create
+     * http://localhost:8082/eshop-rest/products/create
      * 
      * @param productInfo ProductCreateDTO with required fields for creation
-     * @return the created product ProductDTO
-     * @throws ResourceAlreadyExistingException
+     * @return the created product
+     * @throws ResourceAlreadyExistingException if for some reason we fail to create product with given info
      */
     @RequestMapping(value = "/create", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
@@ -125,7 +124,12 @@ public class ProductController {
             product.addCategoryId(productInfo.getCategoryId());
             //save product
             Long id = productService.createProduct(product).getId();
-            return productRepository.findById(id).get();
+            Optional<Product> createdProduct = productRepository.findById(id);
+            if (createdProduct.isPresent()) {
+                return createdProduct.get();
+            } else {
+                throw new ResourceAlreadyExistingException();
+            }
         } catch (Exception ex) {
             throw new ResourceAlreadyExistingException();
         }
@@ -134,12 +138,12 @@ public class ProductController {
     /**
      * Update the price for one product by PUT method curl -X PUT -i -H
      * "Content-Type: application/json" --data '{"value":"16.33","currency":"CZK"}'
-     * http://localhost:8080/eshop-rest/products/4
+     * http://localhost:8082/eshop-rest/products/4
      *
      * @param id identified of the product to be updated
-     * @param newPrice required fields as specified in NewPriceDTO
-     * @return the updated product ProductDTO
-     * @throws InvalidParameterException
+     * @param newPrice required fields as specified in Price (value and currency)
+     * @return the updated product
+     * @throws InvalidParameterException if for some reason we fail to update product price with given info
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
@@ -147,8 +151,19 @@ public class ProductController {
         logger.debug("rest changePrice({})", id);
 
         try {
-            productService.changePrice(productRepository.findById(id).get(), newPrice);
-            return productRepository.findById(id).get();
+            Optional<Product> product = productRepository.findById(id);
+            if (product.isPresent()) {
+                productService.changePrice(product.get(), newPrice);
+            } else {
+                throw new InvalidParameterException();
+            }
+            //needs fresh call from DB
+            product = productRepository.findById(id);
+            if (product.isPresent()) {
+                return product.get();
+            } else {
+                throw new InvalidParameterException();
+            }
         } catch (EshopServiceException e) {
             throw new InvalidParameterException();
         }
@@ -160,7 +175,7 @@ public class ProductController {
      * @param id the identifier of the Product to have the Category added
      * @param categoryId the id of category to be added
      * @return the updated product as defined by ProductDTO
-     * @throws InvalidParameterException
+     * @throws InvalidParameterException if for some reason we fail to add new category to product
      */
     @RequestMapping(value = "/{id}/categories", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
@@ -168,8 +183,19 @@ public class ProductController {
         logger.debug("rest addCategory({})", id);
 
         try {
-            productService.addCategory(productRepository.findById(id).get(), categoryId);
-            return productRepository.findById(id).get();
+            Optional<Product> product = productRepository.findById(id);
+            if (product.isPresent()) {
+                productService.addCategory(product.get(), categoryId);
+            } else {
+                throw new InvalidParameterException();
+            }
+            //needs fresh call from DB
+            product = productRepository.findById(id);
+            if (product.isPresent()) {
+                return product.get();
+            } else {
+                throw new InvalidParameterException();
+            }
         } catch (Exception ex) {
             throw new InvalidParameterException();
         }

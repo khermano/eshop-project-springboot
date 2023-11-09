@@ -8,7 +8,6 @@ import cz.muni.fi.productService.enums.Currency;
 public interface ProductService {
 	Product createProduct(Product p);
 	void addCategory(Product product, Long categoryId);
-	void removeCategory(Product product, Long categoryId); //TODO remove?? are there any usages?
 	void changePrice(Product product, Price newPrice);
 	BigDecimal getPriceValueInCurrency(Product p, Currency currency);
 	BigDecimal getCurrencyRate(Currency currencyFrom, Currency currencyTo);

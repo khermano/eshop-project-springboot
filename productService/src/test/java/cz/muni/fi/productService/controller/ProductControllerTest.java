@@ -80,8 +80,8 @@ public class ProductControllerTest {
 	public void getValidProduct() throws Exception {
 		List<Optional<Product>> products = this.createProducts();
 
-		doReturn(products.get(0)).when(productRepository).findById(10l);
-		doReturn(products.get(1)).when(productRepository).findById(20l);
+		doReturn(products.get(0)).when(productRepository).findById(10L);
+		doReturn(products.get(1)).when(productRepository).findById(20L);
 
 		mockMvc.perform(get("/products/10"))
 				.andExpect(status().isOk())
@@ -97,7 +97,7 @@ public class ProductControllerTest {
 
 	@Test
 	public void getInvalidProduct() throws Exception {
-		doReturn(Optional.empty()).when(productRepository).findById(1l);
+		doReturn(Optional.empty()).when(productRepository).findById(1L);
 
 		mockMvc.perform(get("/products/1")).andExpect(
 				status().is4xxClientError());
@@ -111,7 +111,7 @@ public class ProductControllerTest {
         
 	@Test
 	public void deleteProductNonExisting() throws Exception {
-		doThrow(new RuntimeException("the product does not exist")).when(productRepository).deleteById(20l);
+		doThrow(new RuntimeException("the product does not exist")).when(productRepository).deleteById(20L);
 
 		mockMvc.perform(delete("/products/20"))
 				.andExpect(status().isNotFound());
@@ -128,7 +128,7 @@ public class ProductControllerTest {
 		doReturn(mockedProduct).when(productService).createProduct(any(Product.class));
 		doReturn(Optional.of(mockedProduct)).when(productRepository).findById(1L);
 
-		String json = this.convertObjectToJsonBytes(productCreateDTO);
+		String json = convertObjectToJsonBytes(productCreateDTO);
 
 		System.out.println(json);
 
@@ -142,12 +142,12 @@ public class ProductControllerTest {
 	public void updateProduct() throws Exception {
 		List<Optional<Product>> products = this.createProducts();
 
-		doReturn(products.get(0)).when(productRepository).findById(10l);
+		doReturn(products.get(0)).when(productRepository).findById(10L);
 
 		doNothing().when(productService).changePrice(any(Product.class), any(Price.class));
 		Price newPrice = new Price();
 		
-		String json = this.convertObjectToJsonBytes(newPrice);
+		String json = convertObjectToJsonBytes(newPrice);
 
 		mockMvc.perform(
 				put("/products/10").contentType(MediaType.APPLICATION_JSON)
@@ -159,11 +159,11 @@ public class ProductControllerTest {
 	public void addCategory() throws Exception {
 		List<Optional<Product>> products = this.createProducts();
 
-		doReturn(products.get(0)).when(productRepository).findById(10l);
+		doReturn(products.get(0)).when(productRepository).findById(10L);
 
-		Long categoryId = 1l;
+		Long categoryId = 1L;
 
-		String json = this.convertObjectToJsonBytes(categoryId);
+		String json = convertObjectToJsonBytes(categoryId);
 
 		mockMvc.perform(
 				post("/products/10/categories").contentType(

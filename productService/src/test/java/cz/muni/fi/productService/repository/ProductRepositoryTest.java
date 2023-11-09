@@ -24,18 +24,15 @@ public class ProductRepositoryTest {
 	public PriceRepository priceRepository;
 
 	private Product p1;
-	private Product p2;
 	private Product p3;
-	private Product p4;
-	private Product p5;
 
 	@BeforeEach
 	public void createProducts() {
 		p1 = new Product();
-		p2 = new Product();
+		Product p2 = new Product();
 		p3 = new Product();
-		p4 = new Product();
-		p5 = new Product();
+		Product p4 = new Product();
+		Product p5 = new Product();
 
 		Price priceLow = new Price();
 		priceLow.setPriceStart(new Date());
@@ -49,10 +46,10 @@ public class ProductRepositoryTest {
 		p4.setName("p4");
 		p5.setName("p5");
 
-		p1.addCategoryId(1l);
+		p1.addCategoryId(1L);
 		p1.setColor(Color.RED);
 		p1.setCurrentPrice(priceLow);
-		p2.addCategoryId(1l);
+		p2.addCategoryId(1L);
 
 		productRepository.save(p1);
 		productRepository.save(p2);
@@ -73,7 +70,7 @@ public class ProductRepositoryTest {
 		Optional<Product> found = productRepository.findById(p1.getId());
 		if (found.isPresent()) {
 			Assertions.assertEquals(found.get().getCategoriesId().size(), 1);
-			Assertions.assertEquals(found.get().getCategoriesId().iterator().next(), 1l);
+			Assertions.assertEquals(found.get().getCategoriesId().iterator().next(), 1L);
 		} else {
 			throw new IllegalArgumentException("Product is null");
 		}
@@ -111,9 +108,7 @@ public class ProductRepositoryTest {
 		Product p = new Product();
 		p.setName("LCD TV");
 		p.setImageMimeType("X");
-		Assertions.assertThrows(ConstraintViolationException.class, () -> {
-			productRepository.save(p);
-		});
+		Assertions.assertThrows(ConstraintViolationException.class, () -> productRepository.save(p));
 	}
 
 	@Test
@@ -121,9 +116,7 @@ public class ProductRepositoryTest {
 		Product p = new Product();
 		p.setName("LCD TV");
 		p.setImage(new byte[] {});
-		Assertions.assertThrows(ConstraintViolationException.class, () -> {
-			productRepository.save(p);
-		});
+		Assertions.assertThrows(ConstraintViolationException.class, () -> productRepository.save(p));
 	}
 
 	@Test

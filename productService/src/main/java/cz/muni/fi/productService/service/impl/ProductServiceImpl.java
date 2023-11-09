@@ -117,12 +117,6 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-	public void removeCategory(Product product, Long categoryId) {
-		product.removeCategoryId(categoryId);
-		//TODO same as up....... or maybe remove?? are there any usages?
-	}
-
-	@Override
 	public BigDecimal getCurrencyRate(Currency currencyFrom, Currency currencyTo) {
 		AbstractMap.SimpleEntry<Currency, Currency> convertCouple = new AbstractMap.SimpleEntry<>(currencyFrom,
 				currencyTo);
