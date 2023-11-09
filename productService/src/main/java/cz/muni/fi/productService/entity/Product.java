@@ -5,6 +5,7 @@ import cz.muni.fi.productService.enums.Color;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -59,7 +60,7 @@ public class Product {
 	@JoinTable(name="CURRENT_PRICE")
 	private Price currentPrice;
 	
-	@OneToMany()
+	@OneToMany(fetch = FetchType.EAGER)
 	@OrderBy("priceStart DESC")
 	@JoinColumn(name="Product_FK")
 	private List<Price> priceHistory = new ArrayList<>();
