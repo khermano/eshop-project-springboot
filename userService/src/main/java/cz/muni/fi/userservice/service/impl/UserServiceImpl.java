@@ -4,6 +4,8 @@ import cz.muni.fi.userservice.entity.User;
 import cz.muni.fi.userservice.repository.UserRepository;
 import cz.muni.fi.userservice.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.util.Optional;
@@ -17,18 +19,20 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserRepository userRepository;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    @Bean
+    public PasswordEncoder encoder() {
+        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+    }
 
     @Override
     public void registerUser(User u, String unencryptedPassword) {
-        u.setPasswordHash(passwordEncoder.encode(unencryptedPassword));
+        u.setPasswordHash(encoder().encode(unencryptedPassword));
         userRepository.save(u);
     }
 
     @Override
     public boolean authenticate(User u, String password) {
-        return passwordEncoder.matches(password, u.getPasswordHash());
+        return encoder().matches(password, u.getPasswordHash());
     }
 
     @Override

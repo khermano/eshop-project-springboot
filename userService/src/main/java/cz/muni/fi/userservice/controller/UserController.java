@@ -27,6 +27,8 @@ public class UserController {
 
     /**
      * Returns all users
+     * curl -i -X GET
+     * http://localhost:8081/eshop-rest/users
      *
      * @return list of Users
      */
@@ -39,6 +41,8 @@ public class UserController {
 
     /**
      * Getting user according to id
+     * curl -i -X GET
+     * http://localhost:8081/eshop-rest/users/1
      * 
      * @param id user identifier
      * @return User

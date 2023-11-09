@@ -3,7 +3,7 @@ package cz.muni.fi.userservice.service;
 import cz.muni.fi.userservice.entity.User;
 
 /**
- * An interface that defines a service access to the {@link User} entity.
+ * An interface that defines service access to the {@link User} entity.
  */
 public interface UserService {
     /**
