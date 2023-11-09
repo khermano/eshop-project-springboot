@@ -120,17 +120,13 @@ public class ProductControllerTest {
 	@Test
 	public void createProduct() throws Exception {
 		ProductCreateDTO productCreateDTO = new ProductCreateDTO();
-		productCreateDTO.setName("Raspberry PI");
-		productCreateDTO.setPriceValue(BigDecimal.valueOf(999));
-		productCreateDTO.setCurrency(Currency.CZK);
-		productCreateDTO.setCategoryId(1l);
 
-		Product mockedProduct = this.createProducts().get(0).get();
+		Product mockedProduct = new Product();
+		mockedProduct.setId(1L);
 
 		doReturn(mockedProduct).when(beanMappingService).mapTo(productCreateDTO, Product.class);
-		doReturn(createProducts().get(0).get()).when(productService).createProduct(mockedProduct);
-		//because createProducts().get(0).getId() is 10L
-		doReturn(createProducts().get(0)).when(productRepository).findById(10L);
+		doReturn(mockedProduct).when(productService).createProduct(any(Product.class));
+		doReturn(Optional.of(mockedProduct)).when(productRepository).findById(1L);
 
 		String json = this.convertObjectToJsonBytes(productCreateDTO);
 
