@@ -46,7 +46,6 @@ public class User {
 
 	private boolean admin;
 
-
     public Long getId() {
         return id;
     }

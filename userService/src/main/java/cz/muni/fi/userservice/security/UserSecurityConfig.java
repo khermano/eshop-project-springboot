@@ -24,7 +24,9 @@ import java.util.Set;
 @EnableWebSecurity
 public class UserSecurityConfig {
     private static final String ADMIN = "ADMIN";
+
     private static final String USER = "USER";
+
     @Autowired
     private UserRepository userRepository;
 
@@ -45,7 +47,6 @@ public class UserSecurityConfig {
                 users.add(createUserDetails(u, USER));
             }
         }
-
         return new InMemoryUserDetailsManager(users);
     }
 

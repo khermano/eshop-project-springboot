@@ -13,15 +13,10 @@ public class UserRepositoryTest{
 	@Autowired
 	private UserRepository userRepository;
 
-	private User u1 ;
-
-	private User u2;
-
-
 	@BeforeEach
 	public void createUsers() {
-		u1 = new User();
-		u2 = new User();
+		User u1 = new User();
+		User u2 = new User();
 
 		u1.setGivenName("Filip");
 		u1.setEmail("filip@fi.cz");
@@ -42,7 +37,6 @@ public class UserRepositoryTest{
 	@Test
 	public void findByEmail() {
 		Assertions.assertNotNull(userRepository.findByEmail("filip@fi.cz"));
-
 	}
 
 	@Test

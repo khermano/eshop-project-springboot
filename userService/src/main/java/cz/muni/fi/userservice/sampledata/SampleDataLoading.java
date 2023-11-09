@@ -21,6 +21,7 @@ public class SampleDataLoading {
     private static Date toDate(int year, int month, int day) {
         return Date.from(LocalDate.of(year, month, day).atStartOfDay(ZoneId.systemDefault()).toInstant());
     }
+
     private User createUser(String password, String givenName, String surname, String email, String phone, Date joined, String address) {
         User u = new User();
         u.setGivenName(givenName);

@@ -27,11 +27,11 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standal
 public class UserControllerTest {
     @Mock
     private UserRepository userRepository;
+
     @InjectMocks
     private UserController usersController;
 
     private MockMvc mockMvc;
-
 
     @BeforeEach
     public void setup() {
@@ -55,8 +55,8 @@ public class UserControllerTest {
     public void getValidUser() throws Exception {
         List<Optional<User>> users = this.createUsers();
 
-        doReturn(users.get(0)).when(userRepository).findById(1l);
-        doReturn(users.get(1)).when(userRepository).findById(2l);
+        doReturn(users.get(0)).when(userRepository).findById(1L);
+        doReturn(users.get(1)).when(userRepository).findById(2L);
 
         mockMvc.perform(get("/users/1"))
                 .andExpect(status().isOk())
@@ -73,7 +73,7 @@ public class UserControllerTest {
 
     @Test
     public void getInvalidUser() throws Exception {
-        doReturn(Optional.empty()).when(userRepository).findById(1l);
+        doReturn(Optional.empty()).when(userRepository).findById(1L);
 
         mockMvc.perform(get("/users/1"))
                 .andExpect(status().is4xxClientError());
@@ -81,12 +81,12 @@ public class UserControllerTest {
 
     private List<Optional<User>> createUsers() {
         User userOne = new User();
-        userOne.setId(1l);
+        userOne.setId(1L);
         userOne.setGivenName("John");
         userOne.setSurname("Smith");
 
         User userTwo = new User();
-        userTwo.setId(2l);
+        userTwo.setId(2L);
         userTwo.setGivenName("Mary");
         userTwo.setSurname("Williams");
         

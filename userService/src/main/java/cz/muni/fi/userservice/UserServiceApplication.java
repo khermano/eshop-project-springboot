@@ -9,12 +9,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 @SpringBootApplication(exclude = { SecurityAutoConfiguration.class })
 public class UserServiceApplication {
-	public static void main(String[] args) {
-		SpringApplication.run(UserServiceApplication.class, args);
-	}
-
 	@Bean
 	public PasswordEncoder encoder() {
 		return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+	}
+
+	public static void main(String[] args) {
+		SpringApplication.run(UserServiceApplication.class, args);
 	}
 }

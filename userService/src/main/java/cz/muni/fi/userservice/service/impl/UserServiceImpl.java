@@ -6,7 +6,6 @@ import cz.muni.fi.userservice.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
 import java.util.Optional;
 
 /**
@@ -40,10 +39,5 @@ public class UserServiceImpl implements UserService {
         } else {
             throw new IllegalArgumentException("Can't find user because of invalid id");
         }
-    }
-
-    @Override
-    public PasswordEncoder getPasswordEncoder() {
-        return passwordEncoder;
     }
 }
