@@ -59,7 +59,7 @@ public class ProductControllerTest {
 	public void debugTest() throws Exception {
 		doReturn(Collections.unmodifiableList(this.createProducts())).when(
 				productRepository).findAll();
-		mockMvc.perform(get("/product"));
+		mockMvc.perform(get("/products"));
 	}
 
 	@Test
@@ -67,7 +67,7 @@ public class ProductControllerTest {
 		doReturn(Collections.unmodifiableList(this.createProducts())).when(
 				productRepository).findAll();
 
-		mockMvc.perform(get("/product"))
+		mockMvc.perform(get("/products"))
 				.andExpect(status().isOk())
 				.andExpect(
 						content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON_VALUE))
@@ -83,12 +83,12 @@ public class ProductControllerTest {
 		doReturn(products.get(0)).when(productRepository).findById(10l);
 		doReturn(products.get(1)).when(productRepository).findById(20l);
 
-		mockMvc.perform(get("/product/10"))
+		mockMvc.perform(get("/products/10"))
 				.andExpect(status().isOk())
 				.andExpect(
 						content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON_VALUE))
 				.andExpect(jsonPath("$.name").value("Raspberry PI"));
-		mockMvc.perform(get("/product/20"))
+		mockMvc.perform(get("/products/20"))
 				.andExpect(status().isOk())
 				.andExpect(
 						content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON_VALUE))
@@ -99,13 +99,13 @@ public class ProductControllerTest {
 	public void getInvalidProduct() throws Exception {
 		doReturn(Optional.empty()).when(productRepository).findById(1l);
 
-		mockMvc.perform(get("/product/1")).andExpect(
+		mockMvc.perform(get("/products/1")).andExpect(
 				status().is4xxClientError());
 	}
 
 	@Test
 	public void deleteProduct() throws Exception {
-		mockMvc.perform(delete("/product/10"))
+		mockMvc.perform(delete("/products/10"))
 				.andExpect(status().isOk());
 	}
         
@@ -113,7 +113,7 @@ public class ProductControllerTest {
 	public void deleteProductNonExisting() throws Exception {
 		doThrow(new RuntimeException("the product does not exist")).when(productRepository).deleteById(20l);
 
-		mockMvc.perform(delete("/product/20"))
+		mockMvc.perform(delete("/products/20"))
 				.andExpect(status().isNotFound());
 	}
 
@@ -133,7 +133,7 @@ public class ProductControllerTest {
 		System.out.println(json);
 
 		mockMvc.perform(
-				post("/product/create").contentType(MediaType.APPLICATION_JSON)
+				post("/products/create").contentType(MediaType.APPLICATION_JSON)
 						.content(json))
 				.andExpect(status().isOk());
 	}
@@ -150,7 +150,7 @@ public class ProductControllerTest {
 		String json = this.convertObjectToJsonBytes(newPrice);
 
 		mockMvc.perform(
-				put("/product/10").contentType(MediaType.APPLICATION_JSON)
+				put("/products/10").contentType(MediaType.APPLICATION_JSON)
 						.content(json))
 				.andExpect(status().isOk());
 	}
@@ -166,7 +166,7 @@ public class ProductControllerTest {
 		String json = this.convertObjectToJsonBytes(categoryId);
 
 		mockMvc.perform(
-				post("/product/10/categories").contentType(
+				post("/products/10/categories").contentType(
 						MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isOk());
 	}

@@ -43,7 +43,7 @@ public class UserControllerTest {
     public void getAllUsers() throws Exception {
         doReturn(Collections.unmodifiableList(this.createUsers())).when(userRepository).findAll();
 
-        mockMvc.perform(get("/user/list"))
+        mockMvc.perform(get("/users"))
                 .andExpect(status().isOk())
                 .andExpect(
                         content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON_VALUE))
@@ -58,13 +58,13 @@ public class UserControllerTest {
         doReturn(users.get(0)).when(userRepository).findById(1l);
         doReturn(users.get(1)).when(userRepository).findById(2l);
 
-        mockMvc.perform(get("/user/1"))
+        mockMvc.perform(get("/users/1"))
                 .andExpect(status().isOk())
                 .andExpect(
                         content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(jsonPath("$.surname").value("Smith"));
 
-        mockMvc.perform(get("/user/2"))
+        mockMvc.perform(get("/users/2"))
                 .andExpect(status().isOk())
                 .andExpect(
                         content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON_VALUE))
@@ -75,7 +75,7 @@ public class UserControllerTest {
     public void getInvalidUser() throws Exception {
         doReturn(Optional.empty()).when(userRepository).findById(1l);
 
-        mockMvc.perform(get("/user/1"))
+        mockMvc.perform(get("/users/1"))
                 .andExpect(status().is4xxClientError());
     }
 

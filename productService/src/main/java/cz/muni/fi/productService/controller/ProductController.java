@@ -27,7 +27,7 @@ import java.util.Optional;
  * REST Controller for Products
  */
 @RestController
-@RequestMapping("/product")
+@RequestMapping("/products")
 public class ProductController {
 
     final static Logger logger = LoggerFactory.getLogger(ProductController.class);

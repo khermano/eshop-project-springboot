@@ -52,7 +52,8 @@ public class UserSecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(requests -> requests
-                        .requestMatchers("/user/*").hasRole(ADMIN)
+                        .requestMatchers("/users").hasRole(ADMIN)
+                        .requestMatchers("/users/*").hasRole(ADMIN)
                         .anyRequest().hasRole(USER))
                 .exceptionHandling(x -> x.authenticationEntryPoint(new BasicAuthenticationEntryPoint() {
                     @Override

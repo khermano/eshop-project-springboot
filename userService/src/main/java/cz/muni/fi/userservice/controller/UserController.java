@@ -18,7 +18,7 @@ import java.util.Optional;
  * REST Controller for Users
  */
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/users")
 public class UserController {
     final static Logger logger = LoggerFactory.getLogger(UserController.class);
     @Autowired
@@ -29,7 +29,7 @@ public class UserController {
      *
      * @return list of Users
      */
-    @GetMapping(value = "/list", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public final Collection<User> getUsers() {
         
         logger.debug("rest getUsers()");
