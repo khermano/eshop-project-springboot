@@ -49,7 +49,7 @@ public class UserController {
      * @throws ResourceNotFoundException HTTP Status 404
      */
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public final User getUser(@PathVariable("id") long id) {
+    public final User getUser(@PathVariable("id") long id) throws ResourceNotFoundException {
         logger.debug("rest getUser({})", id);
         Optional<User> user = userRepository.findById(id);
         if (user.isPresent()) {
