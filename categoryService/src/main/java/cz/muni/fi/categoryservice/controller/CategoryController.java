@@ -27,8 +27,11 @@ public class CategoryController {
     private CategoryRepository categoryRepository;
 
     /**
-     * get all the categories
-     * @return list of CategoryDTOs
+     * Get list of Categories
+     * curl -i -X GET
+     * http://localhost:8083/eshop-rest/categories
+     *
+     * @return list of Categories
      */
     @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public final List<Category> getCategories() {
@@ -38,11 +41,13 @@ public class CategoryController {
     }
 
     /**
-     * Get one category specified by id
+     * Get Category specified by ID
+     * curl -i -X GET
+     * http://localhost:8083/eshop-rest/categories/1
      * 
      * @param id identifier for the category
-     * @return CategoryDTO
-     * @throws ResourceNotFoundException ResourceNotFoundException
+     * @return Category with given ID
+     * @throws ResourceNotFoundException if category with given ID does not exist
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public final Category getCategory(@PathVariable("id") long id) throws ResourceNotFoundException {
