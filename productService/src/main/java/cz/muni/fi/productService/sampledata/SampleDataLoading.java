@@ -114,4 +114,5 @@ public class SampleDataLoading {
         createProduct("Tulip", "", "tulip.jpg", 220, Currency.CZK, Color.RED, flowersId);
 
         log.info("Loaded eShop products.");
-    }}
+    }
+}
