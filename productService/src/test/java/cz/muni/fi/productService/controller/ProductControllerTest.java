@@ -126,7 +126,6 @@ public class ProductControllerTest {
 
 		doReturn(mockedProduct).when(beanMappingService).mapTo(productCreateDTO, Product.class);
 		doReturn(mockedProduct).when(productService).createProduct(any(Product.class));
-		doReturn(Optional.of(mockedProduct)).when(productRepository).findById(1L);
 
 		String json = convertObjectToJsonBytes(productCreateDTO);
 

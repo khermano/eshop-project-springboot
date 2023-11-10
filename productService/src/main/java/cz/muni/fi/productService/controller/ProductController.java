@@ -112,7 +112,7 @@ public class ProductController {
             Product product = beanMappingService.mapTo(productInfo, Product.class);
             //map price DTO to entity
             Price price = new Price();
-            price.setValue(productInfo.getPriceValue());
+            price.setValue(productInfo.getPrice());
             price.setCurrency(productInfo.getCurrency());
             Date now = new Date();
             price.setPriceStart(now);
@@ -123,13 +123,7 @@ public class ProductController {
             //add to category
             product.addCategoryId(productInfo.getCategoryId());
             //save product
-            Long id = productService.createProduct(product).getId();
-            Optional<Product> createdProduct = productRepository.findById(id);
-            if (createdProduct.isPresent()) {
-                return createdProduct.get();
-            } else {
-                throw new ResourceAlreadyExistingException();
-            }
+            return productService.createProduct(product);
         } catch (Exception ex) {
             throw new ResourceAlreadyExistingException();
         }

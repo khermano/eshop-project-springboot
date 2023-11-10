@@ -24,7 +24,7 @@ public class ProductCreateDTO {
 
     @NotNull
     @Min(0)
-    private BigDecimal priceValue;
+    private BigDecimal price;
 
     @NotNull
     private Currency currency;
@@ -77,12 +77,12 @@ public class ProductCreateDTO {
         this.color = color;
     }
 
-    public BigDecimal getPriceValue() {
-        return priceValue;
+    public BigDecimal getPrice() {
+        return price;
     }
 
-    public void setPriceValue(BigDecimal priceValue) {
-        this.priceValue = priceValue;
+    public void setPrice(BigDecimal price) {
+        this.price = price;
     }
 
     public Currency getCurrency() {
@@ -133,7 +133,7 @@ public class ProductCreateDTO {
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", color=" + color +
-                ", price=" + priceValue +
+                ", price=" + price +
                 ", currency=" + currency +
                 '}';
     }
