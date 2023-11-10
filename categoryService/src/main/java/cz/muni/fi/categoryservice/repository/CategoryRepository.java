@@ -1,14 +1,8 @@
 package cz.muni.fi.categoryservice.repository;
 
-import cz.fi.muni.pa165.entity.Category;
+import cz.muni.fi.categoryservice.entity.Category;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.List;
-
-
-public interface CategoryRepository {
-	public Category findById(Long id);
-	public void create(Category c);
-	public void delete(Category c);
-	public List<Category> findAll();
-	public Category findByName(String name);
+public interface CategoryRepository extends JpaRepository<Category, Long> {
+	Category findByName(String name);
 }
