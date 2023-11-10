@@ -1,63 +1,58 @@
 package cz.muni.fi.categoryservice.controller;
 
-import cz.fi.muni.pa165.dto.CategoryDTO;
-import cz.fi.muni.pa165.facade.CategoryFacade;
-import cz.fi.muni.pa165.rest.ApiUris;
-import cz.fi.muni.pa165.rest.exceptions.ResourceNotFoundException;
+import cz.muni.fi.categoryservice.controller.exception.ResourceNotFoundException;
+import cz.muni.fi.categoryservice.entity.Category;
+import cz.muni.fi.categoryservice.repository.CategoryRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.inject.Inject;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * REST Controller for Categories
- * 
- * @author brossi
+ *
  */
 @RestController
-@RequestMapping(ApiUris.ROOT_URI_CATEGORIES)
+@RequestMapping("/categories")
 public class CategoryController {
+    final static Logger logger = LoggerFactory.getLogger(CategoryController.class);
 
-    final static Logger logger = LoggerFactory.getLogger(CategoriesController.class);
-
-    @Inject
-    private CategoryFacade categoryFacade;
+    @Autowired
+    private CategoryRepository categoryRepository;
 
     /**
      * get all the categories
      * @return list of CategoryDTOs
      */
     @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public final List<CategoryDTO> getCategories() {
-
+    public final List<Category> getCategories() {
         logger.debug("rest getCategories()");
-        return categoryFacade.getAllCategories();
+
+        return categoryRepository.findAll();
     }
 
     /**
-     * 
      * Get one category specified by id
      * 
      * @param id identifier for the category
      * @return CategoryDTO
-     * @throws Exception ResourceNotFoundException
+     * @throws ResourceNotFoundException ResourceNotFoundException
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public final CategoryDTO getCategory(@PathVariable("id") long id) throws Exception {
-
+    public final Category getCategory(@PathVariable("id") long id) throws ResourceNotFoundException {
         logger.debug("rest getCategory({})", id);
 
-        CategoryDTO categoryDTO = categoryFacade.getCategoryById(id);
-        if (categoryDTO == null) {
+        Optional<Category> category = categoryRepository.findById(id);
+        if (category.isPresent()) {
+            return category.get();
+        } else {
             throw new ResourceNotFoundException();
         }
-
-        return categoryDTO;
     }
 }
