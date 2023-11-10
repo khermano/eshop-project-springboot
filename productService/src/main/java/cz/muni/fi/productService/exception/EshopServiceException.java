@@ -1,4 +1,4 @@
-package cz.muni.fi.productService.exceptions;
+package cz.muni.fi.productService.exception;
 
 public class EshopServiceException extends RuntimeException{
 	public EshopServiceException(String message) {

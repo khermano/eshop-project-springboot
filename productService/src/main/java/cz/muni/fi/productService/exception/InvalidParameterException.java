@@ -1,4 +1,4 @@
-package cz.muni.fi.productService.exceptions;
+package cz.muni.fi.productService.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

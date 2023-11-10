@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 import cz.muni.fi.productService.entity.Price;
 import cz.muni.fi.productService.entity.Product;
 import cz.muni.fi.productService.enums.Currency;
-import cz.muni.fi.productService.exceptions.EshopServiceException;
+import cz.muni.fi.productService.exception.EshopServiceException;
 import cz.muni.fi.productService.repository.PriceRepository;
 import cz.muni.fi.productService.service.impl.ProductServiceImpl;
 import org.hibernate.service.spi.ServiceException;
