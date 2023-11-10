@@ -60,6 +60,7 @@ public class CategoryRepositoryTest {
 		cat.setName("Electronics");
 		categoryRepository.save(cat);
 		Assertions.assertNotNull(categoryRepository.findByName("Electronics"));
+		Assertions.assertEquals(categoryRepository.findByName("Electronics").getName(), "Electronics");
 	}
 	
 	/**
