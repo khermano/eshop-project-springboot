@@ -1,55 +1,47 @@
 package cz.muni.fi.categoryservice.controller;
 
-import cz.fi.muni.pa165.RootWebContext;
-import cz.fi.muni.pa165.dto.CategoryDTO;
-import cz.fi.muni.pa165.facade.CategoryFacade;
-import cz.fi.muni.pa165.rest.controllers.CategoriesController;
+import cz.muni.fi.categoryservice.entity.Category;
+import cz.muni.fi.categoryservice.repository.CategoryRepository;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
-import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
-
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-
+import java.util.Optional;
 import static org.mockito.Mockito.doReturn;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
 
-
-@WebAppConfiguration
-@ContextConfiguration(classes = {RootWebContext.class})
-public class CategoryControllerTest extends AbstractTestNGSpringContextTests {
-    
+@ExtendWith(MockitoExtension.class)
+public class CategoryControllerTest {
     @Mock
-    private CategoryFacade categoryFacade;
+    private CategoryRepository categoryRepository;
 
-    @Autowired
     @InjectMocks
-    private CategoriesController categoriesController;
+    private CategoryController categoryController;
 
     private MockMvc mockMvc;
 
-    @BeforeClass
+    @BeforeEach
     public void setup() {
-        MockitoAnnotations.initMocks(this);
-       mockMvc = standaloneSetup(categoriesController).setMessageConverters(new MappingJackson2HttpMessageConverter()).build();
-    
+        MockitoAnnotations.openMocks(this);
+       mockMvc = standaloneSetup(categoryController).setMessageConverters(new MappingJackson2HttpMessageConverter()).build();
     }
 
     @Test
     public void getAllCategories() throws Exception {
-
-        doReturn(Collections.unmodifiableList(this.createCategories())).when(categoryFacade).getAllCategories();
+        doReturn(Collections.unmodifiableList(this.createCategories())).when(categoryRepository).findAll();
 
         mockMvc.perform(get("/categories"))
                 .andExpect(status().isOk())
@@ -57,16 +49,14 @@ public class CategoryControllerTest extends AbstractTestNGSpringContextTests {
                         content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(jsonPath("$.[?(@.id==1)].name").value("Electronics"))
                 .andExpect(jsonPath("$.[?(@.id==2)].name").value("Home Appliances"));
-
     }
 
     @Test
     public void getValidCategory() throws Exception {
+        List<Optional<Category>> categories = this.createCategories();
 
-        List<CategoryDTO> categories = this.createCategories();
-
-        doReturn(categories.get(0)).when(categoryFacade).getCategoryById(1l);
-        doReturn(categories.get(1)).when(categoryFacade).getCategoryById(2l);
+        doReturn(categories.get(0)).when(categoryRepository).findById(1L);
+        doReturn(categories.get(1)).when(categoryRepository).findById(2L);
 
         mockMvc.perform(get("/categories/1"))
                 .andExpect(status().isOk())
@@ -79,27 +69,25 @@ public class CategoryControllerTest extends AbstractTestNGSpringContextTests {
                 .andExpect(
                         content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(jsonPath("$.name").value("Home Appliances"));
-
     }
 
     @Test
     public void getInvalidCategory() throws Exception {
-        doReturn(null).when(categoryFacade).getCategoryById(1l);
+        doReturn(Optional.empty()).when(categoryRepository).findById(1L);
 
         mockMvc.perform(get("/categories/1"))
                 .andExpect(status().is4xxClientError());
-
     }
 
-    private List<CategoryDTO> createCategories() {
-        CategoryDTO catOne = new CategoryDTO();
-        catOne.setId(1l);
+    private List<Optional<Category>> createCategories() {
+        Category catOne = new Category();
+        catOne.setId(1L);
         catOne.setName("Electronics");
 
-        CategoryDTO catTwo = new CategoryDTO();
-        catTwo.setId(2l);
+        Category catTwo = new Category();
+        catTwo.setId(2L);
         catTwo.setName("Home Appliances");
 
-        return Arrays.asList(catOne, catTwo);
+        return Arrays.asList(Optional.of(catOne), Optional.of(catTwo));
     }
 }
