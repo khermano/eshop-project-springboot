@@ -1,14 +1,18 @@
 package cz.muni.fi.categoryservice.entity;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
+import jakarta.validation.constraints.NotNull;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
 public class Category {
-	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
@@ -18,10 +22,10 @@ public class Category {
 	private String name;
 	
 	@ManyToMany(mappedBy="categories")
-	private Set<Product> products = new HashSet<Product>();
+	private Set<Long> productIds = new HashSet<>();
 	
-	public void addProduct(Product product) {
-		this.products.add(product);
+	public void addProduct(Long productId) {
+		this.productIds.add(productId);
 	}
 
 	public Category(Long categoryId) {
@@ -38,8 +42,8 @@ public class Category {
 		this.name = name;
 	}
 
-	public Set<Product> getProducts() {
-		return Collections.unmodifiableSet(products);
+	public Set<Long> getProductIds() {
+		return Collections.unmodifiableSet(productIds);
 	}
 
 	public Long getId() {
@@ -70,7 +74,4 @@ public class Category {
 			return false;
 		return true;
 	}
-	
-	
-	
 }
