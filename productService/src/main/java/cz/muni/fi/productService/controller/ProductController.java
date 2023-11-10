@@ -42,7 +42,8 @@ public class ProductController {
     private BeanMappingService beanMappingService;
 
     /**
-     * Get list of Products curl -i -X GET
+     * Get list of Products
+     * curl -i -X GET
      * http://localhost:8082/eshop-rest/products
      *
      * @return list of Products
@@ -55,7 +56,8 @@ public class ProductController {
     }
 
     /**
-     * Get Product by identifier id curl -i -X GET
+     * Get Product by identifier id
+     * curl -i -X GET
      * http://localhost:8082/eshop-rest/products/1
      *
      * @param id identifier for a product
@@ -75,7 +77,8 @@ public class ProductController {
     }
 
     /**
-     * Delete one product by id curl -i -X DELETE
+     * Delete one product by id
+     * curl -i -X DELETE
      * http://localhost:8082/eshop-rest/products/1
      *
      * @param id identifier for product
@@ -130,7 +133,8 @@ public class ProductController {
     }
 
     /**
-     * Update the price for one product by PUT method curl -X PUT -i -H
+     * Update the price for one product by PUT method
+     * curl -X PUT -i -H
      * "Content-Type: application/json" --data '{"value":"16.33","currency":"CZK"}'
      * http://localhost:8082/eshop-rest/products/4
      *
@@ -165,6 +169,8 @@ public class ProductController {
 
     /**
      * Add a new category by POST Method
+     * curl -X POST -i -H "Content-Type: application/json" --data '4'
+     * http://localhost:8082/eshop-rest/products/2/categories
      *
      * @param id the identifier of the Product to have the Category added
      * @param categoryId the id of category to be added
