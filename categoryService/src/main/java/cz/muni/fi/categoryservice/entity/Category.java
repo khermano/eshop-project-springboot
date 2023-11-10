@@ -5,7 +5,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
 import jakarta.validation.constraints.NotNull;
 import java.util.Collections;
 import java.util.HashSet;
@@ -20,8 +19,7 @@ public class Category {
 	@NotNull
 	@Column(nullable=false,unique=true)
 	private String name;
-	
-	@ManyToMany(mappedBy="categories")
+
 	private Set<Long> productIds = new HashSet<>();
 	
 	public void addProduct(Long productId) {

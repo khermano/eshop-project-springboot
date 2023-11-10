@@ -1,36 +1,19 @@
 package cz.muni.fi.categoryservice.repository;
 
-import cz.fi.muni.pa165.PersistenceSampleApplicationContext;
-import cz.fi.muni.pa165.entity.Category;
-import cz.fi.muni.pa165.entity.Product;
+import cz.muni.fi.categoryservice.entity.Category;
+import jakarta.validation.ConstraintViolationException;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.dao.DataAccessException;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.TestExecutionListeners;
-import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
-import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
-import org.springframework.transaction.annotation.Transactional;
-import org.testng.Assert;
-import org.testng.annotations.Test;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.validation.ConstraintViolationException;
 import java.util.List;
+import java.util.Optional;
 
-@ContextConfiguration(classes=PersistenceSampleApplicationContext.class)
-@TestExecutionListeners(TransactionalTestExecutionListener.class)
-@Transactional
-public class CategoryRepositoryTest extends AbstractTestNGSpringContextTests{
-
+@DataJpaTest
+public class CategoryRepositoryTest {
 	@Autowired
-	private CategoryDao categoryDao;
-	
-	@Autowired
-	private ProductDao productDao;
-	
-	@PersistenceContext 
-	private EntityManager em;
+	private CategoryRepository categoryRepository;
 	
 	@Test
 	public void findAll(){
@@ -39,59 +22,57 @@ public class CategoryRepositoryTest extends AbstractTestNGSpringContextTests{
 		cat1.setName("cat1");
 		cat2.setName("cat2");
 		
-		categoryDao.create(cat1);
-		categoryDao.create(cat2);
+		categoryRepository.save(cat1);
+		categoryRepository.save(cat2);
 		
-		List<Category> categories  = categoryDao.findAll();
-		
-		Assert.assertEquals(categories.size(), 2);
+		List<Category> categories  = categoryRepository.findAll();
+		Assertions.assertEquals(categories.size(), 2);
 		
 		Category cat1assert = new Category();
 		Category cat2assert = new Category();
 		cat1assert.setName("cat1");
 		cat2assert.setName("cat2");
-		
-		Assert.assertTrue(categories.contains(cat1assert));
-		Assert.assertTrue(categories.contains(cat2assert));
-		
+
+		Assertions.assertTrue(categories.contains(cat1assert));
+		Assertions.assertTrue(categories.contains(cat2assert));
 	}
 	
-	@Test(expectedExceptions=ConstraintViolationException.class)
+	@Test
 	public void nullCategoryNameNotAllowed(){
 		Category cat = new Category();
 		cat.setName(null);
-		categoryDao.create(cat);		
+		Assertions.assertThrows(ConstraintViolationException.class, () -> categoryRepository.save(cat));
 	}
 	
-	@Test(expectedExceptions=DataAccessException.class)
+	@Test
 	public void nameIsUnique(){
 		Category cat = new Category();
 		cat.setName("Electronics");
-		categoryDao.create(cat);	
-		cat = new Category();
-		cat.setName("Electronics");
-		categoryDao.create(cat);
+		categoryRepository.save(cat);
+		Category cat2 = new Category();
+		cat2.setName("Electronics");
+		Assertions.assertThrows(DataAccessException.class, () -> categoryRepository.save(cat2));
 	}
 	
 	@Test()
 	public void savesName(){
 		Category cat = new Category();
 		cat.setName("Electronics");
-		categoryDao.create(cat);
-		Assert.assertEquals(categoryDao.findById(cat.getId()).getName(),"Electronics");
+		categoryRepository.save(cat);
+		Assertions.assertNotNull(categoryRepository.findByName("Electronics"));
 	}
 	
 	/**
-	 * Checks that null DAO object will return null for non existent ID and also that delete operation works.
+	 * Checks that null repository object will be empty for not existent ID and also that delete operation works.
 	 */
 	@Test()
 	public void delete(){
 		Category cat = new Category();
 		cat.setName("Electronics");
-		categoryDao.create(cat);
-		Assert.assertNotNull(categoryDao.findById(cat.getId()));
-		categoryDao.delete(cat);
-		Assert.assertNull(categoryDao.findById(cat.getId()));
+		categoryRepository.save(cat);
+		Assertions.assertTrue(categoryRepository.findById(cat.getId()).isPresent());
+		categoryRepository.delete(cat);
+		Assertions.assertFalse(categoryRepository.findById(cat.getId()).isPresent());
 	}
 	
 	/**
@@ -101,13 +82,12 @@ public class CategoryRepositoryTest extends AbstractTestNGSpringContextTests{
 	public void productsInCategory(){
 		Category categoryElectro = new Category();
 		categoryElectro.setName("Electronics");
-		categoryDao.create(categoryElectro);			
-		Product p = new Product();
-		p.setName("TV");
-		productDao.create(p);
-		p.addCategory(categoryElectro);		
-		Category found = categoryDao.findById(categoryElectro.getId());
-		Assert.assertEquals(found.getProducts().size(), 1);
-		Assert.assertEquals(found.getProducts().iterator().next().getName(), "TV");
+		categoryRepository.save(categoryElectro);
+		Long tvProductId = 1L;
+		categoryElectro.addProduct(tvProductId);
+		Optional<Category> found = categoryRepository.findById(categoryElectro.getId());
+		Assertions.assertTrue(found.isPresent());
+		Assertions.assertEquals(found.get().getProductIds().size(), 1);
+		Assertions.assertEquals(found.get().getProductIds().iterator().next(), 1L);
 	}
 }
