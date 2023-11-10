@@ -1,6 +1,6 @@
 package cz.muni.fi.categoryservice.controller;
 
-import cz.muni.fi.categoryservice.controller.exception.ResourceNotFoundException;
+import cz.muni.fi.categoryservice.exception.ResourceNotFoundException;
 import cz.muni.fi.categoryservice.entity.Category;
 import cz.muni.fi.categoryservice.repository.CategoryRepository;
 import org.slf4j.Logger;

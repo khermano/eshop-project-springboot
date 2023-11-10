@@ -1,4 +1,4 @@
-package cz.muni.fi.categoryservice.controller.exception;
+package cz.muni.fi.categoryservice.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
