@@ -65,7 +65,7 @@ public class ProductController {
      * @throws ResourceNotFoundException if product with given id does not exist
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public final Product getProduct(@PathVariable("id") long id) {
+    public final Product getProduct(@PathVariable("id") long id) throws ResourceNotFoundException {
         logger.debug("rest getProduct({})", id);
 
         Optional<Product> product = productRepository.findById(id);
@@ -85,7 +85,7 @@ public class ProductController {
      * @throws ResourceNotFoundException if for some reason we fail to delete product with given id
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public final void deleteProduct(@PathVariable("id") long id) {
+    public final void deleteProduct(@PathVariable("id") long id) throws ResourceNotFoundException {
         logger.debug("rest deleteProduct({})", id);
 
         try {
@@ -108,7 +108,7 @@ public class ProductController {
      */
     @RequestMapping(value = "/create", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public final Product createProduct(@RequestBody ProductCreateDTO productInfo) {
+    public final Product createProduct(@RequestBody ProductCreateDTO productInfo) throws ResourceAlreadyExistingException {
         logger.debug("rest createProduct()");
 
         try {
@@ -145,7 +145,7 @@ public class ProductController {
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public final Product changePrice(@PathVariable("id") long id, @RequestBody Price newPrice) {
+    public final Product changePrice(@PathVariable("id") long id, @RequestBody Price newPrice) throws InvalidParameterException {
         logger.debug("rest changePrice({})", id);
 
         try {
@@ -179,8 +179,10 @@ public class ProductController {
      */
     @RequestMapping(value = "/{id}/categories", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public final Product addCategory(@PathVariable("id") long id, @RequestBody Long categoryId) {
+    public final Product addCategory(@PathVariable("id") long id, @RequestBody Long categoryId) throws InvalidParameterException {
         logger.debug("rest addCategory({})", id);
+
+        //TODO Originally, this took CategoryDTO, not categoryId!!!! redo it after categoryService is done
 
         try {
             Optional<Product> product = productRepository.findById(id);
