@@ -1,11 +1,14 @@
 package cz.muni.fi.userservice.sampledata;
 
 import cz.muni.fi.userservice.entity.User;
-import cz.muni.fi.userservice.service.UserService;
+import cz.muni.fi.userservice.repository.UserRepository;
 import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -15,11 +18,21 @@ import java.util.Date;
 public class SampleDataLoading {
     final static Logger log = LoggerFactory.getLogger(SampleDataLoading.class);
 
+    @Bean
+    public PasswordEncoder encoder() {
+        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+    }
+
     @Autowired
-    private UserService userService;
+    private UserRepository userRepository;
 
     private static Date toDate(int year, int month, int day) {
         return Date.from(LocalDate.of(year, month, day).atStartOfDay(ZoneId.systemDefault()).toInstant());
+    }
+
+    private void registerUser(User u, String unencryptedPassword) {
+        u.setPasswordHash(encoder().encode(unencryptedPassword));
+        userRepository.save(u);
     }
 
     private void createUser(String password, String givenName, String surname, String email, String phone, Date joined, String address) {
@@ -31,7 +44,7 @@ public class SampleDataLoading {
         u.setAddress(address);
         u.setJoinedDate(joined);
         if(password.equals("admin")) u.setAdmin(true);
-        userService.registerUser(u, password);
+        registerUser(u, password);
     }
 
     @PostConstruct
