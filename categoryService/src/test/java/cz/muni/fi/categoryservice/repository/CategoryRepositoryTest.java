@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.dao.DataAccessException;
 import java.util.List;
-import java.util.Optional;
+//import java.util.Optional;
 
 @DataJpaTest
 public class CategoryRepositoryTest {
@@ -74,21 +74,5 @@ public class CategoryRepositoryTest {
 		Assertions.assertTrue(categoryRepository.findById(cat.getId()).isPresent());
 		categoryRepository.delete(cat);
 		Assertions.assertFalse(categoryRepository.findById(cat.getId()).isPresent());
-	}
-	
-	/**
-	 * Testing that collections on Category is being loaded as expected
-	 */
-	@Test
-	public void productsInCategory(){
-		Category categoryElectro = new Category();
-		categoryElectro.setName("Electronics");
-		categoryRepository.save(categoryElectro);
-		Long tvProductId = 1L;
-		categoryElectro.addProduct(tvProductId);
-		Optional<Category> found = categoryRepository.findById(categoryElectro.getId());
-		Assertions.assertTrue(found.isPresent());
-		Assertions.assertEquals(found.get().getProductIds().size(), 1);
-		Assertions.assertEquals(found.get().getProductIds().iterator().next(), 1L);
 	}
 }

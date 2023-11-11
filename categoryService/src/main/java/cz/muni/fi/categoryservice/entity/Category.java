@@ -6,9 +6,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotNull;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
 
 @Entity
 public class Category {
@@ -19,12 +16,6 @@ public class Category {
 	@NotNull
 	@Column(nullable=false,unique=true)
 	private String name;
-
-	private Set<Long> productIds = new HashSet<>();
-	
-	public void addProduct(Long productId) {
-		this.productIds.add(productId);
-	}
 
 	public Category(Long categoryId) {
 		this.id = categoryId; 
@@ -38,10 +29,6 @@ public class Category {
 
 	public void setName(String name) {
 		this.name = name;
-	}
-
-	public Set<Long> getProductIds() {
-		return Collections.unmodifiableSet(productIds);
 	}
 
 	public Long getId() {
