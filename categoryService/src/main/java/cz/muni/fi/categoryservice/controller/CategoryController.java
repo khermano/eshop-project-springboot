@@ -29,7 +29,7 @@ public class CategoryController {
     /**
      * Get list of Categories
      * curl -i -X GET
-     * http://localhost:8083/eshop-rest/categories
+     * http://localhost:8082/eshop-rest/categories
      *
      * @return list of Categories
      */
@@ -43,7 +43,7 @@ public class CategoryController {
     /**
      * Get Category specified by ID
      * curl -i -X GET
-     * http://localhost:8083/eshop-rest/categories/1
+     * http://localhost:8082/eshop-rest/categories/1
      * 
      * @param id identifier for the category
      * @return Category with given ID
