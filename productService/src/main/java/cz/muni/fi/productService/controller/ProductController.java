@@ -44,7 +44,7 @@ public class ProductController {
     /**
      * Get list of Products
      * curl -i -X GET
-     * http://localhost:8082/eshop-rest/products
+     * http://localhost:8083/eshop-rest/products
      *
      * @return list of Products
      */
@@ -58,7 +58,7 @@ public class ProductController {
     /**
      * Get Product by identifier id
      * curl -i -X GET
-     * http://localhost:8082/eshop-rest/products/1
+     * http://localhost:8083/eshop-rest/products/1
      *
      * @param id identifier for a product
      * @return Product with given id
@@ -79,7 +79,7 @@ public class ProductController {
     /**
      * Delete one product by id
      * curl -i -X DELETE
-     * http://localhost:8082/eshop-rest/products/1
+     * http://localhost:8083/eshop-rest/products/1
      *
      * @param id identifier for product
      * @throws ResourceNotFoundException if for some reason we fail to delete product with given id
@@ -100,7 +100,7 @@ public class ProductController {
      * curl -X POST -i -H "Content-Type: application/json" --data 
      * '{"name":"test","description":"test","color":"UNDEFINED","price":"200",
      * "currency":"CZK", "categoryId":"1"}' 
-     * http://localhost:8082/eshop-rest/products/create
+     * http://localhost:8083/eshop-rest/products/create
      * 
      * @param productInfo ProductCreateDTO with required fields for creation
      * @return the created product
@@ -136,7 +136,7 @@ public class ProductController {
      * Update the price for one product by PUT method
      * curl -X PUT -i -H
      * "Content-Type: application/json" --data '{"value":"16.33","currency":"CZK"}'
-     * http://localhost:8082/eshop-rest/products/4
+     * http://localhost:8083/eshop-rest/products/4
      *
      * @param id identified of the product to be updated
      * @param newPrice required fields as specified in Price (value and currency)
@@ -170,7 +170,7 @@ public class ProductController {
     /**
      * Add a new category by POST Method
      * curl -X POST -i -H "Content-Type: application/json" --data '4'
-     * http://localhost:8082/eshop-rest/products/2/categories
+     * http://localhost:8083/eshop-rest/products/2/categories
      *
      * @param id the identifier of the Product to have the Category added
      * @param categoryId the id of category to be added
