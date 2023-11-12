@@ -161,6 +161,7 @@ public class ProductControllerTest {
 				.andExpect(status().isOk());
 	}
 
+	//TODO edit this test bellow
 //	@Test
 //	public void addCategory() throws Exception {
 //		List<Optional<Product>> products = this.createProducts();

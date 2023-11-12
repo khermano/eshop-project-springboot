@@ -7,7 +7,6 @@ import cz.muni.fi.productService.enums.Currency;
 
 public interface ProductService {
 	Product createProduct(Product p);
-	void addCategoryId(Product product, Long categoryId);
 	void changePrice(Product product, Price newPrice);
 	BigDecimal getPriceValueInCurrency(Product p, Currency currency);
 	BigDecimal getCurrencyRate(Currency currencyFrom, Currency currencyTo);

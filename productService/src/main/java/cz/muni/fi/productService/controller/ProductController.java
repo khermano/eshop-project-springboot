@@ -176,11 +176,12 @@ public class ProductController {
         }
     }
 
-    //TODO zmen komentar + priklad aby nebralo len ID ale cele CategoryDTO
     /**
      * Add a new category by POST Method
      * curl -X POST -i -H "Content-Type: application/json" --data '{"id":"6","name":"test"}'
      * http://localhost:8083/eshop-rest/products/2/categories
+     *
+     * Be aware that categoryService must be running for this to work!
      *
      * @param id the identifier of the Product to have the Category added
      * @param category the category to be added
@@ -200,13 +201,14 @@ public class ProductController {
             con.setRequestMethod("GET");
 
             Optional<Product> product = productRepository.findById(id);
+
             if (product.isPresent() && (product.get().getCategoriesId().contains(categoryId) || con.getResponseCode() == 200)) {
                 throw new EshopServiceException(
                         "Product already contains this category. Product: "
                                 + product.get().getId() + ", categoryId: "
                                 + categoryId);
-                //TODO vdaka tomuto mozeme zmazat CategoryService metodu addCategoryId
-            } else if (product.isPresent() && !product.get().getCategoriesId().contains(categoryId) && con.getResponseCode() == 404) {
+            }
+            else if (product.isPresent() && !product.get().getCategoriesId().contains(categoryId) && con.getResponseCode() == 404) {
                 url = new URL("http://localhost:8082/eshop-rest/categories/create");
                 con = (HttpURLConnection) url.openConnection();
                 con.setRequestMethod("POST");

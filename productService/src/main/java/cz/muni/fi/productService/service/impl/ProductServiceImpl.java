@@ -105,18 +105,6 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-	public void addCategoryId(Product product, Long categoryId) {
-		if (product.getCategoriesId().contains(categoryId)) {
-			throw new EshopServiceException(
-					"Product already contains this category. Product: "
-							+ product.getId() + ", categoryId: "
-							+ categoryId);
-		}
-		product.addCategoryId(categoryId);
-		//TODO we need to make sure that category is created in the categoryService, not only we ID stores in this service
-	}
-
-	@Override
 	public BigDecimal getCurrencyRate(Currency currencyFrom, Currency currencyTo) {
 		AbstractMap.SimpleEntry<Currency, Currency> convertCouple = new AbstractMap.SimpleEntry<>(currencyFrom,
 				currencyTo);
