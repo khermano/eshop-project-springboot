@@ -9,7 +9,9 @@ import cz.muni.fi.productService.exception.InvalidParameterException;
 import cz.muni.fi.productService.repository.PriceRepository;
 import cz.muni.fi.productService.repository.ProductRepository;
 import cz.muni.fi.productService.service.ProductService;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -18,7 +20,12 @@ import java.math.RoundingMode;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.AbstractMap;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * Implementation of the {@link ProductService}. This class is part of the
@@ -112,17 +119,19 @@ public class ProductServiceImpl implements ProductService {
 		Long categoryId = category.getId();
 
 		URL url = new URL("http://localhost:8082/eshop-rest/categories/" + categoryId.intValue());
-		HttpURLConnection con = createConnectionForGet(url);
+		HttpURLConnection con = createConnection(url, HttpMethod.GET.name());
 
 		Optional<Product> product = productRepository.findById(productId);
 
-		if (product.isPresent() && (product.get().getCategoriesId().contains(categoryId) || con.getResponseCode() == 200)) {
+		if (product.isPresent() && (product.get().getCategoriesId().contains(categoryId)
+				|| con.getResponseCode() == HttpServletResponse.SC_OK)) {
 			throw new EshopServiceException(
 					"Product already contains this category. Product: "
 							+ product.get().getId() + ", categoryId: "
 							+ categoryId);
 		}
-		else if (product.isPresent() && !product.get().getCategoriesId().contains(categoryId) && con.getResponseCode() == 404) {
+		else if (product.isPresent() && !product.get().getCategoriesId().contains(categoryId)
+				&& con.getResponseCode() == HttpServletResponse.SC_NOT_FOUND) {
 			url = new URL("http://localhost:8082/eshop-rest/categories/create");
 			con = createConnectionForPost(url);
 			String jsonInputString = "{\"id\":\"" + categoryId + "\", \"name\":\"" + category.getName() + "\"}";
@@ -131,7 +140,7 @@ public class ProductServiceImpl implements ProductService {
 				os.write(input, 0, input.length);
 			}
 
-			if (con.getResponseCode() != 200) {
+			if (con.getResponseCode() != HttpServletResponse.SC_OK) {
 				throw new InvalidParameterException();
 			}
 
@@ -152,17 +161,16 @@ public class ProductServiceImpl implements ProductService {
 		return currencyRateCache.get(convertCouple);
 	}
 
-	private HttpURLConnection createConnectionForGet(URL url) throws IOException {
-		HttpURLConnection con = (HttpURLConnection) url.openConnection();
-		con.setRequestMethod("GET");
+	private HttpURLConnection createConnectionForPost(URL url) throws IOException {
+		HttpURLConnection con = createConnection(url, HttpMethod.POST.name());
+		con.setRequestProperty("Content-Type", "application/json");
+		con.setDoOutput(true);
 		return con;
 	}
 
-	private HttpURLConnection createConnectionForPost(URL url) throws IOException {
+	private HttpURLConnection createConnection(URL url, String requestMethod) throws IOException {
 		HttpURLConnection con = (HttpURLConnection) url.openConnection();
-		con.setRequestMethod("POST");
-		con.setRequestProperty("Content-Type", "application/json");
-		con.setDoOutput(true);
+		con.setRequestMethod(requestMethod);
 		return con;
 	}
 }
