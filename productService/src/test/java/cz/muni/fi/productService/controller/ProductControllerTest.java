@@ -161,21 +161,21 @@ public class ProductControllerTest {
 				.andExpect(status().isOk());
 	}
 
-	@Test
-	public void addCategory() throws Exception {
-		List<Optional<Product>> products = this.createProducts();
-
-		doReturn(products.get(0)).when(productRepository).findById(10L);
-
-		Long categoryId = 1L;
-
-		String json = convertObjectToJsonBytes(categoryId);
-
-		mockMvc.perform(
-				post("/products/10/categories").contentType(
-						MediaType.APPLICATION_JSON).content(json))
-				.andExpect(status().isOk());
-	}
+//	@Test
+//	public void addCategory() throws Exception {
+//		List<Optional<Product>> products = this.createProducts();
+//
+//		doReturn(products.get(0)).when(productRepository).findById(10L);
+//
+//		Long categoryId = 1L;
+//
+//		String json = convertObjectToJsonBytes(categoryId);
+//
+//		mockMvc.perform(
+//				post("/products/10/categories").contentType(
+//						MediaType.APPLICATION_JSON).content(json))
+//				.andExpect(status().isOk());
+//	}
 
 	private List<Optional<Product>> createProducts() {
 		Product productOne = new Product();

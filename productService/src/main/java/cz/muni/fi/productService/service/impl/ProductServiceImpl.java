@@ -105,7 +105,7 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-	public void addCategory(Product product, Long categoryId) {
+	public void addCategoryId(Product product, Long categoryId) {
 		if (product.getCategoriesId().contains(categoryId)) {
 			throw new EshopServiceException(
 					"Product already contains this category. Product: "

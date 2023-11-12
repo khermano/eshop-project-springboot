@@ -80,7 +80,6 @@ public class Product {
 	
 	public void addCategoryId(Long categoryId) {
 		categoriesId.add(categoryId);
-		// TODO categoryId.addProduct(this); TOTO PREPIS NA HTTP CALL AZ BUDE EXISTOVAT CATEGORYSERVICE
 	}
 
 

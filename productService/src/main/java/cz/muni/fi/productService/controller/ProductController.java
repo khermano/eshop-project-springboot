@@ -1,5 +1,6 @@
 package cz.muni.fi.productService.controller;
 
+import cz.muni.fi.productService.dto.CategoryDTO;
 import cz.muni.fi.productService.dto.ProductCreateDTO;
 import cz.muni.fi.productService.entity.Price;
 import cz.muni.fi.productService.entity.Product;
@@ -19,6 +20,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -167,34 +176,60 @@ public class ProductController {
         }
     }
 
+    //TODO zmen komentar + priklad aby nebralo len ID ale cele CategoryDTO
     /**
      * Add a new category by POST Method
-     * curl -X POST -i -H "Content-Type: application/json" --data '4'
+     * curl -X POST -i -H "Content-Type: application/json" --data '{"id":"6","name":"test"}'
      * http://localhost:8083/eshop-rest/products/2/categories
      *
      * @param id the identifier of the Product to have the Category added
-     * @param categoryId the id of category to be added
+     * @param category the category to be added
      * @return the updated product as defined by ProductDTO
      * @throws InvalidParameterException if for some reason we fail to add new category to product
      */
     @RequestMapping(value = "/{id}/categories", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public final Product addCategory(@PathVariable("id") long id, @RequestBody Long categoryId) throws InvalidParameterException {
+    public final Product addCategory(@PathVariable("id") long id, @RequestBody CategoryDTO category) throws InvalidParameterException, IOException {
         logger.debug("rest addCategory({})", id);
 
-        //TODO Originally, this took CategoryDTO, not categoryId!!!! redo it after categoryService is done
-
         try {
+            Long categoryId = category.getId();
+
+            URL url = new URL("http://localhost:8082/eshop-rest/categories/" + categoryId.intValue());
+            HttpURLConnection con = (HttpURLConnection) url.openConnection();
+            con.setRequestMethod("GET");
+
             Optional<Product> product = productRepository.findById(id);
-            if (product.isPresent()) {
-                productService.addCategory(product.get(), categoryId);
-            } else {
-                throw new InvalidParameterException();
-            }
-            //needs fresh call from DB
-            product = productRepository.findById(id);
-            if (product.isPresent()) {
-                return product.get();
+            if (product.isPresent() && (product.get().getCategoriesId().contains(categoryId) || con.getResponseCode() == 200)) {
+                throw new EshopServiceException(
+                        "Product already contains this category. Product: "
+                                + product.get().getId() + ", categoryId: "
+                                + categoryId);
+                //TODO vdaka tomuto mozeme zmazat CategoryService metodu addCategoryId
+            } else if (product.isPresent() && !product.get().getCategoriesId().contains(categoryId) && con.getResponseCode() == 404) {
+                url = new URL("http://localhost:8082/eshop-rest/categories/create");
+                con = (HttpURLConnection) url.openConnection();
+                con.setRequestMethod("POST");
+                con.setRequestProperty("Content-Type", "application/json");
+                con.setDoOutput(true);
+                String jsonInputString = "{\"id\":\"" + categoryId + "\", \"name\":\"" + category.getName() + "\"}";
+                try(OutputStream os = con.getOutputStream()) {
+                    byte[] input = jsonInputString.getBytes(StandardCharsets.UTF_8);
+                    os.write(input, 0, input.length);
+                }
+
+                if (con.getResponseCode() != 200) {
+                    throw new InvalidParameterException();
+                }
+
+                product.get().addCategoryId(categoryId);
+                productRepository.save(product.get());
+                product = productRepository.findById(id);
+                if (product.isPresent()) {
+                    return product.get();
+                } else {
+                    throw new InvalidParameterException();
+                }
             } else {
                 throw new InvalidParameterException();
             }
