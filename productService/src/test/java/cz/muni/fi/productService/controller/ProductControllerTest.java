@@ -2,6 +2,7 @@ package cz.muni.fi.productService.controller;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import cz.muni.fi.productService.dto.CategoryDTO;
 import cz.muni.fi.productService.dto.ProductCreateDTO;
 import cz.muni.fi.productService.entity.Price;
 import cz.muni.fi.productService.entity.Product;
@@ -49,6 +50,12 @@ public class ProductControllerTest {
 
 	@Mock
 	private BeanMappingService beanMappingService;
+
+//	@Mock
+//	HttpURLConnection connection;
+//
+//	@Mock
+//	private URL url;
 
 	@InjectMocks
 	private ProductController productController;
@@ -161,22 +168,24 @@ public class ProductControllerTest {
 				.andExpect(status().isOk());
 	}
 
-	//TODO edit this test bellow
-//	@Test
-//	public void addCategory() throws Exception {
-//		List<Optional<Product>> products = this.createProducts();
-//
-//		doReturn(products.get(0)).when(productRepository).findById(10L);
-//
-//		Long categoryId = 1L;
-//
-//		String json = convertObjectToJsonBytes(categoryId);
-//
-//		mockMvc.perform(
-//				post("/products/10/categories").contentType(
-//						MediaType.APPLICATION_JSON).content(json))
-//				.andExpect(status().isOk());
-//	}
+	@Test
+	public void addCategory() throws Exception {
+		Product mockedProduct = new Product();
+		mockedProduct.setId(10L);
+
+		CategoryDTO categoryDTO = new CategoryDTO();
+		categoryDTO.setId(1L);
+		categoryDTO.setName("test");
+
+		doReturn(Optional.of(mockedProduct)).when(productRepository).findById(10L);
+
+		String json = convertObjectToJsonBytes(categoryDTO);
+
+		mockMvc.perform(
+				post("/products/10/categories").contentType(
+						MediaType.APPLICATION_JSON).content(json))
+				.andExpect(status().isOk());
+	}
 
 	private List<Optional<Product>> createProducts() {
 		Product productOne = new Product();

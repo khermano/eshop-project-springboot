@@ -194,47 +194,9 @@ public class ProductController {
         logger.debug("rest addCategory({})", id);
 
         try {
-            Long categoryId = category.getId();
-
-            URL url = new URL("http://localhost:8082/eshop-rest/categories/" + categoryId.intValue());
-            HttpURLConnection con = (HttpURLConnection) url.openConnection();
-            con.setRequestMethod("GET");
-
+            productService.addCategory(id, category);
             Optional<Product> product = productRepository.findById(id);
-
-            if (product.isPresent() && (product.get().getCategoriesId().contains(categoryId) || con.getResponseCode() == 200)) {
-                throw new EshopServiceException(
-                        "Product already contains this category. Product: "
-                                + product.get().getId() + ", categoryId: "
-                                + categoryId);
-            }
-            else if (product.isPresent() && !product.get().getCategoriesId().contains(categoryId) && con.getResponseCode() == 404) {
-                url = new URL("http://localhost:8082/eshop-rest/categories/create");
-                con = (HttpURLConnection) url.openConnection();
-                con.setRequestMethod("POST");
-                con.setRequestProperty("Content-Type", "application/json");
-                con.setDoOutput(true);
-                String jsonInputString = "{\"id\":\"" + categoryId + "\", \"name\":\"" + category.getName() + "\"}";
-                try(OutputStream os = con.getOutputStream()) {
-                    byte[] input = jsonInputString.getBytes(StandardCharsets.UTF_8);
-                    os.write(input, 0, input.length);
-                }
-
-                if (con.getResponseCode() != 200) {
-                    throw new InvalidParameterException();
-                }
-
-                product.get().addCategoryId(categoryId);
-                productRepository.save(product.get());
-                product = productRepository.findById(id);
-                if (product.isPresent()) {
-                    return product.get();
-                } else {
-                    throw new InvalidParameterException();
-                }
-            } else {
-                throw new InvalidParameterException();
-            }
+            return product.get();
         } catch (Exception ex) {
             throw new InvalidParameterException();
         }
