@@ -3,17 +3,14 @@
 ***Run userService:***
 - `cd userService`
 - `mvn clean install`
-- `./mvnw spring-boot:run`
+- `mvn spring-boot:run`
 
-***Run priceService:***
-- `cd priceService`
+***Run categoryService:***
+- `cd categoryService`
 - `mvn clean install`
-- `./mvnw spring-boot:run`
+- `mvn spring-boot:run`
 
-***Sign in***
-- **as admin e.g.:**
-  - Username: admin@eshop.com
-  - Password: admin
-- **as user e.g.:**
-  - Username: jiri@dvorak.cz
-  - Password: heslo
+***Run productService:***
+- `cd productService`
+- `mvn clean install`
+- `mvn spring-boot:run`
