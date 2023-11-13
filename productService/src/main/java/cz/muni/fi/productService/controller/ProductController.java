@@ -4,6 +4,7 @@ import cz.muni.fi.productService.dto.CategoryDTO;
 import cz.muni.fi.productService.dto.ProductCreateDTO;
 import cz.muni.fi.productService.entity.Price;
 import cz.muni.fi.productService.entity.Product;
+import cz.muni.fi.productService.enums.Currency;
 import cz.muni.fi.productService.exception.EshopServiceException;
 import cz.muni.fi.productService.exception.InvalidParameterException;
 import cz.muni.fi.productService.exception.ResourceAlreadyExistingException;
@@ -20,14 +21,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-
 import java.io.IOException;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -222,6 +217,30 @@ public class ProductController {
         if (product.isPresent()) {
             return product.get().getCurrentPrice();
         } else {
+            throw new ResourceNotFoundException();
+        }
+    }
+
+    /**
+     * Get currency rate for given currency pair
+     * curl -i -X GET
+     * http://localhost:8083/eshop-rest/products/getCurrencyRate/CZK/EUR
+     *
+     * (This method is not from the original project, it needed to be created for the
+     * OrderService's getTotalPrice method, so the original functionality stays)
+     *
+     * @param currency1 first currency of the pair
+     * @param currency2 second currency of the pair
+     * @return currency rate for given pair
+     * @throws ResourceNotFoundException if given currency pair doesn't exist
+     */
+    @RequestMapping(value = "getCurrencyRate/{currency1}/{currency2}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public final BigDecimal getCurrencyRate(@PathVariable("currency1") Currency currency1, @PathVariable("currency2") Currency currency2) throws ResourceNotFoundException {
+        logger.debug("rest getCurrencyRate({}, {})", currency1, currency2);
+
+        try {
+            return productService.getCurrencyRate(currency1, currency2);
+        } catch (IllegalArgumentException e){
             throw new ResourceNotFoundException();
         }
     }
