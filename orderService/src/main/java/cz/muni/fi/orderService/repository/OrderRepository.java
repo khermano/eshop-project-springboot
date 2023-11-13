@@ -13,5 +13,5 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 	List<Order> findByState(OrderState state);
 
 	@Query(value = "SELECT o FROM Order o WHERE o.state = :state AND  o.created BETWEEN :startDate AND :endDate")
-	List<Order> getOrdersCreatedBetween(Date start, Date end, OrderState state);
+	List<Order> getOrdersCreatedBetween(Date startDate, Date endDate, OrderState state);
 }
