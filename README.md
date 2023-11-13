@@ -14,3 +14,8 @@
 - `cd productService`
 - `mvn clean install`
 - `mvn spring-boot:run`
+
+***Run orderService:***
+- `cd orderService`
+- `mvn clean install`
+- `mvn spring-boot:run`

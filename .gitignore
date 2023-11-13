@@ -1,12 +1,15 @@
 userService/HELP.md
 categoryService/HELP.md
 productService/HELP.md
+orderService/HELP.md
 userService/target/
 categoryService/target/
 productService/target/
+orderService/target
 !userService/.mvn/wrapper/maven-wrapper.jar
 !categoryService/.mvn/wrapper/maven-wrapper.jar
 !productService/.mvn/wrapper/maven-wrapper.jar
+!orderService/.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
 
