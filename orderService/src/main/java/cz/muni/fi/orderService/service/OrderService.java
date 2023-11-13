@@ -4,6 +4,7 @@ import cz.muni.fi.orderService.dto.PriceDTO;
 import cz.muni.fi.orderService.entity.Order;
 import cz.muni.fi.orderService.enums.Currency;
 import cz.muni.fi.orderService.enums.OrderState;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -23,5 +24,5 @@ public interface OrderService {
 
 	void cancelOrder(Order order);
 
-	PriceDTO getTotalPrice(long orderId, Currency currency);
+	PriceDTO getTotalPrice(long orderId, Currency currency) throws IOException;
 }
