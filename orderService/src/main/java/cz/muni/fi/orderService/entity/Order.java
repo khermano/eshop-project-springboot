@@ -1,9 +1,16 @@
 package cz.muni.fi.orderService.entity;
 
-import cz.fi.muni.pa165.enums.OrderState;
-
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
+import cz.muni.fi.orderService.enums.OrderState;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
+import jakarta.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -15,14 +22,13 @@ public class Order {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
-	
-	@ManyToOne(optional=false)
+
 	@NotNull
-	private User user;
+	private Long userId;
 	
 	@OneToMany
 	@NotNull
-	private List<OrderItem> orderItems = new ArrayList<OrderItem>();
+	private List<OrderItem> orderItems = new ArrayList<>();
 		
 	@NotNull
 	@Temporal(TemporalType.TIMESTAMP)
@@ -39,12 +45,12 @@ public class Order {
 	public Order() {
 	}
 	
-	public User getUser() {
-		return user;
+	public Long getUserId() {
+		return userId;
 	}
 
-	public void setUser(User user) {
-		this.user = user;
+	public void setUserId(Long userId) {
+		this.userId = userId;
 	}
 
 	public List<OrderItem> getOrderItems() {
@@ -85,7 +91,7 @@ public class Order {
 		int result = 1;
 		result = prime * result + ((created == null) ? 0 : created.hashCode());
 		result = prime * result + ((state == null) ? 0 : state.hashCode());
-		result = prime * result + ((user == null) ? 0 : user.hashCode());
+		result = prime * result + ((userId == null) ? 0 : userId.hashCode());
 		return result;
 	}
 
@@ -105,14 +111,11 @@ public class Order {
 			return false;
 		if (state != other.state)
 			return false;
-		if (user == null) {
-			if (other.user != null)
+		if (userId == null) {
+			if (other.userId != null)
 				return false;
-		} else if (!user.equals(other.user))
+		} else if (!userId.equals(other.userId))
 			return false;
 		return true;
 	}
-
-	
-	
 }
