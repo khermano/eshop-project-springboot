@@ -1,10 +1,8 @@
 package cz.muni.fi.orderService.repository;
 
-import cz.fi.muni.pa165.entity.OrderItem;
+import cz.muni.fi.orderService.entity.OrderItem;
+import org.springframework.data.repository.CrudRepository;
 
-public interface OrderItemRepository {
-	public void create(OrderItem orderItem);
-	public OrderItem findById(Long id);
-	public void removeById(Long id);
-	public void delete(OrderItem orderItem);
+public interface OrderItemRepository extends CrudRepository<OrderItem, Long> {
+
 }
