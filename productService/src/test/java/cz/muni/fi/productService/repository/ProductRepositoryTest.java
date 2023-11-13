@@ -86,9 +86,9 @@ public class ProductRepositoryTest {
 
 	@Test
 	public void findByName() {
-		Assertions.assertEquals(productRepository.findByName("p").size(), 5);
-		Assertions.assertEquals(productRepository.findByName("asdf").size(), 0);
-		Assertions.assertEquals(productRepository.findByName("product3").size(), 1);
+		Assertions.assertEquals(productRepository.findByNameContaining("p").size(), 5);
+		Assertions.assertEquals(productRepository.findByNameContaining("asdf").size(), 0);
+		Assertions.assertEquals(productRepository.findByNameContaining("product3").size(), 1);
 	}
 
 	@Test
