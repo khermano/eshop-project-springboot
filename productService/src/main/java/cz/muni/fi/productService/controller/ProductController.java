@@ -201,4 +201,28 @@ public class ProductController {
             throw new InvalidParameterException();
         }
     }
+
+    /**
+     * Get product's current Price by identifier id
+     * curl -i -X GET
+     * http://localhost:8083/eshop-rest/products/2/currentPrice
+     *
+     * (This method is not from the original project, it needed to be created for the
+     * OrderService's getTotalPrice method, so the original functionality stays)
+     *
+     * @param id identifier for a product
+     * @return current Price of Product with given id
+     * @throws ResourceNotFoundException if product with given id does not exist
+     */
+    @RequestMapping(value = "/{id}/currentPrice", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public final Price getProductPriceByProductId(@PathVariable("id") long id) throws ResourceNotFoundException {
+        logger.debug("rest getProductPriceByProductId({})", id);
+
+        Optional<Product> product = productRepository.findById(id);
+        if (product.isPresent()) {
+            return product.get().getCurrentPrice();
+        } else {
+            throw new ResourceNotFoundException();
+        }
+    }
 }
