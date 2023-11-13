@@ -70,7 +70,7 @@ public class CategoryController {
      * http://localhost:8082/eshop-rest/categories/create
      *
      * (This method is not from the original project, it needed to be created for the
-     * ProductController's addCategory method, so the original functionality stays)
+     * ProductService's addCategory method, so the original functionality stays)
      *
      * @param categoryInfo Category with required fields for creation
      * @return the created category
