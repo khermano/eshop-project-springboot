@@ -117,14 +117,14 @@ public class ProductServiceImpl implements ProductService {
 	@Override
 	public void addCategory(Long productId, CategoryDTO category) throws IOException {
 		Long categoryId = category.getId();
+		Optional<Product> product = productRepository.findById(productId);
 
 		URL url = new URL("http://localhost:8082/eshop-rest/categories/" + categoryId.intValue());
 		HttpURLConnection con = createConnection(url, HttpMethod.GET.name());
 
-		Optional<Product> product = productRepository.findById(productId);
-
 		if (product.isPresent() && (product.get().getCategoriesId().contains(categoryId)
 				|| con.getResponseCode() == HttpServletResponse.SC_OK)) {
+			con.disconnect();
 			throw new EshopServiceException(
 					"Product already contains this category. Product: "
 							+ product.get().getId() + ", categoryId: "
@@ -138,14 +138,18 @@ public class ProductServiceImpl implements ProductService {
 			try(OutputStream os = con.getOutputStream()) {
 				byte[] input = jsonInputString.getBytes(StandardCharsets.UTF_8);
 				os.write(input, 0, input.length);
+			} catch (Exception e) {
+				con.disconnect();
 			}
 
 			if (con.getResponseCode() != HttpServletResponse.SC_OK) {
+				con.disconnect();
 				throw new InvalidParameterException();
 			}
 
 			product.get().addCategoryId(categoryId);
 			productRepository.save(product.get());
+			con.disconnect();
 		}
 	}
 
