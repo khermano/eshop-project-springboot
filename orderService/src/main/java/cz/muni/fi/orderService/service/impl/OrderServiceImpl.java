@@ -139,14 +139,12 @@ public class OrderServiceImpl implements OrderService {
 		String inputLine;
 		StringBuilder content;
 
-		try {
-			BufferedReader in = new BufferedReader(
-					new InputStreamReader(con.getInputStream()));
+		try(BufferedReader in = new BufferedReader(
+				new InputStreamReader(con.getInputStream()))) {
 			content = new StringBuilder();
 			while ((inputLine = in.readLine()) != null) {
 				content.append(inputLine);
 			}
-			in.close();
 		} catch (Exception e) {
 			throw new EshopServiceException("Can't read response");
 		} finally {
