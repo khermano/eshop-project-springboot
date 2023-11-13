@@ -1,6 +1,10 @@
 package cz.muni.fi.orderService.entity;
 
-import javax.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name="ORDER_ITEM")
@@ -9,23 +13,9 @@ public class OrderItem {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
 
-	@OneToOne
-	private Product product;
+	private Long productId;
 		
 	private Integer amount;
-
-	@OneToOne
-	@JoinTable(name="ORDER_ITEM_PRICE")
-	private Price pricePerItem;
-	
-	
-	public Price getPricePerItem() {
-		return pricePerItem;
-	}
-
-	public void setPricePerItem(Price pricePerItem) {
-		this.pricePerItem = pricePerItem;
-	}
 
 	public Long getId() {
 		return id;
@@ -35,12 +25,12 @@ public class OrderItem {
 		this.id = id;
 	}
 
-	public Product getProduct() {
-		return product;
+	public Long getProductId() {
+		return productId;
 	}
 
-	public void setProduct(Product product) {
-		this.product = product;
+	public void setProductId(Long productId) {
+		this.productId = productId;
 	}
 
 	public Integer getAmount() {
@@ -57,7 +47,7 @@ public class OrderItem {
 		int result = 1;
 		result = prime * result + ((amount == null) ? 0 : amount.hashCode());
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
-		result = prime * result + ((product == null) ? 0 : product.hashCode());
+		result = prime * result + ((productId == null) ? 0 : productId.hashCode());
 		return result;
 	}
 
@@ -80,13 +70,11 @@ public class OrderItem {
 				return false;
 		} else if (!id.equals(other.id))
 			return false;
-		if (product == null) {
-			if (other.product != null)
+		if (productId == null) {
+			if (other.productId != null)
 				return false;
-		} else if (!product.equals(other.product))
+		} else if (!productId.equals(other.productId))
 			return false;
 		return true;
 	}
-
-	
 }
