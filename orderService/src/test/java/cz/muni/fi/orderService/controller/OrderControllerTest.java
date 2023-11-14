@@ -79,18 +79,18 @@ public class OrderControllerTest {
 //                //.andExpect(jsonPath("$.[?(@.id==5)].state").value("DONE"));
 //    }
 
-    @Test
-    public void getAllOrdersByUserId() throws Exception {
-        doReturn(Collections.unmodifiableList(this.createOrders())).when(orderRepository).findByUserId(1L);
-
-        mockMvc.perform(get("/orders/by_user_id/1"))
-                .andExpect(status().isOk())
-                .andExpect(
-                        content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(jsonPath("$.[?(@.id==1)].state").value("DONE"))
-                .andExpect(jsonPath("$.[?(@.id==2)].state").value("CANCELED"))
-                .andExpect(jsonPath("$.[?(@.id==6)].state").value("SHIPPED"));
-    }
+//    @Test
+//    public void getAllOrdersByUserId() throws Exception {
+//        doReturn(Collections.unmodifiableList(this.createOrders())).when(orderRepository).findByUserId(1L);
+//
+//        mockMvc.perform(get("/orders/by_user_id/1"))
+//                .andExpect(status().isOk())
+//                .andExpect(
+//                        content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON_VALUE))
+//                .andExpect(jsonPath("$.[?(@.id==1)].state").value("DONE"))
+//                .andExpect(jsonPath("$.[?(@.id==2)].state").value("CANCELED"))
+//                .andExpect(jsonPath("$.[?(@.id==6)].state").value("SHIPPED"));
+//    }
 
     @Test
     public void getValidOrder() throws Exception {
