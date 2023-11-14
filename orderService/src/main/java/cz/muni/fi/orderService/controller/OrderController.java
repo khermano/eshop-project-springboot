@@ -1,7 +1,6 @@
 package cz.muni.fi.orderService.controller;
 
 import cz.muni.fi.orderService.entity.Order;
-import cz.muni.fi.orderService.entity.OrderItem;
 import cz.muni.fi.orderService.enums.OrderState;
 import cz.muni.fi.orderService.exception.InvalidParameterException;
 import cz.muni.fi.orderService.exception.ResourceNotFoundException;
@@ -18,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -77,15 +75,18 @@ public class OrderController {
     }
 
     /**
-     * 
-     * @param userId
-     * @return
-     * @throws ResourceNotFoundException
+     * Getting all the orders created by user given by the ID
+     *
+     * Be aware that userService must be running!
+     *
+     * @param userId ID of user who created orders
+     * @return list of Orders by given parameter
+     * @throws ResourceNotFoundException if userService not returns user by given ID, or we can't get orders from DB
+     * @throws IOException when there is an error trying to call userService
      */
     @RequestMapping(value = "by_user_id/{user_id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public final List<Order> getOrdersByUserId(@PathVariable("user_id") long userId) throws ResourceNotFoundException, IOException {
         logger.debug("rest getOrderByUserId({})", userId);
-
 
         URL url = new URL("http://localhost:8081/eshop-rest/users/" + userId);
         HttpURLConnection con = createConnection(url, HttpMethod.GET.name());
@@ -94,6 +95,7 @@ public class OrderController {
             throw new ResourceNotFoundException();
         }
         con.disconnect();
+
         List<Order> orders = orderRepository.findByUserId(userId);
         if (orders == null){
             throw new ResourceNotFoundException();
@@ -102,10 +104,11 @@ public class OrderController {
     }
 
     /**
-     * 
-     * @param id
-     * @return
-     * @throws ResourceNotFoundException
+     * Get Order by identifier id
+     *
+     * @param id identifier for an order
+     * @return Order with given id
+     * @throws ResourceNotFoundException if order with given id does not exist
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public final Order getOrder(@PathVariable("id") long id) throws ResourceNotFoundException {
@@ -122,13 +125,16 @@ public class OrderController {
     /**
      * Perform one action on the order
      * Either cancelling, shipping or finishing the order
-     * @param orderId
+     *
+     * @param orderId identifier for an order
      * @param action one of CANCEL, SHIP, FINISH
-     * @return
-     * @throws ResourceNotFoundException
+     * @return Order on which action was performed
+     * @throws ResourceNotFoundException if we can get order with given id before or after action
+     * @throws InvalidParameterException if invalid action provided
      */
     @RequestMapping(value = "{order_id}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-    public final Order shipOrder(@PathVariable("order_id") long orderId, @RequestParam("action") String action) throws  ResourceNotFoundException{
+    public final Order shipOrder(@PathVariable("order_id") long orderId, @RequestParam("action") String action)
+            throws ResourceNotFoundException, InvalidParameterException {
         logger.debug("rest shipOrder({})", orderId);
 
         Optional<Order> order = orderRepository.findById(orderId);
