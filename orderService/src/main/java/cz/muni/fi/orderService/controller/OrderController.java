@@ -7,9 +7,11 @@ import cz.muni.fi.orderService.exception.InvalidParameterException;
 import cz.muni.fi.orderService.exception.ResourceNotFoundException;
 import cz.muni.fi.orderService.repository.OrderRepository;
 import cz.muni.fi.orderService.service.OrderService;
+import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,8 +19,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Arrays;
-import java.util.Calendar;
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.List;
 import java.util.Optional;
 
@@ -44,13 +47,16 @@ public class OrderController {
      * http://localhost:8084/eshop-rest/orders?status=ALL
      * (curl -i -X GET http://localhost:8084/eshop-rest/orders?status=ALL&last_week=true)
      * 
-     * @param status 
-     * @param lastWeek true if considering only orders from last week
-     * @return list of OrderDTOs
+     * @param status can be {ALL, RECEIVED, CANCELED, SHIPPED, DONE}
+     *               defines orders with StateOrder (RECEIVED, CANCELED, SHIPPED, DONE) or ALL orders
+     * @param lastWeek if true we consider only orders from last week
+     * @return list of Orders by given parameters
+     * @throws InvalidParameterException if invalid status provided
      */
     @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public final List<Order> getOrders(@RequestParam("status") String status,
-                                       @RequestParam(value = "last_week", required = false, defaultValue = "false") boolean lastWeek) {
+                                       @RequestParam(value = "last_week", required = false, defaultValue = "false")
+                                       boolean lastWeek) throws InvalidParameterException {
         logger.debug("rest getOrders({},{})", lastWeek, status);
 
         if (status.equalsIgnoreCase("ALL")) {
@@ -77,15 +83,22 @@ public class OrderController {
      * @throws ResourceNotFoundException
      */
     @RequestMapping(value = "by_user_id/{user_id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public final List<Order> getOrdersByUserId(@PathVariable("user_id") long userId) throws ResourceNotFoundException {
+    public final List<Order> getOrdersByUserId(@PathVariable("user_id") long userId) throws ResourceNotFoundException, IOException {
         logger.debug("rest getOrderByUserId({})", userId);
 
-            List<Order> orders = orderRepository.findByUserId(userId);
-            if (orders == null){
-                    throw new ResourceNotFoundException();
-            }       
-            return orders;
 
+        URL url = new URL("http://localhost:8081/eshop-rest/users/" + userId);
+        HttpURLConnection con = createConnection(url, HttpMethod.GET.name());
+        if (con.getResponseCode() != HttpServletResponse.SC_OK) {
+            con.disconnect();
+            throw new ResourceNotFoundException();
+        }
+        con.disconnect();
+        List<Order> orders = orderRepository.findByUserId(userId);
+        if (orders == null){
+            throw new ResourceNotFoundException();
+        }
+        return orders;
     }
 
     /**
@@ -139,5 +152,11 @@ public class OrderController {
         } else {
             throw new ResourceNotFoundException();
         }
+    }
+
+    private HttpURLConnection createConnection(URL url, String requestMethod) throws IOException {
+        HttpURLConnection con = (HttpURLConnection) url.openConnection();
+        con.setRequestMethod(requestMethod);
+        return con;
     }
 }
