@@ -60,24 +60,18 @@ public class OrderControllerTest {
                 .andExpect(jsonPath("$.[?(@.id==6)].state").value("SHIPPED"));
     }
 
-//    @Test
-//    public void getAllOrdersByState() throws Exception {
-//        List<Order> orders = Arrays.asList(this.createOrders().get(0).get(), this.createOrders().get(5).get());
-//        //List<Order> orders = new ArrayList<>(this.createOrders().get(0).get());
-//        /*this.createOrders().stream()
-//           .filter(o ->
-//               o.get().getState() == OrderState.DONE
-//           ).forEach(o -> orders.add(o.get()));*/
-//
-//        doReturn(orders).when(orderRepository).findByState(OrderState.DONE);
-//
-//        mockMvc.perform(get("/orders").param("status", "ALL"))
-//                .andExpect(status().isOk())
-//                .andExpect(
-//                        content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON_VALUE))
-//                .andExpect(jsonPath("$.[?(@.id==1)].state").value("DONE"));
-//                //.andExpect(jsonPath("$.[?(@.id==5)].state").value("DONE"));
-//    }
+    @Test
+    public void getAllOrdersByState() throws Exception {
+        List<Order> orders = Arrays.asList(this.createOrders().get(0).get(), this.createOrders().get(5).get());
+
+        doReturn(orders).when(orderRepository).findByState(OrderState.DONE);
+
+        mockMvc.perform(get("/orders").param("status", "DONE"))
+                .andExpect(status().isOk())
+                .andExpect(
+                        content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(jsonPath("$.[?(@.id==1)].state").value("DONE"));
+    }
 
 //    @Test
 //    public void getAllOrdersByUserId() throws Exception {
