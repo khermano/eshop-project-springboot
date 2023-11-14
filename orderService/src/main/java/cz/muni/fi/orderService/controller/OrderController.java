@@ -1,32 +1,37 @@
 package cz.muni.fi.orderService.controller;
 
-import cz.fi.muni.pa165.dto.OrderDTO;
-import cz.fi.muni.pa165.enums.OrderState;
-import cz.fi.muni.pa165.facade.OrderFacade;
-import cz.fi.muni.pa165.rest.ApiUris;
-import cz.fi.muni.pa165.rest.exceptions.InvalidParameterException;
-import cz.fi.muni.pa165.rest.exceptions.ResourceNotFoundException;
+import cz.muni.fi.orderService.entity.Order;
+import cz.muni.fi.orderService.enums.OrderState;
+import cz.muni.fi.orderService.exception.InvalidParameterException;
+import cz.muni.fi.orderService.exception.ResourceNotFoundException;
+import cz.muni.fi.orderService.repository.OrderRepository;
+import cz.muni.fi.orderService.service.OrderService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.*;
-
-import javax.inject.Inject;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * REST Controller for Orders
- * 
- * @author brossi
+ *
  */
 @RestController
-@RequestMapping(ApiUris.ROOT_URI_ORDERS)
+@RequestMapping("/orders")
 public class OrderController {
-    
-    final static Logger logger = LoggerFactory.getLogger(OrdersController.class);
+    final static Logger logger = LoggerFactory.getLogger(OrderController.class);
 
-    @Inject
-    private OrderFacade orderFacade;
+    @Autowired
+    private OrderService orderService;
+
+    @Autowired
+    private OrderRepository orderRepository;
 
     /**
      *
@@ -37,14 +42,13 @@ public class OrderController {
      * @return list of OrderDTOs
      */
     @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public final List<OrderDTO> getOrders(@RequestParam("status") String status,
-            @RequestParam(value = "last_week", required = false, defaultValue = "false") boolean lastWeek) {
-        
+    public final List<Order> getOrders(@RequestParam("status") String status,
+                                       @RequestParam(value = "last_week", required = false, defaultValue = "false") boolean lastWeek) {
         logger.debug("rest getOrders({},{})", lastWeek, status);
 
 
         if (status.equalsIgnoreCase("ALL")) {
-            return orderFacade.getAllOrders();
+            return orderRepository.findAll();
         }
 
         if (!OrderState.contains(status)) {
@@ -54,27 +58,27 @@ public class OrderController {
         final OrderState os = OrderState.valueOf(status);
 
         if (lastWeek) {
-            return orderFacade.getAllOrdersLastWeek(os);
+            return orderService.getAllOrdersLastWeek(os);
         } else {
-            return orderFacade.getOrdersByState(os);
+            return orderRepository.findByState(os);
         }
     }
 
     /**
      * 
      * @param userId
-     * @return 
+     * @return
+     * @throws ResourceNotFoundException
      */
     @RequestMapping(value = "by_user_id/{user_id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public final List<OrderDTO> getOrdersByUserId(@PathVariable("user_id") long userId) {
-        
+    public final List<Order> getOrdersByUserId(@PathVariable("user_id") long userId) throws ResourceNotFoundException {
         logger.debug("rest getOrderByUserId({})", userId);
 
-            List<OrderDTO> orderDTOs = orderFacade.getOrdersByUser(userId);
-            if (orderDTOs == null){
+            List<Order> orders = orderRepository.findByUserId(userId);
+            if (orders == null){
                     throw new ResourceNotFoundException();
             }       
-            return orderDTOs;
+            return orders;
 
     }
 
@@ -82,20 +86,18 @@ public class OrderController {
      * 
      * @param id
      * @return
-     * @throws Exception 
+     * @throws ResourceNotFoundException
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public final OrderDTO getOrder(@PathVariable("id") long id) throws Exception {
-       
+    public final Order getOrder(@PathVariable("id") long id) throws ResourceNotFoundException {
         logger.debug("rest getOrder({})", id);
 
-        OrderDTO orderDTO = orderFacade.getOrderById(id);
-        if (orderDTO == null) {
+        Optional<Order> order = orderRepository.findById(id);
+        if (order.isPresent()) {
+            return order.get();
+        } else {
             throw new ResourceNotFoundException();
         }
-
-        return orderDTO;
-    
     }
 
     /**
@@ -103,24 +105,33 @@ public class OrderController {
      * Either cancelling, shipping or finishing the order
      * @param orderId
      * @param action one of CANCEL, SHIP, FINISH
-     * @return 
+     * @return
+     * @throws ResourceNotFoundException
      */
     @RequestMapping(value = "{order_id}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-    public final OrderDTO shipOrder(@PathVariable("order_id") long orderId, @RequestParam("action") String action) {
-        
+    public final Order shipOrder(@PathVariable("order_id") long orderId, @RequestParam("action") String action) throws  ResourceNotFoundException{
         logger.debug("rest shipOrder({})", orderId);
 
+        Optional<Order> order = orderRepository.findById(orderId);
+        if (order.isEmpty()) {
+            throw new ResourceNotFoundException();
+        }
+
         if (action.equalsIgnoreCase("CANCEL")) {
-            orderFacade.cancelOrder(orderId);
+            orderService.cancelOrder(order.get());
         } else if (action.equalsIgnoreCase("SHIP")) {
-            orderFacade.shipOrder(orderId);
+            orderService.shipOrder(order.get());
         } else if (action.equalsIgnoreCase("FINISH")) {
-            orderFacade.finishOrder(orderId);
+            orderService.finishOrder(order.get());
         } else {
             throw new InvalidParameterException();
         }
 
-        return orderFacade.getOrderById(orderId);
+        order = orderRepository.findById(orderId);
+        if (order.isPresent()) {
+            return order.get();
+        } else {
+            throw new ResourceNotFoundException();
+        }
     }
-
 }
