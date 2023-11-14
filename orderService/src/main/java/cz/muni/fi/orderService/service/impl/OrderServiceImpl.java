@@ -49,37 +49,6 @@ public class OrderServiceImpl implements OrderService {
     }
 
 	@Override
-	public PriceDTO getTotalPrice(long orderId, Currency currency) throws IOException {
-		Optional<Order> order = orderRepository.findById(orderId);
-		if (order.isEmpty()) {
-			throw new EshopServiceException("Order with given id does not exist"); //TODO toto je pridane, skontroluj ci to niekede vyhadzuje
-		}
-        BigDecimal totalPrice = BigDecimal.ZERO;
-        for (OrderItem item : order.get().getOrderItems()) {
-
-			URL url = new URL("http://localhost:8083/eshop-rest/products/" + item.getProductId() + "/currentPrice");
-			HttpURLConnection con = createConnection(url);
-			String response = readResponse(con);
-			PriceDTO pricePerItem = getPriceFromResponse(response);
-
-            BigDecimal itemPrice = pricePerItem.getValue().multiply(new BigDecimal(item.getAmount()));
-            Currency itemCurrency = pricePerItem.getCurrency();
-            if(itemCurrency != currency) {
-				url = new URL("http://localhost:8083/eshop-rest/products/getCurrencyRate/" + itemCurrency + "/" + currency);
-				con = createConnection(url);
-				response = readResponse(con);
-				BigDecimal currencyRate = new BigDecimal(response);
-                itemPrice = itemPrice.multiply(currencyRate);
-            }
-            totalPrice = totalPrice.add(itemPrice);
-        }
-        PriceDTO price = new PriceDTO();
-        price.setCurrency(currency);
-        price.setValue(totalPrice);
-        return price;
-    }
-
-	@Override
 	public List<Order> getAllOrdersLastWeek(OrderState state) {
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(new Date());

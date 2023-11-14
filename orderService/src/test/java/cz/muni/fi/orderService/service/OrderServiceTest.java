@@ -81,29 +81,4 @@ public class OrderServiceTest {
         orderService.cancelOrder(orderReceived);
         Assertions.assertEquals(orderReceived.getState(), OrderState.CANCELED);
     }
-
-    //TODO oprav tento test!!!
-//    @Test
-//    public void testGetTotalPrice() {
-//        Order order = new Order();
-//        order.setId(1l);
-//        order.addOrderItem(orderitem(2, 3, Currency.CZK));
-//        order.addOrderItem(orderitem(5, 7, Currency.EUR));
-//        when(orderDao.findById(order.getId())).thenReturn(order);
-//        when(exchangeService.getCurrencyRate(Currency.EUR, Currency.CZK)).thenReturn(new BigDecimal(27));
-//        Price totalPrice = orderService.getTotalPrice(1l, Currency.CZK);
-//        Price expected = new Price();
-//        expected.setCurrency(Currency.CZK);
-//        expected.setValue(new BigDecimal(2 * 3 + 5 * 7 * 27));
-//        Assert.assertEquals(totalPrice, expected, "order total price is wrong");
-//    }
-
-//    private static OrderItem orderitem(int amount, int price, Currency currency) {
-//        OrderItem item = new OrderItem();
-//        item.setAmount(amount);
-//        PriceDTO p = new PriceDTO();
-//        p.setValue(new BigDecimal(price));
-//        p.setCurrency(currency);
-//        return item;
-//    }
 }
