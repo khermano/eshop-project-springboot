@@ -1,6 +1,7 @@
 package cz.muni.fi.orderService.controller;
 
 import cz.muni.fi.orderService.entity.Order;
+import cz.muni.fi.orderService.entity.OrderItem;
 import cz.muni.fi.orderService.enums.OrderState;
 import cz.muni.fi.orderService.exception.InvalidParameterException;
 import cz.muni.fi.orderService.exception.ResourceNotFoundException;
@@ -15,6 +16,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,8 +38,11 @@ public class OrderController {
     private OrderRepository orderRepository;
 
     /**
-     *
      * Getting all the orders according to the given parameters
+     *
+     * curl -i -X GET
+     * http://localhost:8084/eshop-rest/orders?status=ALL
+     * (curl -i -X GET http://localhost:8084/eshop-rest/orders?status=ALL&last_week=true)
      * 
      * @param status 
      * @param lastWeek true if considering only orders from last week
@@ -45,7 +52,6 @@ public class OrderController {
     public final List<Order> getOrders(@RequestParam("status") String status,
                                        @RequestParam(value = "last_week", required = false, defaultValue = "false") boolean lastWeek) {
         logger.debug("rest getOrders({},{})", lastWeek, status);
-
 
         if (status.equalsIgnoreCase("ALL")) {
             return orderRepository.findAll();
