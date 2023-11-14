@@ -93,7 +93,8 @@ public class OrderController {
         logger.debug("rest getOrderByUserId({})", userId);
 
         URL url = new URL("http://localhost:8081/eshop-rest/users/" + userId);
-        HttpURLConnection con = createConnection(url, HttpMethod.GET.name());
+        HttpURLConnection con = (HttpURLConnection) url.openConnection();
+        con.setRequestMethod(HttpMethod.GET.name());
         if (con.getResponseCode() != HttpServletResponse.SC_OK) {
             con.disconnect();
             throw new ResourceNotFoundException();
@@ -169,11 +170,5 @@ public class OrderController {
         } else {
             throw new ResourceNotFoundException();
         }
-    }
-
-    private HttpURLConnection createConnection(URL url, String requestMethod) throws IOException {
-        HttpURLConnection con = (HttpURLConnection) url.openConnection();
-        con.setRequestMethod(requestMethod);
-        return con;
     }
 }

@@ -11,15 +11,17 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.*;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -73,18 +75,27 @@ public class OrderControllerTest {
                 .andExpect(jsonPath("$.[?(@.id==1)].state").value("DONE"));
     }
 
-//    @Test
-//    public void getAllOrdersByUserId() throws Exception {
-//        doReturn(Collections.unmodifiableList(this.createOrders())).when(orderRepository).findByUserId(1L);
+    @Test
+    public void getAllOrdersByUserId() throws Exception {
+//        HttpURLConnection mockHttpURLConnection = mock(HttpURLConnection.class);
+//        URL mockURL = mock(URL.class);
+////        when(mockURL.createConnection(mockURL, HttpMethod.GET.name())).thenReturn(mockHttpURLConnection);
+//        when(mockURL.openConnection()).thenReturn(mockHttpURLConnection);
+////        doNothing().when(mockHttpURLConnection).setRequestMethod(any());
 //
-//        mockMvc.perform(get("/orders/by_user_id/1"))
-//                .andExpect(status().isOk())
-//                .andExpect(
-//                        content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON_VALUE))
-//                .andExpect(jsonPath("$.[?(@.id==1)].state").value("DONE"))
-//                .andExpect(jsonPath("$.[?(@.id==2)].state").value("CANCELED"))
-//                .andExpect(jsonPath("$.[?(@.id==6)].state").value("SHIPPED"));
-//    }
+////        verify(mockHttpURLConnection).setRequestMethod(any());
+//        when(mockHttpURLConnection.getResponseCode()).thenReturn(HttpURLConnection.HTTP_OK);
+
+        doReturn(Collections.unmodifiableList(this.createOrders())).when(orderRepository).findByUserId(1L);
+
+        mockMvc.perform(get("/orders/by_user_id/1"))
+                .andExpect(status().isOk())
+                .andExpect(
+                        content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(jsonPath("$.[?(@.id==1)].state").value("DONE"))
+                .andExpect(jsonPath("$.[?(@.id==2)].state").value("CANCELED"))
+                .andExpect(jsonPath("$.[?(@.id==6)].state").value("SHIPPED"));
+    }
 
     @Test
     public void getValidOrder() throws Exception {
