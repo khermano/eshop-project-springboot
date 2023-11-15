@@ -3,6 +3,7 @@ package cz.muni.fi.productService.entity;
 import cz.muni.fi.productService.validation.AllOrNothing;
 import cz.muni.fi.productService.enums.Color;
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
@@ -53,6 +54,7 @@ public class Product {
 	@Temporal(TemporalType.DATE)
 	private Date addedDate;
 
+	@ElementCollection
 	private Set<Long> categoriesId = new HashSet<>();
 
 
