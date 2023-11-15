@@ -15,13 +15,17 @@ import cz.muni.fi.productService.service.ProductService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
@@ -33,7 +37,6 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/products")
 public class ProductController {
-
     final static Logger logger = LoggerFactory.getLogger(ProductController.class);
 
     @Autowired
@@ -52,11 +55,11 @@ public class ProductController {
      *
      * @return list of Products
      */
-    @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public final List<Product> getProducts() {
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    public final ResponseEntity<List<Product>> getProducts() {
         logger.debug("rest getProducts()");
 
-        return productRepository.findAll();
+        return new ResponseEntity<>(productRepository.findAll(), HttpStatus.OK);
     }
 
     /**
@@ -68,13 +71,13 @@ public class ProductController {
      * @return Product with given id
      * @throws ResourceNotFoundException if product with given id does not exist
      */
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public final Product getProduct(@PathVariable("id") long id) throws ResourceNotFoundException {
+    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public final ResponseEntity<Product> getProduct(@PathVariable("id") long id) throws ResourceNotFoundException {
         logger.debug("rest getProduct({})", id);
 
         Optional<Product> product = productRepository.findById(id);
         if (product.isPresent()) {
-            return product.get();
+            return new ResponseEntity<>(product.get(), HttpStatus.OK);
         } else {
             throw new ResourceNotFoundException();
         }
@@ -88,7 +91,7 @@ public class ProductController {
      * @param id identifier for product
      * @throws ResourceNotFoundException if for some reason we fail to delete product with given id
      */
-    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public final void deleteProduct(@PathVariable("id") long id) throws ResourceNotFoundException {
         logger.debug("rest deleteProduct({})", id);
 
@@ -110,9 +113,9 @@ public class ProductController {
      * @return the created product
      * @throws ResourceAlreadyExistingException if for some reason we fail to create product with given info
      */
-    @RequestMapping(value = "/create", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE,
+    @PostMapping(value = "/create", consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public final Product createProduct(@RequestBody ProductCreateDTO productInfo) throws ResourceAlreadyExistingException {
+    public final ResponseEntity<Product> createProduct(@RequestBody ProductCreateDTO productInfo) throws ResourceAlreadyExistingException {
         logger.debug("rest createProduct()");
 
         try {
@@ -130,7 +133,7 @@ public class ProductController {
             //add to category
             product.addCategoryId(productInfo.getCategoryId());
             //save product
-            return productService.createProduct(product);
+            return new ResponseEntity<>(productService.createProduct(product), HttpStatus.OK);
         } catch (Exception ex) {
             throw new ResourceAlreadyExistingException();
         }
@@ -147,9 +150,9 @@ public class ProductController {
      * @return the updated product
      * @throws InvalidParameterException if for some reason we fail to update product price with given info
      */
-    @RequestMapping(value = "/{id}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE,
+    @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public final Product changePrice(@PathVariable("id") long id, @RequestBody Price newPrice) throws InvalidParameterException {
+    public final ResponseEntity<Product> changePrice(@PathVariable("id") long id, @RequestBody Price newPrice) throws InvalidParameterException {
         logger.debug("rest changePrice({})", id);
 
         try {
@@ -162,7 +165,7 @@ public class ProductController {
             //needs fresh call from DB
             product = productRepository.findById(id);
             if (product.isPresent()) {
-                return product.get();
+                return new ResponseEntity<>(product.get(), HttpStatus.OK);
             } else {
                 throw new InvalidParameterException();
             }
@@ -183,15 +186,19 @@ public class ProductController {
      * @return the updated product as defined by ProductDTO
      * @throws InvalidParameterException if for some reason we fail to add new category to product
      */
-    @RequestMapping(value = "/{id}/categories", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE,
+    @PostMapping(value = "/{id}/categories", consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public final Product addCategory(@PathVariable("id") long id, @RequestBody CategoryDTO category) throws InvalidParameterException, IOException {
+    public final ResponseEntity<Product> addCategory(@PathVariable("id") long id, @RequestBody CategoryDTO category) throws InvalidParameterException {
         logger.debug("rest addCategory({})", id);
 
         try {
             productService.addCategory(id, category);
             Optional<Product> product = productRepository.findById(id);
-            return product.get();
+            if (product.isPresent()) {
+                return new ResponseEntity<>(product.get(), HttpStatus.OK);
+            } else {
+                throw new InvalidParameterException();
+            }
         } catch (Exception ex) {
             throw new InvalidParameterException();
         }
@@ -209,13 +216,13 @@ public class ProductController {
      * @return current Price of Product with given id
      * @throws ResourceNotFoundException if product with given id does not exist
      */
-    @RequestMapping(value = "/{id}/currentPrice", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public final Price getProductPriceByProductId(@PathVariable("id") long id) throws ResourceNotFoundException {
+    @GetMapping(value = "/{id}/currentPrice", produces = MediaType.APPLICATION_JSON_VALUE)
+    public final ResponseEntity<Price> getProductPriceByProductId(@PathVariable("id") long id) throws ResourceNotFoundException {
         logger.debug("rest getProductPriceByProductId({})", id);
 
         Optional<Product> product = productRepository.findById(id);
         if (product.isPresent()) {
-            return product.get().getCurrentPrice();
+            return new ResponseEntity<>(product.get().getCurrentPrice(), HttpStatus.OK);
         } else {
             throw new ResourceNotFoundException();
         }
@@ -234,12 +241,12 @@ public class ProductController {
      * @return currency rate for given pair
      * @throws ResourceNotFoundException if given currency pair doesn't exist
      */
-    @RequestMapping(value = "getCurrencyRate/{currency1}/{currency2}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public final BigDecimal getCurrencyRate(@PathVariable("currency1") Currency currency1, @PathVariable("currency2") Currency currency2) throws ResourceNotFoundException {
+    @GetMapping(value = "getCurrencyRate/{currency1}/{currency2}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public final ResponseEntity<BigDecimal> getCurrencyRate(@PathVariable("currency1") Currency currency1, @PathVariable("currency2") Currency currency2) throws ResourceNotFoundException {
         logger.debug("rest getCurrencyRate({}, {})", currency1, currency2);
 
         try {
-            return productService.getCurrencyRate(currency1, currency2);
+            return new ResponseEntity<>(productService.getCurrencyRate(currency1, currency2), HttpStatus.OK);
         } catch (IllegalArgumentException e){
             throw new ResourceNotFoundException();
         }
