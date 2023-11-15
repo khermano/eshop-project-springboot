@@ -11,10 +11,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import java.io.IOException;
@@ -53,14 +56,14 @@ public class OrderController {
      * @return list of Orders by given parameters
      * @throws InvalidParameterException if invalid status provided
      */
-    @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public final List<Order> getOrders(@RequestParam("status") String status,
-                                       @RequestParam(value = "last_week", required = false, defaultValue = "false")
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    public final ResponseEntity<List<Order>> getOrders(@RequestParam("status") String status,
+                                                      @RequestParam(value = "last_week", required = false, defaultValue = "false")
                                        boolean lastWeek) throws InvalidParameterException {
         logger.debug("rest getOrders({},{})", lastWeek, status);
 
         if (status.equalsIgnoreCase("ALL")) {
-            return orderRepository.findAll();
+            return new ResponseEntity<>(orderRepository.findAll(), HttpStatus.OK);
         }
 
         if (!OrderState.contains(status)) {
@@ -70,9 +73,9 @@ public class OrderController {
         final OrderState os = OrderState.valueOf(status);
 
         if (lastWeek) {
-            return orderService.getAllOrdersLastWeek(os);
+            return new ResponseEntity<>(orderService.getAllOrdersLastWeek(os), HttpStatus.OK);
         } else {
-            return orderRepository.findByState(os);
+            return new ResponseEntity<>(orderRepository.findByState(os), HttpStatus.OK);
         }
     }
 
@@ -88,8 +91,8 @@ public class OrderController {
      * @throws ResourceNotFoundException if userService not returns user by given ID, or we can't get orders from DB
      * @throws IOException when there is an error trying to call userService
      */
-    @RequestMapping(value = "by_user_id/{user_id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public final List<Order> getOrdersByUserId(@PathVariable("user_id") long userId) throws ResourceNotFoundException, IOException {
+    @GetMapping(value = "by_user_id/{user_id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public final ResponseEntity<List<Order>> getOrdersByUserId(@PathVariable("user_id") long userId) throws ResourceNotFoundException, IOException {
         logger.debug("rest getOrderByUserId({})", userId);
 
         URL url = new URL("http://localhost:8081/eshop-rest/users/" + userId);
@@ -105,7 +108,7 @@ public class OrderController {
         if (orders == null){
             throw new ResourceNotFoundException();
         }
-        return orders;
+        return new ResponseEntity<>(orders, HttpStatus.OK);
     }
 
     /**
@@ -117,13 +120,13 @@ public class OrderController {
      * @return Order with given id
      * @throws ResourceNotFoundException if order with given id does not exist
      */
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public final Order getOrder(@PathVariable("id") long id) throws ResourceNotFoundException {
+    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public final ResponseEntity<Order> getOrder(@PathVariable("id") long id) throws ResourceNotFoundException {
         logger.debug("rest getOrder({})", id);
 
         Optional<Order> order = orderRepository.findById(id);
         if (order.isPresent()) {
-            return order.get();
+            return new ResponseEntity<>(order.get(), HttpStatus.OK);
         } else {
             throw new ResourceNotFoundException();
         }
@@ -144,8 +147,8 @@ public class OrderController {
      * @throws ResourceNotFoundException if we can get order with given id before or after action
      * @throws InvalidParameterException if invalid action provided
      */
-    @RequestMapping(value = "{order_id}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-    public final Order shipOrder(@PathVariable("order_id") long orderId, @RequestParam("action") String action)
+    @PostMapping(value = "{order_id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public final ResponseEntity<Order> shipOrder(@PathVariable("order_id") long orderId, @RequestParam("action") String action)
             throws ResourceNotFoundException, InvalidParameterException {
         logger.debug("rest shipOrder({})", orderId);
 
@@ -165,10 +168,6 @@ public class OrderController {
         }
 
         order = orderRepository.findById(orderId);
-        if (order.isPresent()) {
-            return order.get();
-        } else {
-            throw new ResourceNotFoundException();
-        }
+        return order.map(value -> new ResponseEntity<>(value, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR));
     }
 }
