@@ -5,21 +5,17 @@ import cz.muni.fi.productService.entity.Price;
 import cz.muni.fi.productService.entity.Product;
 import cz.muni.fi.productService.enums.Currency;
 import cz.muni.fi.productService.exception.EshopServiceException;
-import cz.muni.fi.productService.exception.InvalidParameterException;
 import cz.muni.fi.productService.repository.PriceRepository;
 import cz.muni.fi.productService.repository.ProductRepository;
 import cz.muni.fi.productService.service.ProductService;
-import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.util.AbstractMap;
 import java.util.Date;
 import java.util.HashMap;
@@ -115,42 +111,18 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-	public void addCategory(Long productId, CategoryDTO category) throws IOException {
+	public void addCategory(Long productId, CategoryDTO category) {
 		Long categoryId = category.getId();
 		Optional<Product> product = productRepository.findById(productId);
 
-		URL url = new URL("http://localhost:8082/eshop-rest/categories/" + categoryId.intValue());
-		HttpURLConnection con = createConnection(url, HttpMethod.GET.name());
-
-		if (product.isPresent() && (product.get().getCategoriesId().contains(categoryId)
-				|| con.getResponseCode() == HttpServletResponse.SC_OK)) {
-			con.disconnect();
+		if (product.isPresent() && product.get().getCategoriesId().contains(categoryId)) {
 			throw new EshopServiceException(
 					"Product already contains this category. Product: "
-							+ product.get().getId() + ", categoryId: "
+							+ productId + ", category: "
 							+ categoryId);
 		}
-		else if (product.isPresent() && !product.get().getCategoriesId().contains(categoryId)
-				&& con.getResponseCode() == HttpServletResponse.SC_NOT_FOUND) {
-			url = new URL("http://localhost:8082/eshop-rest/categories/create");
-			con = createConnectionForPost(url);
-			String jsonInputString = "{\"id\":\"" + categoryId + "\", \"name\":\"" + category.getName() + "\"}";
-			try(OutputStream os = con.getOutputStream()) {
-				byte[] input = jsonInputString.getBytes(StandardCharsets.UTF_8);
-				os.write(input, 0, input.length);
-			} catch (Exception e) {
-				con.disconnect();
-			}
-
-			if (con.getResponseCode() != HttpServletResponse.SC_OK) {
-				con.disconnect();
-				throw new InvalidParameterException();
-			}
-
-			product.get().addCategoryId(categoryId);
-			productRepository.save(product.get());
-			con.disconnect();
-		}
+		product.get().addCategoryId(categoryId);
+		productRepository.save(product.get());
 	}
 
 	@Override

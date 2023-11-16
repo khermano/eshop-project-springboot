@@ -9,6 +9,7 @@ import cz.muni.fi.productService.exception.EshopServiceException;
 import cz.muni.fi.productService.exception.InvalidParameterException;
 import cz.muni.fi.productService.exception.ResourceAlreadyExistingException;
 import cz.muni.fi.productService.exception.ResourceNotFoundException;
+import cz.muni.fi.productService.feign.CategoryInterface;
 import cz.muni.fi.productService.repository.ProductRepository;
 import cz.muni.fi.productService.service.BeanMappingService;
 import cz.muni.fi.productService.service.ProductService;
@@ -16,6 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -47,6 +49,9 @@ public class ProductController {
 
     @Autowired
     private BeanMappingService beanMappingService;
+
+    @Autowired
+    private CategoryInterface categoryInterface;
 
     /**
      * Get list of Products
@@ -192,6 +197,9 @@ public class ProductController {
         logger.debug("rest addCategory({})", id);
 
         try {
+            if (categoryInterface.getCategory(category.getId()).getStatusCode() == HttpStatusCode.valueOf(200)) {
+
+            }
             productService.addCategory(id, category);
             Optional<Product> product = productRepository.findById(id);
             if (product.isPresent()) {
