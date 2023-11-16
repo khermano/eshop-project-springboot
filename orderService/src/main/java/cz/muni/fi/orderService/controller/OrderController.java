@@ -57,7 +57,7 @@ public class OrderController {
      * @throws InvalidParameterException if invalid status provided
      */
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public final ResponseEntity<List<Order>> getOrders(@RequestParam("status") String status,
+    public ResponseEntity<List<Order>> getOrders(@RequestParam("status") String status,
                                                       @RequestParam(value = "last_week", required = false, defaultValue = "false")
                                        boolean lastWeek) throws InvalidParameterException {
         logger.debug("rest getOrders({},{})", lastWeek, status);
@@ -91,7 +91,7 @@ public class OrderController {
      * @throws ResourceNotFoundException if userService not returns user by given ID, or we can't get orders from DB
      */
     @GetMapping(value = "by_user_id/{user_id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public final ResponseEntity<List<Order>> getOrdersByUserId(@PathVariable("user_id") long userId) throws ResourceNotFoundException {
+    public ResponseEntity<List<Order>> getOrdersByUserId(@PathVariable("user_id") long userId) throws ResourceNotFoundException {
         logger.debug("rest getOrderByUserId({})", userId);
 
         if (userInterface.getUser(userId).getStatusCode() == HttpStatusCode.valueOf(200)) {
@@ -115,7 +115,7 @@ public class OrderController {
      * @throws ResourceNotFoundException if order with given id does not exist
      */
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public final ResponseEntity<Order> getOrder(@PathVariable("id") long id) throws ResourceNotFoundException {
+    public ResponseEntity<Order> getOrder(@PathVariable("id") long id) throws ResourceNotFoundException {
         logger.debug("rest getOrder({})", id);
 
         Optional<Order> order = orderRepository.findById(id);
@@ -142,7 +142,7 @@ public class OrderController {
      * @throws InvalidParameterException if invalid action provided
      */
     @PostMapping(value = "{order_id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public final ResponseEntity<Order> shipOrder(@PathVariable("order_id") long orderId, @RequestParam("action") String action)
+    public ResponseEntity<Order> shipOrder(@PathVariable("order_id") long orderId, @RequestParam("action") String action)
             throws ResourceNotFoundException, InvalidParameterException {
         logger.debug("rest shipOrder({})", orderId);
 

@@ -39,7 +39,7 @@ public class CategoryController {
      * @return list of Categories
      */
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public final ResponseEntity<List<Category>> getCategories() {
+    public ResponseEntity<List<Category>> getCategories() {
         logger.debug("rest getCategories()");
 
         return new ResponseEntity<>(categoryRepository.findAll(), HttpStatus.OK);
@@ -55,7 +55,7 @@ public class CategoryController {
      * @throws ResourceNotFoundException if category with given ID does not exist
      */
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public final ResponseEntity<Category> getCategory(@PathVariable("id") long id) throws ResourceNotFoundException {
+    public ResponseEntity<Category> getCategory(@PathVariable("id") long id) throws ResourceNotFoundException {
         logger.debug("rest getCategory({})", id);
 
         Optional<Category> category = categoryRepository.findById(id);
@@ -81,7 +81,7 @@ public class CategoryController {
      */
     @PostMapping(value = "/create", consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public final ResponseEntity<Category> createCategory(@RequestBody Category categoryInfo) throws ResourceAlreadyExistingException {
+    public ResponseEntity<Category> createCategory(@RequestBody Category categoryInfo) throws ResourceAlreadyExistingException {
         logger.debug("rest createCategory()");
 
         Optional<Category> category = categoryRepository.findById(categoryInfo.getId());

@@ -56,7 +56,7 @@ public class ProductController {
      * @return list of Products
      */
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public final ResponseEntity<List<Product>> getProducts() {
+    public ResponseEntity<List<Product>> getProducts() {
         logger.debug("rest getProducts()");
 
         return new ResponseEntity<>(productRepository.findAll(), HttpStatus.OK);
@@ -72,7 +72,7 @@ public class ProductController {
      * @throws ResourceNotFoundException if product with given id does not exist
      */
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public final ResponseEntity<Product> getProduct(@PathVariable("id") long id) throws ResourceNotFoundException {
+    public ResponseEntity<Product> getProduct(@PathVariable("id") long id) throws ResourceNotFoundException {
         logger.debug("rest getProduct({})", id);
 
         Optional<Product> product = productRepository.findById(id);
@@ -92,7 +92,7 @@ public class ProductController {
      * @throws ResourceNotFoundException if for some reason we fail to delete product with given id
      */
     @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public final void deleteProduct(@PathVariable("id") long id) throws ResourceNotFoundException {
+    public void deleteProduct(@PathVariable("id") long id) throws ResourceNotFoundException {
         logger.debug("rest deleteProduct({})", id);
 
         try {
@@ -115,7 +115,7 @@ public class ProductController {
      */
     @PostMapping(value = "/create", consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public final ResponseEntity<Product> createProduct(@RequestBody ProductCreateDTO productInfo) throws ResourceAlreadyExistingException {
+    public ResponseEntity<Product> createProduct(@RequestBody ProductCreateDTO productInfo) throws ResourceAlreadyExistingException {
         logger.debug("rest createProduct()");
 
         try {
@@ -152,7 +152,7 @@ public class ProductController {
      */
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public final ResponseEntity<Product> changePrice(@PathVariable("id") long id, @RequestBody Price newPrice) throws InvalidParameterException {
+    public ResponseEntity<Product> changePrice(@PathVariable("id") long id, @RequestBody Price newPrice) throws InvalidParameterException {
         logger.debug("rest changePrice({})", id);
 
         try {
@@ -188,7 +188,7 @@ public class ProductController {
      */
     @PostMapping(value = "/{id}/categories", consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public final ResponseEntity<Product> addCategory(@PathVariable("id") long id, @RequestBody CategoryDTO category) throws InvalidParameterException {
+    public ResponseEntity<Product> addCategory(@PathVariable("id") long id, @RequestBody CategoryDTO category) throws InvalidParameterException {
         logger.debug("rest addCategory({})", id);
 
         try {
@@ -217,7 +217,7 @@ public class ProductController {
      * @throws ResourceNotFoundException if product with given id does not exist
      */
     @GetMapping(value = "/{id}/currentPrice", produces = MediaType.APPLICATION_JSON_VALUE)
-    public final ResponseEntity<Price> getProductPriceByProductId(@PathVariable("id") long id) throws ResourceNotFoundException {
+    public ResponseEntity<Price> getProductPriceByProductId(@PathVariable("id") long id) throws ResourceNotFoundException {
         logger.debug("rest getProductPriceByProductId({})", id);
 
         Optional<Product> product = productRepository.findById(id);
@@ -242,7 +242,7 @@ public class ProductController {
      * @throws ResourceNotFoundException if given currency pair doesn't exist
      */
     @GetMapping(value = "getCurrencyRate/{currency1}/{currency2}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public final ResponseEntity<BigDecimal> getCurrencyRate(@PathVariable("currency1") Currency currency1, @PathVariable("currency2") Currency currency2) throws ResourceNotFoundException {
+    public ResponseEntity<BigDecimal> getCurrencyRate(@PathVariable("currency1") Currency currency1, @PathVariable("currency2") Currency currency2) throws ResourceNotFoundException {
         logger.debug("rest getCurrencyRate({}, {})", currency1, currency2);
 
         try {
