@@ -4,14 +4,14 @@ import cz.muni.fi.orderService.entity.Order;
 import cz.muni.fi.orderService.enums.OrderState;
 import cz.muni.fi.orderService.exception.InvalidParameterException;
 import cz.muni.fi.orderService.exception.ResourceNotFoundException;
+import cz.muni.fi.orderService.feign.UserInterface;
 import cz.muni.fi.orderService.repository.OrderRepository;
 import cz.muni.fi.orderService.service.OrderService;
-import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,9 +20,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.List;
 import java.util.Optional;
 
@@ -40,6 +37,9 @@ public class OrderController {
 
     @Autowired
     private OrderRepository orderRepository;
+
+    @Autowired
+    private UserInterface userInterface;
 
     /**
      * Getting all the orders according to the given parameters
@@ -89,26 +89,20 @@ public class OrderController {
      * @param userId ID of user who created orders
      * @return list of Orders by given parameter
      * @throws ResourceNotFoundException if userService not returns user by given ID, or we can't get orders from DB
-     * @throws IOException when there is an error trying to call userService
      */
     @GetMapping(value = "by_user_id/{user_id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public final ResponseEntity<List<Order>> getOrdersByUserId(@PathVariable("user_id") long userId) throws ResourceNotFoundException, IOException {
+    public final ResponseEntity<List<Order>> getOrdersByUserId(@PathVariable("user_id") long userId) throws ResourceNotFoundException {
         logger.debug("rest getOrderByUserId({})", userId);
 
-        URL url = new URL("http://localhost:8081/eshop-rest/users/" + userId);
-        HttpURLConnection con = (HttpURLConnection) url.openConnection();
-        con.setRequestMethod(HttpMethod.GET.name());
-        if (con.getResponseCode() != HttpServletResponse.SC_OK) {
-            con.disconnect();
-            throw new ResourceNotFoundException();
+        if (userInterface.getUser(userId).getStatusCode() == HttpStatusCode.valueOf(200)) {
+            List<Order> orders = orderRepository.findByUserId(userId);
+            if (orders == null){
+                throw new ResourceNotFoundException();
+            }
+            return new ResponseEntity<>(orders, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        con.disconnect();
-
-        List<Order> orders = orderRepository.findByUserId(userId);
-        if (orders == null){
-            throw new ResourceNotFoundException();
-        }
-        return new ResponseEntity<>(orders, HttpStatus.OK);
     }
 
     /**

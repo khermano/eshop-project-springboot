@@ -1,7 +1,9 @@
 package cz.muni.fi.orderService.controller;
 
+import cz.muni.fi.orderService.dto.UserDTO;
 import cz.muni.fi.orderService.entity.Order;
 import cz.muni.fi.orderService.enums.OrderState;
+import cz.muni.fi.orderService.feign.UserInterface;
 import cz.muni.fi.orderService.repository.OrderRepository;
 import cz.muni.fi.orderService.service.OrderService;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,7 +13,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.web.servlet.MockMvc;
 import java.util.Arrays;
@@ -37,6 +41,9 @@ public class OrderControllerTest {
 
     @Mock
     private OrderRepository orderRepository;
+
+    @Mock
+    private UserInterface userInterface;
 
     @InjectMocks
     private OrderController orderController;
@@ -75,12 +82,9 @@ public class OrderControllerTest {
                 .andExpect(jsonPath("$.[?(@.id==1)].state").value("DONE"));
     }
 
-    /**
-     * Attention! - for this test to pass the userService must be running!!!!
-     * @throws Exception
-     */
     @Test
     public void getAllOrdersByUserId() throws Exception {
+        doReturn(new ResponseEntity<>(new UserDTO(), HttpStatus.OK)).when(userInterface).getUser(1L);
         doReturn(Collections.unmodifiableList(this.createOrders())).when(orderRepository).findByUserId(1L);
 
         mockMvc.perform(get("/orders/by_user_id/1"))

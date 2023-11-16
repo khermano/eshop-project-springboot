@@ -35,7 +35,7 @@ public class UserController {
      * @return list of Users
      */
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public final ResponseEntity<Collection<User>> getUsers() {
+    public ResponseEntity<Collection<User>> getUsers() {
         logger.debug("rest getUsers()");
 
         return new ResponseEntity<>(userRepository.findAll(), HttpStatus.OK);
@@ -51,7 +51,7 @@ public class UserController {
      * @throws ResourceNotFoundException HTTP Status 404
      */
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public final ResponseEntity<User> getUser(@PathVariable("id") long id) throws ResourceNotFoundException {
+    public ResponseEntity<User> getUser(@PathVariable("id") long id) throws ResourceNotFoundException {
         logger.debug("rest getUser({})", id);
 
         Optional<User> user = userRepository.findById(id);
