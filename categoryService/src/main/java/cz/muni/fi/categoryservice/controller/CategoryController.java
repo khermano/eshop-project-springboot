@@ -34,7 +34,7 @@ public class CategoryController {
     /**
      * Get list of Categories
      * curl -i -X GET
-     * http://localhost:8082/eshop-rest/categories
+     * http://localhost:8082/categories
      *
      * @return list of Categories
      */
@@ -48,7 +48,7 @@ public class CategoryController {
     /**
      * Get Category specified by ID
      * curl -i -X GET
-     * http://localhost:8082/eshop-rest/categories/1
+     * http://localhost:8082/categories/1
      * 
      * @param id identifier for the category
      * @return Category with given ID
@@ -70,7 +70,7 @@ public class CategoryController {
      * Create a new product by POST method
      * curl -X POST -i -H "Content-Type: application/json" --data
      * '{"id":"6","name":"test"}'
-     * http://localhost:8082/eshop-rest/categories/create
+     * http://localhost:8082/categories/create
      *
      * (This method is not from the original project, it needed to be created for the
      * ProductService's addCategory method, so the original functionality stays)
