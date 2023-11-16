@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import java.util.Collection;
 
-@FeignClient("USER-SERVICE")
+@FeignClient("USERS")
 public interface UserInterface {
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<Collection<UserDTO>> getUsers();
