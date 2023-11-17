@@ -3,16 +3,19 @@ categoryService/HELP.md
 productService/HELP.md
 orderService/HELP.md
 serviceRegistry/HELP.md
+apiGateway/HELP.md
 userService/target/
 categoryService/target/
 productService/target/
 orderService/target
 serviceRegistry/target
+apiGateway/target
 !userService/.mvn/wrapper/maven-wrapper.jar
 !categoryService/.mvn/wrapper/maven-wrapper.jar
 !productService/.mvn/wrapper/maven-wrapper.jar
 !orderService/.mvn/wrapper/maven-wrapper.jar
 !serviceRegistry/.mvn/wrapper/maven-wrapper.jar
+!apiGateway/.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
 
