@@ -9,6 +9,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 @FeignClient("USERS")
 public interface UserInterface {
-    @GetMapping(value = "users/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<Object> getUser(@PathVariable("id") long id) throws ResourceNotFoundException;
 }

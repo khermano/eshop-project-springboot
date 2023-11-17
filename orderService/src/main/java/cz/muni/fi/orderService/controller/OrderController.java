@@ -17,7 +17,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
@@ -28,7 +27,6 @@ import java.util.Optional;
  *
  */
 @RestController
-@RequestMapping("/orders")
 public class OrderController {
     final static Logger logger = LoggerFactory.getLogger(OrderController.class);
 
@@ -45,10 +43,10 @@ public class OrderController {
      * Getting all the orders according to the given parameters
      *
      * curl -i -X GET
-     * http://localhost:8084/orders?status=ALL
+     * http://localhost:8084?status=ALL
      * and
      * curl -i -X GET
-     * http://localhost:8084/orders?status=ALL&last_week=TRUE
+     * http://localhost:8084?status=ALL&last_week=TRUE
      * 
      * @param status can be {ALL, RECEIVED, CANCELED, SHIPPED, DONE}
      *               defines orders with StateOrder (RECEIVED, CANCELED, SHIPPED, DONE) or ALL orders
@@ -84,7 +82,7 @@ public class OrderController {
      * Be aware that userService must be running!
      *
      * curl -i -X GET
-     * http://localhost:8084/orders/by_user_id/1
+     * http://localhost:8084/by_user_id/1
      *
      * @param userId ID of user who created orders
      * @return list of Orders by given parameter
@@ -108,7 +106,7 @@ public class OrderController {
     /**
      * Get Order by identifier id
      * curl -i -X GET
-     * http://localhost:8084/orders/1
+     * http://localhost:8084/1
      *
      * @param id identifier for an order
      * @return Order with given id
@@ -133,7 +131,7 @@ public class OrderController {
      * RECEIVED -> SHIPPED (action=SHIP), SHIPPED -> DONE (action=FINISH)
      *
      * curl -i -X POST
-     * http://localhost:8084/orders/2?action=FINISH
+     * http://localhost:8084/2?action=FINISH
      *
      * @param orderId identifier for an order
      * @param action one of CANCEL, SHIP, FINISH

@@ -59,7 +59,7 @@ public class OrderControllerTest {
     public void getAllOrders() throws Exception {
         doReturn(Collections.unmodifiableList(this.createOrders())).when(orderRepository).findAll();
 
-        mockMvc.perform(get("/orders").param("status", "ALL"))
+        mockMvc.perform(get("/").param("status", "ALL"))
                 .andExpect(status().isOk())
                 .andExpect(
                         content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON_VALUE))
@@ -74,7 +74,7 @@ public class OrderControllerTest {
 
         doReturn(orders).when(orderRepository).findByState(OrderState.DONE);
 
-        mockMvc.perform(get("/orders").param("status", "DONE"))
+        mockMvc.perform(get("/").param("status", "DONE"))
                 .andExpect(status().isOk())
                 .andExpect(
                         content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON_VALUE))
@@ -86,7 +86,7 @@ public class OrderControllerTest {
         doReturn(new ResponseEntity<>(new Object(), HttpStatus.OK)).when(userInterface).getUser(1L);
         doReturn(Collections.unmodifiableList(this.createOrders())).when(orderRepository).findByUserId(1L);
 
-        mockMvc.perform(get("/orders/by_user_id/1"))
+        mockMvc.perform(get("/by_user_id/1"))
                 .andExpect(status().isOk())
                 .andExpect(
                         content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON_VALUE))
@@ -103,19 +103,19 @@ public class OrderControllerTest {
         doReturn(orders.get(1)).when(orderRepository).findById(2L);
         doReturn(orders.get(5)).when(orderRepository).findById(6L);
 
-        mockMvc.perform(get("/orders/1"))
+        mockMvc.perform(get("/1"))
                 .andExpect(status().isOk())
                 .andExpect(
                         content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(jsonPath("$.state").value("DONE"));
 
-        mockMvc.perform(get("/orders/2"))
+        mockMvc.perform(get("/2"))
                 .andExpect(status().isOk())
                 .andExpect(
                         content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(jsonPath("$.state").value("CANCELED"));
 
-        mockMvc.perform(get("/orders/6"))
+        mockMvc.perform(get("/6"))
                 .andExpect(status().isOk())
                 .andExpect(
                         content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON_VALUE))
@@ -126,7 +126,7 @@ public class OrderControllerTest {
     public void getInvalidOrder() throws Exception {
         doReturn(Optional.empty()).when(orderRepository).findById(1L);
 
-        mockMvc.perform(get("/orders/1"))
+        mockMvc.perform(get("/1"))
                 .andExpect(status().is4xxClientError());
     }
 
@@ -137,7 +137,7 @@ public class OrderControllerTest {
         doReturn(orders.get(0)).when(orderRepository).findById(1L);
         doNothing().when(orderService).shipOrder(any(Order.class));
 
-        mockMvc.perform(post("/orders/1").param("action", "SHIP"))
+        mockMvc.perform(post("/1").param("action", "SHIP"))
                 .andExpect(status().isOk())
                 .andExpect(
                         content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON_VALUE))
@@ -150,7 +150,7 @@ public class OrderControllerTest {
 
         doReturn(orders.get(0)).when(orderRepository).findById(1L);
 
-        mockMvc.perform(post("/orders/1").param("action", "INVALID"))
+        mockMvc.perform(post("/1").param("action", "INVALID"))
                 .andExpect(status().isNotAcceptable());
     }
 
