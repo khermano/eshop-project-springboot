@@ -24,7 +24,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -35,7 +34,6 @@ import java.util.Optional;
  * REST Controller for Products
  */
 @RestController
-@RequestMapping("/products")
 public class ProductController {
     final static Logger logger = LoggerFactory.getLogger(ProductController.class);
 
@@ -51,7 +49,7 @@ public class ProductController {
     /**
      * Get list of Products
      * curl -i -X GET
-     * http://localhost:8083/products
+     * http://localhost:8083
      *
      * @return list of Products
      */
@@ -65,7 +63,7 @@ public class ProductController {
     /**
      * Get Product by identifier id
      * curl -i -X GET
-     * http://localhost:8083/products/1
+     * http://localhost:8083/1
      *
      * @param id identifier for a product
      * @return Product with given id
@@ -86,7 +84,7 @@ public class ProductController {
     /**
      * Delete one product by id
      * curl -i -X DELETE
-     * http://localhost:8083/products/1
+     * http://localhost:8083/1
      *
      * @param id identifier for product
      * @throws ResourceNotFoundException if for some reason we fail to delete product with given id
@@ -107,7 +105,7 @@ public class ProductController {
      * curl -X POST -i -H "Content-Type: application/json" --data 
      * '{"name":"test","description":"test","color":"UNDEFINED","price":"200",
      * "currency":"CZK", "categoryId":"1"}' 
-     * http://localhost:8083/products/create
+     * http://localhost:8083/create
      * 
      * @param productInfo ProductCreateDTO with required fields for creation
      * @return the created product
@@ -143,7 +141,7 @@ public class ProductController {
      * Update the price for one product by PUT method
      * curl -X PUT -i -H
      * "Content-Type: application/json" --data '{"value":"16.33","currency":"CZK"}'
-     * http://localhost:8083/products/4
+     * http://localhost:8083/4
      *
      * @param id identified of the product to be updated
      * @param newPrice required fields as specified in Price (value and currency)
@@ -177,7 +175,7 @@ public class ProductController {
     /**
      * Add a new category by POST Method
      * curl -X POST -i -H "Content-Type: application/json" --data '{"id":"5","name":"Presents"}'
-     * http://localhost:8083/products/2/categories
+     * http://localhost:8083/2/categories
      *
      * Be aware that categoryService must be running for this to work!
      *
@@ -207,7 +205,7 @@ public class ProductController {
     /**
      * Get product's current Price by identifier id
      * curl -i -X GET
-     * http://localhost:8083/products/2/currentPrice
+     * http://localhost:8083/2/currentPrice
      *
      * (This method is not from the original project, it needed to be created for the
      * OrderService's getTotalPrice method, so the original functionality stays)
@@ -231,7 +229,7 @@ public class ProductController {
     /**
      * Get currency rate for given currency pair
      * curl -i -X GET
-     * http://localhost:8083/products/getCurrencyRate/CZK/EUR
+     * http://localhost:8083/getCurrencyRate/CZK/EUR
      *
      * (This method is not from the original project, it needed to be created for the
      * OrderService's getTotalPrice method, so the original functionality stays)

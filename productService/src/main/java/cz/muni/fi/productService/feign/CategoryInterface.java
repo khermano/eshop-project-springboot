@@ -10,6 +10,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 @FeignClient("CATEGORIES")
 public interface CategoryInterface {
-    @GetMapping(value = "categories/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<CategoryDTO> getCategory(@PathVariable("id") long id) throws ResourceNotFoundException;
 }
