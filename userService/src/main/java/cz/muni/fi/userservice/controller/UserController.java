@@ -11,7 +11,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import java.util.Collection;
 import java.util.Optional;
@@ -20,7 +19,6 @@ import java.util.Optional;
  * REST Controller for Users
  */
 @RestController
-@RequestMapping("/users")
 public class UserController {
     final static Logger logger = LoggerFactory.getLogger(UserController.class);
 
@@ -30,7 +28,7 @@ public class UserController {
     /**
      * Returns all users
      * curl -i -X GET
-     * http://localhost:8081/users
+     * http://localhost:8081
      *
      * @return list of Users
      */
@@ -44,7 +42,7 @@ public class UserController {
     /**
      * Getting user according to id
      * curl -i -X GET
-     * http://localhost:8081/users/1
+     * http://localhost:8081/1
      * 
      * @param id user identifier
      * @return User
