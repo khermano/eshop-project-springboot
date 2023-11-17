@@ -1,6 +1,5 @@
 package cz.muni.fi.orderService.controller;
 
-import cz.muni.fi.orderService.dto.UserDTO;
 import cz.muni.fi.orderService.entity.Order;
 import cz.muni.fi.orderService.enums.OrderState;
 import cz.muni.fi.orderService.feign.UserInterface;
@@ -84,7 +83,7 @@ public class OrderControllerTest {
 
     @Test
     public void getAllOrdersByUserId() throws Exception {
-        doReturn(new ResponseEntity<>(new UserDTO(), HttpStatus.OK)).when(userInterface).getUser(1L);
+        doReturn(new ResponseEntity<>(new Object(), HttpStatus.OK)).when(userInterface).getUser(1L);
         doReturn(Collections.unmodifiableList(this.createOrders())).when(orderRepository).findByUserId(1L);
 
         mockMvc.perform(get("/orders/by_user_id/1"))
