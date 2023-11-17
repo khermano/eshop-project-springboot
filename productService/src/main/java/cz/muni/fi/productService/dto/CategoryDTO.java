@@ -1,12 +1,10 @@
 package cz.muni.fi.productService.dto;
 
-public class CategoryDTO
-{
+public class CategoryDTO {
     private Long id;
 
     private String name;
 
- 
     public String getName() {
         return name;
     }

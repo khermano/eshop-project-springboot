@@ -51,12 +51,6 @@ public class ProductControllerTest {
 	@Mock
 	private BeanMappingService beanMappingService;
 
-//	@Mock
-//	HttpURLConnection connection;
-//
-//	@Mock
-//	private URL url;
-
 	@InjectMocks
 	private ProductController productController;
 

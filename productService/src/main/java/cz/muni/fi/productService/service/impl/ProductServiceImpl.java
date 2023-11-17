@@ -5,11 +5,13 @@ import cz.muni.fi.productService.entity.Price;
 import cz.muni.fi.productService.entity.Product;
 import cz.muni.fi.productService.enums.Currency;
 import cz.muni.fi.productService.exception.EshopServiceException;
+import cz.muni.fi.productService.feign.CategoryInterface;
 import cz.muni.fi.productService.repository.PriceRepository;
 import cz.muni.fi.productService.repository.ProductRepository;
 import cz.muni.fi.productService.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -35,6 +37,9 @@ public class ProductServiceImpl implements ProductService {
 
 	@Autowired
 	private PriceRepository priceRepository;
+
+	@Autowired
+	private CategoryInterface categoryInterface;
 
 	private static final Map<AbstractMap.SimpleEntry<Currency, Currency>, BigDecimal> currencyRateCache = new HashMap<>();
 
@@ -115,14 +120,21 @@ public class ProductServiceImpl implements ProductService {
 		Long categoryId = category.getId();
 		Optional<Product> product = productRepository.findById(productId);
 
-		if (product.isPresent() && product.get().getCategoriesId().contains(categoryId)) {
+		if(product.isEmpty()) {
+			throw new EshopServiceException("Product with given ID doesn't exist");
+		}
+		if (product.get().getCategoriesId().contains(categoryId)) {
 			throw new EshopServiceException(
 					"Product already contains this category. Product: "
 							+ productId + ", category: "
 							+ categoryId);
 		}
-		product.get().addCategoryId(categoryId);
-		productRepository.save(product.get());
+		if (categoryInterface.getCategory(category.getId()).getStatusCode() == HttpStatusCode.valueOf(200)) {
+			product.get().addCategoryId(categoryId);
+			productRepository.save(product.get());
+		} else {
+			throw new EshopServiceException("There is a problem retrieving category with given ID");
+		}
 	}
 
 	@Override
