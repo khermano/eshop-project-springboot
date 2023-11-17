@@ -43,7 +43,7 @@ public class CategoryControllerTest {
     public void getAllCategories() throws Exception {
         doReturn(Collections.unmodifiableList(this.createCategories())).when(categoryRepository).findAll();
 
-        mockMvc.perform(get("/categories"))
+        mockMvc.perform(get("/"))
                 .andExpect(status().isOk())
                 .andExpect(
                         content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON_VALUE))
@@ -58,13 +58,13 @@ public class CategoryControllerTest {
         doReturn(categories.get(0)).when(categoryRepository).findById(1L);
         doReturn(categories.get(1)).when(categoryRepository).findById(2L);
 
-        mockMvc.perform(get("/categories/1"))
+        mockMvc.perform(get("/1"))
                 .andExpect(status().isOk())
                 .andExpect(
                         content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(jsonPath("$.name").value("Electronics"));
 
-        mockMvc.perform(get("/categories/2"))
+        mockMvc.perform(get("/2"))
                 .andExpect(status().isOk())
                 .andExpect(
                         content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON_VALUE))
@@ -75,7 +75,7 @@ public class CategoryControllerTest {
     public void getInvalidCategory() throws Exception {
         doReturn(Optional.empty()).when(categoryRepository).findById(1L);
 
-        mockMvc.perform(get("/categories/1"))
+        mockMvc.perform(get("/1"))
                 .andExpect(status().is4xxClientError());
     }
 
