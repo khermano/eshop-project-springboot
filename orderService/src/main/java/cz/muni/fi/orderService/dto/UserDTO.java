@@ -3,23 +3,23 @@ package cz.muni.fi.orderService.dto;
 import java.util.Date;
 
 public class UserDTO {
-	private Long id;
+    private Long id;
 
-	private String passwordHash;
+    private String passwordHash;
 
-	private String email;
+    private String email;
 
-	private String givenName;
+    private String givenName;
 
-	private String surname;
+    private String surname;
 
-	private String phone;
+    private String phone;
 
-	private String address;
+    private String address;
 
-	private Date joinedDate;
+    private Date joinedDate;
 
-	private boolean admin;
+    private boolean admin;
 
     public Long getId() {
         return id;

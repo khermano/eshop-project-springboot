@@ -48,7 +48,7 @@ public class OrderController {
      * http://localhost:8084/orders?status=ALL
      * and
      * curl -i -X GET
-     * http://localhost:8084/orders?status=ALL&last_week=TRUE)
+     * http://localhost:8084/orders?status=ALL&last_week=TRUE
      * 
      * @param status can be {ALL, RECEIVED, CANCELED, SHIPPED, DONE}
      *               defines orders with StateOrder (RECEIVED, CANCELED, SHIPPED, DONE) or ALL orders
