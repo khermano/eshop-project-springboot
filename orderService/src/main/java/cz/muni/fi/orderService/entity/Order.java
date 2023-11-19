@@ -11,6 +11,9 @@ import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import jakarta.validation.constraints.NotNull;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -18,12 +21,15 @@ import java.util.List;
 
 @Entity
 @Table(name="PRODUCT_ORDER")
+@NoArgsConstructor
 public class Order {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@Getter @Setter
 	private Long id;
 
 	@NotNull
+	@Getter @Setter
 	private Long userId;
 	
 	@OneToMany
@@ -32,6 +38,7 @@ public class Order {
 		
 	@NotNull
 	@Temporal(TemporalType.TIMESTAMP)
+	@Getter @Setter
 	private Date created;
 	
 	@Enumerated
@@ -39,19 +46,19 @@ public class Order {
 	private OrderState state;
 
 	public Order(Long id) {
-		this.id=id;
+		this.id = id;
 	}
 
-	public Order() {
-	}
+//	public Order() {
+//	}
 	
-	public Long getUserId() {
-		return userId;
-	}
-
-	public void setUserId(Long userId) {
-		this.userId = userId;
-	}
+//	public Long getUserId() {
+//		return userId;
+//	}
+//
+//	public void setUserId(Long userId) {
+//		this.userId = userId;
+//	}
 
 	public List<OrderItem> getOrderItems() {
 		return Collections.unmodifiableList(orderItems);
@@ -61,13 +68,13 @@ public class Order {
 		orderItems.add(p);
 	}
 
-	public Date getCreated() {
-		return created;
-	}
-
-	public void setCreated(Date created) {
-		this.created = created;
-	}
+//	public Date getCreated() {
+//		return created;
+//	}
+//
+//	public void setCreated(Date created) {
+//		this.created = created;
+//	}
 
 	public OrderState getState() {
 		return state;
@@ -77,13 +84,13 @@ public class Order {
 		this.state = state;
 	}
 
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public Long getId() {
-		return id;
-	}
+//	public void setId(Long id) {
+//		this.id = id;
+//	}
+//
+//	public Long getId() {
+//		return id;
+//	}
 
 	@Override
 	public int hashCode() {
