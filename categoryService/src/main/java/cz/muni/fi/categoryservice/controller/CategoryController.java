@@ -1,7 +1,5 @@
 package cz.muni.fi.categoryservice.controller;
 
-import cz.muni.fi.categoryservice.exception.ResourceAlreadyExistingException;
-import cz.muni.fi.categoryservice.exception.ResourceNotFoundException;
 import cz.muni.fi.categoryservice.entity.Category;
 import cz.muni.fi.categoryservice.repository.CategoryRepository;
 import org.slf4j.Logger;
@@ -15,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 import java.util.Optional;
 
@@ -50,17 +49,16 @@ public class CategoryController {
      * 
      * @param id identifier for the category
      * @return Category with given ID
-     * @throws ResourceNotFoundException if category with given ID does not exist
      */
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Category> getCategory(@PathVariable("id") long id) throws ResourceNotFoundException {
+    public ResponseEntity<Category> getCategory(@PathVariable("id") long id) {
         logger.debug("rest getCategory({})", id);
 
         Optional<Category> category = categoryRepository.findById(id);
         if (category.isPresent()) {
             return new ResponseEntity<>(category.get(), HttpStatus.OK);
         } else {
-            throw new ResourceNotFoundException();
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The requested resource was not found");
         }
     }
 
@@ -75,11 +73,10 @@ public class CategoryController {
      *
      * @param categoryInfo Category with required fields for creation
      * @return the created category
-     * @throws ResourceAlreadyExistingException if for some reason we fail to create product with given info
      */
     @PostMapping(value = "/create", consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Category> createCategory(@RequestBody Category categoryInfo) throws ResourceAlreadyExistingException {
+    public ResponseEntity<Category> createCategory(@RequestBody Category categoryInfo) {
         logger.debug("rest createCategory()");
 
         Optional<Category> category = categoryRepository.findById(categoryInfo.getId());
