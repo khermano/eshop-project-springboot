@@ -81,10 +81,10 @@ public class CategoryController {
 
         Optional<Category> category = categoryRepository.findById(categoryInfo.getId());
         if (category.isPresent()) {
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
         if (categoryInfo.getId() == null || categoryInfo.getName() == null || categoryInfo.getName().isEmpty()) {
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
 
         try {
@@ -92,7 +92,7 @@ public class CategoryController {
             category = categoryRepository.findById(categoryInfo.getId());
             return new ResponseEntity<>(category.get(), HttpStatus.OK);
         } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }
