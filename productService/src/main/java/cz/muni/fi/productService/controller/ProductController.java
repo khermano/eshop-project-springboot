@@ -6,9 +6,6 @@ import cz.muni.fi.productService.entity.Price;
 import cz.muni.fi.productService.entity.Product;
 import cz.muni.fi.productService.enums.Currency;
 import cz.muni.fi.productService.exception.EshopServiceException;
-import cz.muni.fi.productService.exception.InvalidParameterException;
-import cz.muni.fi.productService.exception.ResourceAlreadyExistingException;
-import cz.muni.fi.productService.exception.ResourceNotFoundException;
 import cz.muni.fi.productService.repository.ProductRepository;
 import cz.muni.fi.productService.service.BeanMappingService;
 import cz.muni.fi.productService.service.ProductService;
@@ -25,6 +22,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
@@ -67,17 +65,16 @@ public class ProductController {
      *
      * @param id identifier for a product
      * @return Product with given id
-     * @throws ResourceNotFoundException if product with given id does not exist
      */
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Product> getProduct(@PathVariable("id") long id) throws ResourceNotFoundException {
+    public ResponseEntity<Product> getProduct(@PathVariable("id") long id) {
         logger.debug("rest getProduct({})", id);
 
         Optional<Product> product = productRepository.findById(id);
         if (product.isPresent()) {
             return new ResponseEntity<>(product.get(), HttpStatus.OK);
         } else {
-            throw new ResourceNotFoundException();
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The requested resource was not found");
         }
     }
 
@@ -87,16 +84,15 @@ public class ProductController {
      * http://localhost:8083/1
      *
      * @param id identifier for product
-     * @throws ResourceNotFoundException if for some reason we fail to delete product with given id
      */
     @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public void deleteProduct(@PathVariable("id") long id) throws ResourceNotFoundException {
+    public void deleteProduct(@PathVariable("id") long id) {
         logger.debug("rest deleteProduct({})", id);
 
         try {
             productRepository.deleteById(id);
         } catch (Exception ex) {
-            throw new ResourceNotFoundException();
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The requested resource was not found");
         }
     }
 
@@ -109,31 +105,26 @@ public class ProductController {
      * 
      * @param productInfo ProductCreateDTO with required fields for creation
      * @return the created product
-     * @throws ResourceAlreadyExistingException if for some reason we fail to create product with given info
      */
     @PostMapping(value = "/create", consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Product> createProduct(@RequestBody ProductCreateDTO productInfo) throws ResourceAlreadyExistingException {
+    public ResponseEntity<Product> createProduct(@RequestBody ProductCreateDTO productInfo) {
         logger.debug("rest createProduct()");
 
         try {
             Product product = beanMappingService.mapTo(productInfo, Product.class);
-            //map price DTO to entity
             Price price = new Price();
             price.setValue(productInfo.getPrice());
             price.setCurrency(productInfo.getCurrency());
             Date now = new Date();
             price.setPriceStart(now);
             product.setAddedDate(now);
-            //set price on product entity
             product.setCurrentPrice(price);
             product.addHistoricalPrice(price);
-            //add to category
             product.addCategoryId(productInfo.getCategoryId());
-            //save product
             return new ResponseEntity<>(productService.createProduct(product), HttpStatus.OK);
         } catch (Exception ex) {
-            throw new ResourceAlreadyExistingException();
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -146,11 +137,10 @@ public class ProductController {
      * @param id identified of the product to be updated
      * @param newPrice required fields as specified in Price (value and currency)
      * @return the updated product
-     * @throws InvalidParameterException if for some reason we fail to update product price with given info
      */
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Product> changePrice(@PathVariable("id") long id, @RequestBody Price newPrice) throws InvalidParameterException {
+    public ResponseEntity<Product> changePrice(@PathVariable("id") long id, @RequestBody Price newPrice) {
         logger.debug("rest changePrice({})", id);
 
         try {
@@ -158,17 +148,16 @@ public class ProductController {
             if (product.isPresent()) {
                 productService.changePrice(product.get(), newPrice);
             } else {
-                throw new InvalidParameterException();
+                throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE);
             }
-            //needs fresh call from DB
             product = productRepository.findById(id);
             if (product.isPresent()) {
                 return new ResponseEntity<>(product.get(), HttpStatus.OK);
             } else {
-                throw new InvalidParameterException();
+                throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE);
             }
-        } catch (EshopServiceException e) {
-            throw new InvalidParameterException();
+         } catch (EshopServiceException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE);
         }
     }
 
@@ -182,11 +171,10 @@ public class ProductController {
      * @param id the identifier of the Product to have the Category added
      * @param category the category to be added
      * @return the updated product as defined by ProductDTO
-     * @throws InvalidParameterException if for some reason we fail to add new category to product
      */
     @PostMapping(value = "/{id}/categories", consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Product> addCategory(@PathVariable("id") long id, @RequestBody CategoryDTO category) throws InvalidParameterException {
+    public ResponseEntity<Product> addCategory(@PathVariable("id") long id, @RequestBody CategoryDTO category) {
         logger.debug("rest addCategory({})", id);
 
         try {
@@ -195,10 +183,10 @@ public class ProductController {
             if (product.isPresent()) {
                 return new ResponseEntity<>(product.get(), HttpStatus.OK);
             } else {
-                throw new InvalidParameterException();
+                throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE);
             }
         } catch (Exception ex) {
-            throw new InvalidParameterException();
+            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE);
         }
     }
 
@@ -212,17 +200,16 @@ public class ProductController {
      *
      * @param id identifier for a product
      * @return current Price of Product with given id
-     * @throws ResourceNotFoundException if product with given id does not exist
      */
     @GetMapping(value = "/{id}/currentPrice", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Price> getProductPriceByProductId(@PathVariable("id") long id) throws ResourceNotFoundException {
+    public ResponseEntity<Price> getProductPriceByProductId(@PathVariable("id") long id) {
         logger.debug("rest getProductPriceByProductId({})", id);
 
         Optional<Product> product = productRepository.findById(id);
         if (product.isPresent()) {
-            return new ResponseEntity<>(product.get().getCurrentPrice(), HttpStatus.OK);
+            return new ResponseEntity<Price>(product.get().getCurrentPrice(), HttpStatus.OK);
         } else {
-            throw new ResourceNotFoundException();
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The requested resource was not found");
         }
     }
 
@@ -237,16 +224,16 @@ public class ProductController {
      * @param currency1 first currency of the pair
      * @param currency2 second currency of the pair
      * @return currency rate for given pair
-     * @throws ResourceNotFoundException if given currency pair doesn't exist
      */
     @GetMapping(value = "getCurrencyRate/{currency1}/{currency2}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<BigDecimal> getCurrencyRate(@PathVariable("currency1") Currency currency1, @PathVariable("currency2") Currency currency2) throws ResourceNotFoundException {
+    public ResponseEntity<BigDecimal> getCurrencyRate(@PathVariable("currency1") Currency currency1,
+                                                      @PathVariable("currency2") Currency currency2) {
         logger.debug("rest getCurrencyRate({}, {})", currency1, currency2);
 
         try {
             return new ResponseEntity<>(productService.getCurrencyRate(currency1, currency2), HttpStatus.OK);
         } catch (IllegalArgumentException e){
-            throw new ResourceNotFoundException();
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The requested resource was not found");
         }
     }
 }
