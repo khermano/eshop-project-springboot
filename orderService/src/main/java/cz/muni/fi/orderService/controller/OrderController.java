@@ -2,8 +2,6 @@ package cz.muni.fi.orderService.controller;
 
 import cz.muni.fi.orderService.entity.Order;
 import cz.muni.fi.orderService.enums.OrderState;
-import cz.muni.fi.orderService.exception.InvalidParameterException;
-import cz.muni.fi.orderService.exception.ResourceNotFoundException;
 import cz.muni.fi.orderService.feign.UserInterface;
 import cz.muni.fi.orderService.repository.OrderRepository;
 import cz.muni.fi.orderService.service.OrderService;
@@ -19,6 +17,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 import java.util.Optional;
 
@@ -52,12 +51,11 @@ public class OrderController {
      *               defines orders with StateOrder (RECEIVED, CANCELED, SHIPPED, DONE) or ALL orders
      * @param lastWeek if true we consider only orders from last week
      * @return list of Orders by given parameters
-     * @throws InvalidParameterException if invalid status provided
      */
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Order>> getOrders(@RequestParam("status") String status,
                                                       @RequestParam(value = "last_week", required = false, defaultValue = "false")
-                                       boolean lastWeek) throws InvalidParameterException {
+                                       boolean lastWeek) {
         logger.debug("rest getOrders({},{})", lastWeek, status);
 
         if (status.equalsIgnoreCase("ALL")) {
@@ -65,7 +63,7 @@ public class OrderController {
         }
 
         if (!OrderState.contains(status)) {
-            throw new InvalidParameterException();
+            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE);
         }
 
         final OrderState os = OrderState.valueOf(status);
@@ -86,20 +84,19 @@ public class OrderController {
      *
      * @param userId ID of user who created orders
      * @return list of Orders by given parameter
-     * @throws ResourceNotFoundException if userService not returns user by given ID, or we can't get orders from DB
      */
     @GetMapping(value = "by_user_id/{user_id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<Order>> getOrdersByUserId(@PathVariable("user_id") long userId) throws ResourceNotFoundException {
+    public ResponseEntity<List<Order>> getOrdersByUserId(@PathVariable("user_id") long userId) {
         logger.debug("rest getOrderByUserId({})", userId);
 
         if (userInterface.getUser(userId).getStatusCode() == HttpStatusCode.valueOf(200)) {
             List<Order> orders = orderRepository.findByUserId(userId);
             if (orders == null){
-                throw new ResourceNotFoundException();
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The requested resource was not found");
             }
             return new ResponseEntity<>(orders, HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -110,17 +107,16 @@ public class OrderController {
      *
      * @param id identifier for an order
      * @return Order with given id
-     * @throws ResourceNotFoundException if order with given id does not exist
      */
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Order> getOrder(@PathVariable("id") long id) throws ResourceNotFoundException {
+    public ResponseEntity<Order> getOrder(@PathVariable("id") long id) {
         logger.debug("rest getOrder({})", id);
 
         Optional<Order> order = orderRepository.findById(id);
         if (order.isPresent()) {
             return new ResponseEntity<>(order.get(), HttpStatus.OK);
         } else {
-            throw new ResourceNotFoundException();
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The requested resource was not found");
         }
     }
 
@@ -136,17 +132,14 @@ public class OrderController {
      * @param orderId identifier for an order
      * @param action one of CANCEL, SHIP, FINISH
      * @return Order on which action was performed
-     * @throws ResourceNotFoundException if we can get order with given id before or after action
-     * @throws InvalidParameterException if invalid action provided
      */
     @PostMapping(value = "{order_id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Order> shipOrder(@PathVariable("order_id") long orderId, @RequestParam("action") String action)
-            throws ResourceNotFoundException, InvalidParameterException {
+    public ResponseEntity<Order> shipOrder(@PathVariable("order_id") long orderId, @RequestParam("action") String action) {
         logger.debug("rest shipOrder({})", orderId);
 
         Optional<Order> order = orderRepository.findById(orderId);
         if (order.isEmpty()) {
-            throw new ResourceNotFoundException();
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The requested resource was not found");
         }
 
         if (action.equalsIgnoreCase("CANCEL")) {
@@ -156,10 +149,14 @@ public class OrderController {
         } else if (action.equalsIgnoreCase("FINISH")) {
             orderService.finishOrder(order.get());
         } else {
-            throw new InvalidParameterException();
+            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE);
         }
 
         order = orderRepository.findById(orderId);
-        return order.map(value -> new ResponseEntity<>(value, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR));
+        if (order.isPresent()) {
+            return new ResponseEntity<>(order.get(), HttpStatus.OK);
+        } else {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }
