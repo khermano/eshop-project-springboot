@@ -11,11 +11,13 @@ import jakarta.persistence.Id;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
+import lombok.Data;
 import java.util.Date;
 
 @Entity
 //In Derby, 'USER' is reserved keyword, we need to rename table
 @Table(name="Users")
+@Data
 public class User {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -45,78 +47,6 @@ public class User {
 	private Date joinedDate;
 
 	private boolean admin;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getPasswordHash() {
-        return passwordHash;
-    }
-
-    public void setPasswordHash(String passwordHash) {
-        this.passwordHash = passwordHash;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getGivenName() {
-        return givenName;
-    }
-
-    public void setGivenName(String givenName) {
-        this.givenName = givenName;
-    }
-
-    public String getSurname() {
-        return surname;
-    }
-
-    public void setSurname(String surname) {
-        this.surname = surname;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public Date getJoinedDate() {
-        return joinedDate;
-    }
-
-    public void setJoinedDate(Date joinedDate) {
-        this.joinedDate = joinedDate;
-    }
-
-    public boolean isAdmin() {
-        return admin;
-    }
-
-    public void setAdmin(boolean admin) {
-        this.admin = admin;
-    }
 
     @Override
     public int hashCode() {
