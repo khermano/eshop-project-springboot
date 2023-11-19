@@ -19,6 +19,10 @@ import jakarta.persistence.OrderBy;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import jakarta.validation.constraints.NotNull;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -28,21 +32,27 @@ import java.util.Set;
 
 @Entity
 @AllOrNothing(members={"image", "imageMimeType"})
+@NoArgsConstructor
 public class Product {
 	
 	@Id
 	@GeneratedValue(strategy= GenerationType.IDENTITY)
+	@Getter @Setter
 	private Long id;
 
 	@Lob
+	@Getter @Setter
 	private byte[] image;
 
+	@Setter
 	private String imageMimeType;
 	
 	@NotNull
 	@Column(nullable=false,unique=true)
+	@Getter @Setter
 	private String name;
 
+	@Getter @Setter
 	private String description;
 
     @Enumerated
@@ -52,6 +62,7 @@ public class Product {
 	 * The day this item has been added to the eshop
 	 */
 	@Temporal(TemporalType.DATE)
+	@Getter @Setter
 	private Date addedDate;
 
 	@ElementCollection
@@ -60,6 +71,7 @@ public class Product {
 
 	@OneToOne
 	@JoinTable(name="CURRENT_PRICE")
+	@Getter @Setter
 	private Price currentPrice;
 	
 	@OneToMany(fetch = FetchType.EAGER)
@@ -67,14 +79,14 @@ public class Product {
 	@JoinColumn(name="Product_FK")
 	private List<Price> priceHistory = new ArrayList<>();
 	
-	public void setId(Long id){
-		this.id = id;
-	}
-	
-	public void removeCategoryId(Long categoryId)
-	{
-		this.categoriesId.remove(categoryId);
-	}
+//	public void setId(Long id){
+//		this.id = id;
+//	}
+//
+//	public void removeCategoryId(Long categoryId)
+//	{
+//		this.categoriesId.remove(categoryId);
+//	}
 
 	public Set<Long> getCategoriesId() {
 		return Collections.unmodifiableSet(categoriesId);
@@ -85,46 +97,46 @@ public class Product {
 	}
 
 
-	public Date getAddedDate() {
-		return addedDate;
-	}
-	public void setAddedDate(Date addedDate) {
-		this.addedDate = addedDate;
-	}
+//	public Date getAddedDate() {
+//		return addedDate;
+//	}
+//	public void setAddedDate(Date addedDate) {
+//		this.addedDate = addedDate;
+//	}
 	public Product(Long productId) {
 		this.id = productId;
 	}
-	public Product() {
-	}
-	public byte[] getImage() {
-		return image;
-	}
-	
-
-	public String getImageMimeType() {
-		return imageMimeType;
-	}
-
-
-
-	public void setImageMimeType(String imageMimeType) {
-		this.imageMimeType = imageMimeType;
-	}
+//	public Product() {
+//	}
+//	public byte[] getImage() {
+//		return image;
+//	}
+//
+//
+//	public String getImageMimeType() {
+//		return imageMimeType;
+//	}
 
 
 
-	public Price getCurrentPrice() {
-		return currentPrice;
-	}
+//	public void setImageMimeType(String imageMimeType) {
+//		this.imageMimeType = imageMimeType;
+//	}
+
+
+
+//	public Price getCurrentPrice() {
+//		return currentPrice;
+//	}
 
 
 	public void addHistoricalPrice(Price p){
 		priceHistory.add(p);
 	}
 	
-	public void setCurrentPrice(Price currentPrice) {
-		this.currentPrice = currentPrice;
-	}
+//	public void setCurrentPrice(Price currentPrice) {
+//		this.currentPrice = currentPrice;
+//	}
 
 
 	public List<Price> getPriceHistory() {
@@ -132,26 +144,26 @@ public class Product {
 	}
 
 
-	public void setImage(byte[] image) {
-		this.image = image;
-	}
+//	public void setImage(byte[] image) {
+//		this.image = image;
+//	}
 
 
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
+//	public String getName() {
+//		return name;
+//	}
+//
+//	public void setName(String name) {
+//		this.name = name;
+//	}
+//
+//    public String getDescription() {
+//        return description;
+//    }
+//
+//    public void setDescription(String description) {
+//        this.description = description;
+//    }
 
     public Color getColor() {
 		return color;
@@ -162,9 +174,9 @@ public class Product {
 	}
 
 
-	public Long getId() {
-		return id;
-	}
+//	public Long getId() {
+//		return id;
+//	}
 
 	@Override
 	public int hashCode() {

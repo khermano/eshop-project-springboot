@@ -9,10 +9,12 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotNull;
+import lombok.Data;
 import java.math.BigDecimal;
 import java.util.Date;
 
 @Entity
+@Data
 public class Price {
 	
 	@Id
@@ -30,35 +32,6 @@ public class Price {
 	@Enumerated
 	@NotNull
 	private Currency currency;
-
-	public BigDecimal getValue() {
-		return value;
-	}
-
-	public void setValue(BigDecimal value) {
-		this.value = value;
-	}
-
-
-	public Date getPriceStart() {
-		return priceStart;
-	}
-
-	public void setPriceStart(Date priceStart) {
-		this.priceStart = priceStart;
-	}
-
-	public Currency getCurrency() {
-		return currency;
-	}
-
-	public void setCurrency(Currency currency) {
-		this.currency = currency;
-	}
-
-	public Long  getId() {
-		return id;
-	}
 
 	@Override
 	public int hashCode() {

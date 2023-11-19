@@ -5,8 +5,10 @@ import cz.muni.fi.productService.enums.Currency;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.Data;
 import java.math.BigDecimal;
 
+@Data
 public class ProductCreateDTO {
     private byte[] image;
 
@@ -31,75 +33,6 @@ public class ProductCreateDTO {
 
     @NotNull
     private Long categoryId;
-
-
-    public byte[] getImage() {
-        return image;
-    }
-
-
-    public String getImageMimeType() {
-        return imageMimeType;
-    }
-
-
-    public void setImageMimeType(String imageMimeType) {
-        this.imageMimeType = imageMimeType;
-    }
-
-
-    public void setImage(byte[] image) {
-        this.image = image;
-    }
-
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public Color getColor() {
-        return color;
-    }
-
-    public void setColor(Color color) {
-        this.color = color;
-    }
-
-    public BigDecimal getPrice() {
-        return price;
-    }
-
-    public void setPrice(BigDecimal price) {
-        this.price = price;
-    }
-
-    public Currency getCurrency() {
-        return currency;
-    }
-
-    public void setCurrency(Currency currency) {
-        this.currency = currency;
-    }
-
-    public Long getCategoryId() {
-        return categoryId;
-    }
-
-    public void setCategoryId(Long categoryId) {
-        this.categoryId = categoryId;
-    }
 
     @Override
     public int hashCode() {
