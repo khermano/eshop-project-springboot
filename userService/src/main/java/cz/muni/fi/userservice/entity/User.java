@@ -23,8 +23,6 @@ public class User {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
 
-	private String passwordHash;
-
 	@Column(nullable=false,unique=true)
     @Email(regexp=".+@.+\\....?")
 	@NotNull
@@ -45,8 +43,6 @@ public class User {
 	@NotNull
 	@Temporal(TemporalType.DATE)
 	private Date joinedDate;
-
-	private boolean admin;
 
     @Override
     public int hashCode() {
@@ -77,14 +73,12 @@ public class User {
     public String toString() {
         return "User{" +
                 "id=" + id +
-                ", passwordHash='" + passwordHash + '\'' +
                 ", email='" + email + '\'' +
                 ", givenName='" + givenName + '\'' +
                 ", surname='" + surname + '\'' +
                 ", phone='" + phone + '\'' +
                 ", address='" + address + '\'' +
                 ", joinedDate=" + joinedDate +
-                ", admin=" + admin +
                 '}';
     }
 }
