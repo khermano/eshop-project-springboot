@@ -17,6 +17,11 @@ https://github.com/khermano/433511_Master_thesis_project
 - We need to have every project of this repository up and running (see bellow)
 - application endpoints will be then available at http://localhost:8080
 
+***Run serviceRegistry:***
+- `cd eshop-project-springboot/serviceRegistry`
+- `mvn clean install`
+- `mvn spring-boot:run`
+
 ***Run userService:***
 - `cd eshop-project-springboot/userService`
 - `mvn clean install`
@@ -34,11 +39,6 @@ https://github.com/khermano/433511_Master_thesis_project
 
 ***Run orderService:***
 - `cd eshop-project-springboot/orderService`
-- `mvn clean install`
-- `mvn spring-boot:run`
-
-***Run serviceRegistry:***
-- `cd eshop-project-springboot/serviceRegistry`
 - `mvn clean install`
 - `mvn spring-boot:run`
 
