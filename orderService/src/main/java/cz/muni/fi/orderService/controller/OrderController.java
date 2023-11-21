@@ -1,9 +1,15 @@
 package cz.muni.fi.orderService.controller;
 
+import cz.muni.fi.orderService.dto.OrderDTO;
+import cz.muni.fi.orderService.dto.OrderItemDTO;
+import cz.muni.fi.orderService.dto.ProductDTO;
 import cz.muni.fi.orderService.entity.Order;
+import cz.muni.fi.orderService.entity.OrderItem;
 import cz.muni.fi.orderService.enums.OrderState;
+import cz.muni.fi.orderService.feign.ProductInterface;
 import cz.muni.fi.orderService.feign.UserInterface;
 import cz.muni.fi.orderService.repository.OrderRepository;
+import cz.muni.fi.orderService.service.BeanMappingService;
 import cz.muni.fi.orderService.service.OrderService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +24,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,6 +45,13 @@ public class OrderController {
     @Autowired
     private UserInterface userInterface;
 
+    @Autowired
+    private ProductInterface productInterface;
+
+    @Autowired
+    private BeanMappingService beanMappingService;
+
+
     /**
      * Getting all the orders according to the given parameters
      *
@@ -53,13 +67,17 @@ public class OrderController {
      * @return list of Orders by given parameters
      */
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<Order>> getOrders(@RequestParam("status") String status,
+    public ResponseEntity<List<OrderDTO>> getOrders(@RequestParam("status") String status,
                                                       @RequestParam(value = "last_week", required = false, defaultValue = "false")
                                        boolean lastWeek) {
         logger.debug("rest getOrders({},{})", lastWeek, status);
 
         if (status.equalsIgnoreCase("ALL")) {
-            return new ResponseEntity<>(orderRepository.findAll(), HttpStatus.OK);
+            List<OrderDTO> orderDTOs = new ArrayList<>();
+            for (Order order: orderRepository.findAll()) {
+                orderDTOs.add(getOrderDTOFromOrder(order));
+            }
+            return new ResponseEntity<>(orderDTOs, HttpStatus.OK);
         }
 
         if (!OrderState.contains(status)) {
@@ -69,9 +87,17 @@ public class OrderController {
         final OrderState os = OrderState.valueOf(status);
 
         if (lastWeek) {
-            return new ResponseEntity<>(orderService.getAllOrdersLastWeek(os), HttpStatus.OK);
+            List<OrderDTO> orderDTOs = new ArrayList<>();
+            for (Order order: orderService.getAllOrdersLastWeek(os)) {
+                orderDTOs.add(getOrderDTOFromOrder(order));
+            }
+            return new ResponseEntity<>(orderDTOs, HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(orderRepository.findByState(os), HttpStatus.OK);
+            List<OrderDTO> orderDTOs = new ArrayList<>();
+            for (Order order: orderRepository.findByState(os)) {
+                orderDTOs.add(getOrderDTOFromOrder(order));
+            }
+            return new ResponseEntity<>(orderDTOs, HttpStatus.OK);
         }
     }
 
@@ -86,7 +112,7 @@ public class OrderController {
      * @return list of Orders by given parameter
      */
     @GetMapping(value = "by_user_id/{user_id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<Order>> getOrdersByUserId(@PathVariable("user_id") long userId) {
+    public ResponseEntity<List<OrderDTO>> getOrdersByUserId(@PathVariable("user_id") long userId) {
         logger.debug("rest getOrderByUserId({})", userId);
 
         if (userInterface.getUser(userId).getStatusCode() == HttpStatusCode.valueOf(200)) {
@@ -94,7 +120,11 @@ public class OrderController {
             if (orders == null){
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The requested resource was not found");
             }
-            return new ResponseEntity<>(orders, HttpStatus.OK);
+            List<OrderDTO> orderDTOs = new ArrayList<>();
+            for (Order order: orders) {
+                orderDTOs.add(getOrderDTOFromOrder(order));
+            }
+            return new ResponseEntity<>(orderDTOs, HttpStatus.OK);
         } else {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -109,12 +139,12 @@ public class OrderController {
      * @return Order with given id
      */
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Order> getOrder(@PathVariable("id") long id) {
+    public ResponseEntity<OrderDTO> getOrder(@PathVariable("id") long id) {
         logger.debug("rest getOrder({})", id);
 
         Optional<Order> order = orderRepository.findById(id);
         if (order.isPresent()) {
-            return new ResponseEntity<>(order.get(), HttpStatus.OK);
+            return new ResponseEntity<>(getOrderDTOFromOrder(order.get()), HttpStatus.OK);
         } else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The requested resource was not found");
         }
@@ -134,7 +164,7 @@ public class OrderController {
      * @return Order on which action was performed
      */
     @PostMapping(value = "{order_id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Order> shipOrder(@PathVariable("order_id") long orderId, @RequestParam("action") String action) {
+    public ResponseEntity<OrderDTO> shipOrder(@PathVariable("order_id") long orderId, @RequestParam("action") String action) {
         logger.debug("rest shipOrder({})", orderId);
 
         Optional<Order> order = orderRepository.findById(orderId);
@@ -154,9 +184,28 @@ public class OrderController {
 
         order = orderRepository.findById(orderId);
         if (order.isPresent()) {
-            return new ResponseEntity<>(order.get(), HttpStatus.OK);
+            return new ResponseEntity<>(getOrderDTOFromOrder(order.get()), HttpStatus.OK);
         } else {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    private OrderDTO getOrderDTOFromOrder(Order order) {
+        OrderDTO orderDTO = beanMappingService.mapTo(order, OrderDTO.class);
+        orderDTO.setUser(userInterface.getUser(order.getUserId()).getBody());
+        List<OrderItemDTO> orderItemDTOs = new ArrayList<>();
+        for (OrderItem orderItem : order.getOrderItems()) {
+            OrderItemDTO orderItemDTO = beanMappingService.mapTo(orderItem, OrderItemDTO.class);
+            ProductDTO productDTO = productInterface.getProduct(orderItem.getProductId()).getBody();
+
+//            System.out.println(productDTO);
+
+            orderItemDTO.setProduct(productDTO);
+            orderItemDTOs.add(orderItemDTO);
+
+//            System.out.println(orderItemDTO.getProduct());
+        }
+//        System.out.println(orderItemDTOs.get(0).getProduct());
+        return orderDTO;
     }
 }
