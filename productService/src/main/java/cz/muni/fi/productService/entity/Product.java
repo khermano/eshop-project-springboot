@@ -54,7 +54,7 @@ public class Product {
     @Enumerated
     private Color color;
 
-    /*
+    /**
 	 * The day this item has been added to the eshop
 	 */
 	@Temporal(TemporalType.DATE)
@@ -68,7 +68,10 @@ public class Product {
 	@JoinTable(name="CURRENT_PRICE")
 	@Getter @Setter
 	private Price currentPrice;
-	
+
+	/**
+	 * It's randomly generated when application starts
+	 */
 	@OneToMany(fetch = FetchType.EAGER)
 	@OrderBy("priceStart DESC")
 	@JoinColumn(name="Product_FK")
