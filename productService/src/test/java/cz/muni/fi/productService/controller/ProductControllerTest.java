@@ -4,10 +4,12 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import cz.muni.fi.productService.dto.CategoryDTO;
 import cz.muni.fi.productService.dto.ProductCreateDTO;
+import cz.muni.fi.productService.dto.ProductDTO;
 import cz.muni.fi.productService.entity.Price;
 import cz.muni.fi.productService.entity.Product;
 import cz.muni.fi.productService.enums.Color;
 import cz.muni.fi.productService.enums.Currency;
+import cz.muni.fi.productService.feign.CategoryInterface;
 import cz.muni.fi.productService.repository.ProductRepository;
 import cz.muni.fi.productService.service.BeanMappingService;
 import cz.muni.fi.productService.service.ProductService;
@@ -18,7 +20,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.web.servlet.MockMvc;
 import java.io.IOException;
@@ -51,6 +55,9 @@ public class ProductControllerTest {
 	@Mock
 	private BeanMappingService beanMappingService;
 
+	@Mock
+    private CategoryInterface categoryInterface;
+
 	@InjectMocks
 	private ProductController productController;
 
@@ -65,15 +72,15 @@ public class ProductControllerTest {
 
 	@Test
 	public void debugTest() throws Exception {
-		doReturn(Collections.unmodifiableList(this.createProducts())).when(
-				productRepository).findAll();
 		mockMvc.perform(get("/"));
 	}
 
 	@Test
 	public void getAllProducts() throws Exception {
-		doReturn(Collections.unmodifiableList(this.createProducts())).when(
-				productRepository).findAll();
+		doReturn(Collections.unmodifiableList(this.createProducts())).when(productRepository).findAll();
+		doReturn(getMockedProductDTOList().get(0)).when(beanMappingService).mapTo(createProducts().get(0), ProductDTO.class);
+		doReturn(getMockedProductDTOList().get(1)).when(beanMappingService).mapTo(createProducts().get(1), ProductDTO.class);
+		doReturn(new ResponseEntity<>(new CategoryDTO(), HttpStatus.OK)).when(categoryInterface).getCategory(1L);
 
 		mockMvc.perform(get("/"))
 				.andExpect(status().isOk())
@@ -86,10 +93,11 @@ public class ProductControllerTest {
 
 	@Test
 	public void getValidProduct() throws Exception {
-		List<Optional<Product>> products = this.createProducts();
-
-		doReturn(products.get(0)).when(productRepository).findById(10L);
-		doReturn(products.get(1)).when(productRepository).findById(20L);
+		doReturn(Optional.of(createProducts().get(0))).when(productRepository).findById(10L);
+		doReturn(Optional.of(createProducts().get(1))).when(productRepository).findById(20L);
+		doReturn(getMockedProductDTOList().get(0)).when(beanMappingService).mapTo(createProducts().get(0), ProductDTO.class);
+		doReturn(getMockedProductDTOList().get(1)).when(beanMappingService).mapTo(createProducts().get(1), ProductDTO.class);
+		doReturn(new ResponseEntity<>(new CategoryDTO(), HttpStatus.OK)).when(categoryInterface).getCategory(1L);
 
 		mockMvc.perform(get("/10"))
 				.andExpect(status().isOk())
@@ -116,7 +124,7 @@ public class ProductControllerTest {
 		mockMvc.perform(delete("/10"))
 				.andExpect(status().isOk());
 	}
-        
+
 	@Test
 	public void deleteProductNonExisting() throws Exception {
 		doThrow(new RuntimeException("the product does not exist")).when(productRepository).deleteById(20L);
@@ -128,12 +136,18 @@ public class ProductControllerTest {
 	@Test
 	public void createProduct() throws Exception {
 		ProductCreateDTO productCreateDTO = new ProductCreateDTO();
+		productCreateDTO.setPrice(BigDecimal.valueOf(200));
+		productCreateDTO.setCurrency(Currency.CZK);
+		productCreateDTO.setCategoryId(1L);
 
 		Product mockedProduct = new Product();
 		mockedProduct.setId(1L);
+		mockedProduct.addCategoryId(1L);
 
 		doReturn(mockedProduct).when(beanMappingService).mapTo(productCreateDTO, Product.class);
 		doReturn(mockedProduct).when(productService).createProduct(any(Product.class));
+		doReturn(new ProductDTO()).when(beanMappingService).mapTo(mockedProduct, ProductDTO.class);
+		doReturn(new ResponseEntity<>(new CategoryDTO(), HttpStatus.OK)).when(categoryInterface).getCategory(1L);
 
 		String json = convertObjectToJsonBytes(productCreateDTO);
 
@@ -147,14 +161,15 @@ public class ProductControllerTest {
 
 	@Test
 	public void updateProduct() throws Exception {
-		List<Optional<Product>> products = this.createProducts();
+		Product product = new Product();
+		product.addCategoryId(1L);
 
-		doReturn(products.get(0)).when(productRepository).findById(10L);
-
+		doReturn(Optional.of(product)).when(productRepository).findById(10L);
 		doNothing().when(productService).changePrice(any(Product.class), any(Price.class));
-		Price newPrice = new Price();
-		
-		String json = convertObjectToJsonBytes(newPrice);
+		doReturn(new ProductDTO()).when(beanMappingService).mapTo(product, ProductDTO.class);
+		doReturn(new ResponseEntity<>(new CategoryDTO(), HttpStatus.OK)).when(categoryInterface).getCategory(1L);
+
+		String json = convertObjectToJsonBytes(new Price());
 
 		mockMvc.perform(
 				put("/10").contentType(MediaType.APPLICATION_JSON)
@@ -166,14 +181,13 @@ public class ProductControllerTest {
 	public void addCategory() throws Exception {
 		Product mockedProduct = new Product();
 		mockedProduct.setId(10L);
-
-		CategoryDTO categoryDTO = new CategoryDTO();
-		categoryDTO.setId(1L);
-		categoryDTO.setName("test");
+		mockedProduct.addCategoryId(1L);
 
 		doReturn(Optional.of(mockedProduct)).when(productRepository).findById(10L);
+		doReturn(new ProductDTO()).when(beanMappingService).mapTo(mockedProduct, ProductDTO.class);
+		doReturn(new ResponseEntity<>(new CategoryDTO(), HttpStatus.OK)).when(categoryInterface).getCategory(1L);
 
-		String json = convertObjectToJsonBytes(categoryDTO);
+		String json = convertObjectToJsonBytes(new CategoryDTO());
 
 		mockMvc.perform(
 				post("/10/categories").contentType(
@@ -181,7 +195,7 @@ public class ProductControllerTest {
 				.andExpect(status().isOk());
 	}
 
-	private List<Optional<Product>> createProducts() {
+	private List<Product> createProducts() {
 		Product productOne = new Product();
 		productOne.setId(10L);
 		productOne.setName("Raspberry PI");
@@ -190,6 +204,7 @@ public class ProductControllerTest {
 		currentPrice.setValue(new BigDecimal("34"));
 		productOne.setCurrentPrice(currentPrice);
 		productOne.setColor(Color.BLACK);
+		productOne.addCategoryId(1L);
 
 		Product productTwo = new Product();
 		productTwo.setId(20L);
@@ -199,8 +214,9 @@ public class ProductControllerTest {
 		price.setValue(new BigDecimal("44"));
 		productTwo.setCurrentPrice(price);
 		productTwo.setColor(Color.WHITE);
+		productTwo.addCategoryId(1L);
 
-		return Arrays.asList(Optional.of(productOne), Optional.of(productTwo));
+		return Arrays.asList(productOne, productTwo);
 	}
 
 	private static String convertObjectToJsonBytes(Object object)
@@ -208,5 +224,17 @@ public class ProductControllerTest {
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
 		return mapper.writeValueAsString(object);
+	}
+
+	private List<ProductDTO> getMockedProductDTOList() {
+		ProductDTO mockedProductDTO = new ProductDTO();
+		mockedProductDTO.setId(10L);
+		mockedProductDTO.setName("Raspberry PI");
+
+		ProductDTO mockedProductDTO2 = new ProductDTO();
+		mockedProductDTO2.setId(20L);
+		mockedProductDTO2.setName("Arduino");
+
+		return Arrays.asList(mockedProductDTO, mockedProductDTO2);
 	}
 }

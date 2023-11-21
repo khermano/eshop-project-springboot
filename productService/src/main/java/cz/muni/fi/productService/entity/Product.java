@@ -20,9 +20,7 @@ import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -32,9 +30,7 @@ import java.util.Set;
 
 @Entity
 @AllOrNothing(members={"image", "imageMimeType"})
-@NoArgsConstructor
 public class Product {
-	
 	@Id
 	@GeneratedValue(strategy= GenerationType.IDENTITY)
 	@Getter @Setter
@@ -68,7 +64,6 @@ public class Product {
 	@ElementCollection
 	private Set<Long> categoriesId = new HashSet<>();
 
-
 	@OneToOne
 	@JoinTable(name="CURRENT_PRICE")
 	@Getter @Setter
@@ -78,15 +73,6 @@ public class Product {
 	@OrderBy("priceStart DESC")
 	@JoinColumn(name="Product_FK")
 	private List<Price> priceHistory = new ArrayList<>();
-	
-//	public void setId(Long id){
-//		this.id = id;
-//	}
-//
-//	public void removeCategoryId(Long categoryId)
-//	{
-//		this.categoriesId.remove(categoryId);
-//	}
 
 	public Set<Long> getCategoriesId() {
 		return Collections.unmodifiableSet(categoriesId);
@@ -96,74 +82,13 @@ public class Product {
 		categoriesId.add(categoryId);
 	}
 
-
-//	public Date getAddedDate() {
-//		return addedDate;
-//	}
-//	public void setAddedDate(Date addedDate) {
-//		this.addedDate = addedDate;
-//	}
-	public Product(Long productId) {
-		this.id = productId;
-	}
-//	public Product() {
-//	}
-//	public byte[] getImage() {
-//		return image;
-//	}
-//
-//
-//	public String getImageMimeType() {
-//		return imageMimeType;
-//	}
-
-
-
-//	public void setImageMimeType(String imageMimeType) {
-//		this.imageMimeType = imageMimeType;
-//	}
-
-
-
-//	public Price getCurrentPrice() {
-//		return currentPrice;
-//	}
-
-
 	public void addHistoricalPrice(Price p){
 		priceHistory.add(p);
 	}
-	
-//	public void setCurrentPrice(Price currentPrice) {
-//		this.currentPrice = currentPrice;
-//	}
-
 
 	public List<Price> getPriceHistory() {
 		return Collections.unmodifiableList(priceHistory);
 	}
-
-
-//	public void setImage(byte[] image) {
-//		this.image = image;
-//	}
-
-
-//	public String getName() {
-//		return name;
-//	}
-//
-//	public void setName(String name) {
-//		this.name = name;
-//	}
-//
-//    public String getDescription() {
-//        return description;
-//    }
-//
-//    public void setDescription(String description) {
-//        this.description = description;
-//    }
 
     public Color getColor() {
 		return color;
@@ -172,11 +97,6 @@ public class Product {
 	public void setColor(Color color) {
 		this.color = color;
 	}
-
-
-//	public Long getId() {
-//		return id;
-//	}
 
 	@Override
 	public int hashCode() {

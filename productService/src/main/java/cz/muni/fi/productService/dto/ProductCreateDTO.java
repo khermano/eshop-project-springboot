@@ -5,34 +5,56 @@ import cz.muni.fi.productService.enums.Currency;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import java.math.BigDecimal;
 
-@Data
 public class ProductCreateDTO {
+    @Getter @Setter
     private byte[] image;
 
+    @Getter @Setter
     private String imageMimeType;
 
     @NotNull
     @Size(min = 3, max = 50)
+    @Getter @Setter
     private String name;
 
     @NotNull
     @Size(min = 3, max = 500)
+    @Getter @Setter
     private String description;
 
     private Color color;
 
     @NotNull
     @Min(0)
+    @Getter @Setter
     private BigDecimal price;
 
     @NotNull
     private Currency currency;
 
     @NotNull
+    @Getter @Setter
     private Long categoryId;
+
+    public Color getColor() {
+        return color;
+    }
+
+    public void setColor(Color color) {
+        this.color = color;
+    }
+
+    public Currency getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(Currency currency) {
+        this.currency = currency;
+    }
 
     @Override
     public int hashCode() {

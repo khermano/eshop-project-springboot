@@ -79,7 +79,6 @@ public class SampleDataLoading {
 
     @PostConstruct
     public void loadProductSampleData() throws IOException {
-        //TODO when categoryService is done this will be replaced by HTTP calls which will gave as relevant IDs
         Long foodId = 1L;
         Long officeId = 2L;
         Long flowersId = 3L;

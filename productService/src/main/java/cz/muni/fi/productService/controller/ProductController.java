@@ -2,10 +2,12 @@ package cz.muni.fi.productService.controller;
 
 import cz.muni.fi.productService.dto.CategoryDTO;
 import cz.muni.fi.productService.dto.ProductCreateDTO;
+import cz.muni.fi.productService.dto.ProductDTO;
 import cz.muni.fi.productService.entity.Price;
 import cz.muni.fi.productService.entity.Product;
 import cz.muni.fi.productService.enums.Currency;
 import cz.muni.fi.productService.exception.EshopServiceException;
+import cz.muni.fi.productService.feign.CategoryInterface;
 import cz.muni.fi.productService.repository.ProductRepository;
 import cz.muni.fi.productService.service.BeanMappingService;
 import cz.muni.fi.productService.service.ProductService;
@@ -24,9 +26,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * REST Controller for Products
@@ -44,6 +49,9 @@ public class ProductController {
     @Autowired
     private BeanMappingService beanMappingService;
 
+    @Autowired
+    private CategoryInterface categoryInterface;
+
     /**
      * Get list of Products
      * curl -i -X GET
@@ -52,10 +60,21 @@ public class ProductController {
      * @return list of Products
      */
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<Product>> getProducts() {
+    public ResponseEntity<List<ProductDTO>> getProducts() {
         logger.debug("rest getProducts()");
 
-        return new ResponseEntity<>(productRepository.findAll(), HttpStatus.OK);
+        try {
+            List<ProductDTO> productDTOs = new ArrayList<>();
+            for (Product product : productRepository.findAll()) {
+                ProductDTO productDTO = beanMappingService.mapTo(product, ProductDTO.class);
+                productDTO.setCategories(getCategoriesFromIds(product.getCategoriesId()));
+                productDTOs.add(productDTO);
+            }
+            return new ResponseEntity<>(productDTOs, HttpStatus.OK);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
     }
 
     /**
@@ -67,12 +86,14 @@ public class ProductController {
      * @return Product with given id
      */
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Product> getProduct(@PathVariable("id") long id) {
+    public ResponseEntity<ProductDTO> getProduct(@PathVariable("id") long id) {
         logger.debug("rest getProduct({})", id);
 
         Optional<Product> product = productRepository.findById(id);
         if (product.isPresent()) {
-            return new ResponseEntity<>(product.get(), HttpStatus.OK);
+            ProductDTO productDTO = beanMappingService.mapTo(product.get(), ProductDTO.class);
+            productDTO.setCategories(getCategoriesFromIds(product.get().getCategoriesId()));
+            return new ResponseEntity<>(productDTO, HttpStatus.OK);
         } else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The requested resource was not found");
         }
@@ -108,7 +129,7 @@ public class ProductController {
      */
     @PostMapping(value = "/create", consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Product> createProduct(@RequestBody ProductCreateDTO productInfo) {
+    public ResponseEntity<ProductDTO> createProduct(@RequestBody ProductCreateDTO productInfo) {
         logger.debug("rest createProduct()");
 
         try {
@@ -122,7 +143,11 @@ public class ProductController {
             product.setCurrentPrice(price);
             product.addHistoricalPrice(price);
             product.addCategoryId(productInfo.getCategoryId());
-            return new ResponseEntity<>(productService.createProduct(product), HttpStatus.OK);
+            product = productService.createProduct(product);
+
+            ProductDTO productDTO = beanMappingService.mapTo(product, ProductDTO.class);
+            productDTO.setCategories(getCategoriesFromIds(product.getCategoriesId()));
+            return new ResponseEntity<>(productDTO, HttpStatus.OK);
         } catch (Exception ex) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -140,7 +165,7 @@ public class ProductController {
      */
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Product> changePrice(@PathVariable("id") long id, @RequestBody Price newPrice) {
+    public ResponseEntity<ProductDTO> changePrice(@PathVariable("id") long id, @RequestBody Price newPrice) {
         logger.debug("rest changePrice({})", id);
 
         try {
@@ -152,7 +177,9 @@ public class ProductController {
             }
             product = productRepository.findById(id);
             if (product.isPresent()) {
-                return new ResponseEntity<>(product.get(), HttpStatus.OK);
+                ProductDTO productDTO = beanMappingService.mapTo(product.get(), ProductDTO.class);
+                productDTO.setCategories(getCategoriesFromIds(product.get().getCategoriesId()));
+                return new ResponseEntity<>(productDTO, HttpStatus.OK);
             } else {
                 throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE);
             }
@@ -174,14 +201,16 @@ public class ProductController {
      */
     @PostMapping(value = "/{id}/categories", consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Product> addCategory(@PathVariable("id") long id, @RequestBody CategoryDTO category) {
+    public ResponseEntity<ProductDTO> addCategory(@PathVariable("id") long id, @RequestBody CategoryDTO category) {
         logger.debug("rest addCategory({})", id);
 
         try {
             productService.addCategory(id, category);
             Optional<Product> product = productRepository.findById(id);
             if (product.isPresent()) {
-                return new ResponseEntity<>(product.get(), HttpStatus.OK);
+                ProductDTO productDTO = beanMappingService.mapTo(product.get(), ProductDTO.class);
+                productDTO.setCategories(getCategoriesFromIds(product.get().getCategoriesId()));
+                return new ResponseEntity<>(productDTO, HttpStatus.OK);
             } else {
                 throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE);
             }
@@ -235,5 +264,13 @@ public class ProductController {
         } catch (IllegalArgumentException e){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The requested resource was not found");
         }
+    }
+
+    private Set<CategoryDTO> getCategoriesFromIds(Set<Long> categoriesId) {
+        Set<CategoryDTO> categories = new HashSet<>();
+        for (Long categoryId: categoriesId) {
+            categories.add(categoryInterface.getCategory(categoryId).getBody());
+        }
+        return categories;
     }
 }
