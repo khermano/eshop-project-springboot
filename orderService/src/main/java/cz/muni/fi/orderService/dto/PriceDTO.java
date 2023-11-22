@@ -1,11 +1,15 @@
 package cz.muni.fi.orderService.dto;
 
 import cz.muni.fi.orderService.enums.Currency;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import java.math.BigDecimal;
 import java.util.Date;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class PriceDTO {
 	private Long id;
 	private BigDecimal value;

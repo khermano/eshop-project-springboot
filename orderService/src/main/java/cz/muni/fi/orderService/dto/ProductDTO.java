@@ -10,26 +10,58 @@ import java.util.List;
 import java.util.Set;
 
 public class ProductDTO {
-    @Getter() @Setter()
+//    @Getter() @Setter()
     private Long id;
 
-    @Getter() @Setter()
+//    @Getter() @Setter()
     private String name;
 
-    @Getter() @Setter()
+//    @Getter() @Setter()
     private String description;
 
     private Color color;
 
-    @Getter() @Setter()
+//    @Getter() @Setter()
     private Date addedDate;
 
     private Set<CategoryDTO> categories = new HashSet<>();
 
     private List<PriceDTO> priceHistory = new ArrayList<>();
 
+//    @Getter() @Setter()
     private PriceDTO currentPrice;
     
+//    public Set<CategoryDTO> getCategories() {
+//        return categories;
+//    }
+//    public void setCategories(Set<CategoryDTO> categories) {
+//        this.categories = categories;
+//    }
+//
+//    public List<PriceDTO> getPriceHistory() {
+//        return priceHistory;
+//    }
+//
+//    public void setPriceHistory( List<PriceDTO> priceHistory) {
+//        this.priceHistory=priceHistory;
+//    }
+//
+//    public Color getColor() {
+//        return color;
+//    }
+//
+//    public void setColor(Color color) {
+//        this.color = color;
+//    }
+
+//    public void setCurrentPrice(PriceDTO currentPrice) {
+//        this.currentPrice = currentPrice;
+//    }
+//
+//    public PriceDTO getCurrentPrice() {
+//        return currentPrice;
+//    }
+
     public Set<CategoryDTO> getCategories() {
         return categories;
     }
@@ -37,12 +69,45 @@ public class ProductDTO {
         this.categories = categories;
     }
 
+
+    public void setCurrentPrice(PriceDTO currentPrice) {
+        this.currentPrice = currentPrice;
+    }
+
+
+
+
+    public PriceDTO getCurrentPrice() {
+        return currentPrice;
+    }
+
+
+
     public List<PriceDTO> getPriceHistory() {
         return priceHistory;
     }
 
     public void setPriceHistory( List<PriceDTO> priceHistory) {
         this.priceHistory=priceHistory;
+    }
+
+
+
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public Color getColor() {
@@ -53,14 +118,23 @@ public class ProductDTO {
         this.color = color;
     }
 
-    public void setCurrentPrice(PriceDTO currentPrice) {
-        this.currentPrice = currentPrice;
+    public Date getAddedDate() {
+        return addedDate;
     }
 
-    public PriceDTO getCurrentPrice() {
-        return currentPrice;
+    public void setAddedDate(Date addedDate) {
+        this.addedDate = addedDate;
     }
-    
+
+    public Long getId() {
+        return id;
+    }
+
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     @Override
     public int hashCode() {
         final int prime = 31;

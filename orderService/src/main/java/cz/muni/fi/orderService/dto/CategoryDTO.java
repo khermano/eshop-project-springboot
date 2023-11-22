@@ -1,8 +1,12 @@
 package cz.muni.fi.orderService.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class CategoryDTO {
     private Long id;
 

@@ -13,6 +13,7 @@ import lombok.Setter;
 public class OrderItem {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@Getter @Setter
 	private Long id;
 
 	@Getter @Setter
