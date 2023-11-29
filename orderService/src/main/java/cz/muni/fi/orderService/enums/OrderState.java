@@ -6,7 +6,7 @@ public enum OrderState {
     /**
      * Checks the enum for a string contained within
      * 
-     * @param valueString
+     * @param valueString value of type String
      * @return true if the string is contained in the enum 
      */
     public static boolean contains(final String valueString) {

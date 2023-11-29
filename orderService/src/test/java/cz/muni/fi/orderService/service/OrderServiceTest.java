@@ -52,7 +52,8 @@ public class OrderServiceTest {
         cal.set(2015, Calendar.FEBRUARY, 10, 0, 0, 0);
         cal.add(Calendar.DAY_OF_MONTH, -7);
 
-        Order o = new Order(4L);
+        Order o = new Order();
+        o.setId(4L);
         o.setState(OrderState.CANCELED);
         o.setCreated(new Date());
 
