@@ -14,35 +14,39 @@ https://github.com/khermano/433511_Master_thesis_project
 - Maven 3.9.4
 
 ## **How to run this:**
-- We need to have every project of this repository up and running (see bellow)
-- application endpoints will be then available at http://localhost:8080
 
-***Run serviceRegistry:***
+***Run serviceRegistry (Eureka server):***
 - `cd eshop-project-springboot/serviceRegistry`
 - `mvn clean install`
 - `mvn spring-boot:run`
 
-***Run userService:***
+***Run userService (Eureka client - service):***
 - `cd eshop-project-springboot/userService`
 - `mvn clean install`
 - `mvn spring-boot:run`
 
-***Run categoryService:***
+***Run categoryService (Eureka client - service):***
 - `cd eshop-project-springboot/categoryService`
 - `mvn clean install`
 - `mvn spring-boot:run`
 
-***Run productService:***
+***Run productService (Eureka client - service):***
 - `cd eshop-project-springboot/productService`
 - `mvn clean install`
 - `mvn spring-boot:run`
 
-***Run orderService:***
+***Run orderService (Eureka client - service):***
 - `cd eshop-project-springboot/orderService`
 - `mvn clean install`
 - `mvn spring-boot:run`
 
-***Run apiGateway:***
+***Run apiGateway (Eureka client - API Gateway):***
 - `cd eshop-project-springboot/apiGateway`
 - `mvn clean install`
 - `mvn spring-boot:run`
+
+## About the service:
+
+- we need to have every project of this repository up and running
+- application endpoints will be then available at http://localhost:8080
+- Eureka server info can be found here: http://localhost:8761
