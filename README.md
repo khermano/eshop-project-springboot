@@ -62,3 +62,18 @@ https://github.com/khermano/433511_Master_thesis_project
   - productService: http://localhost:8083/actuator/health
   - orderService: http://localhost:8084/actuator/health
   - apiGateway: http://localhost:8080/actuator/health
+
+### Open API - Swagger UI
+
+- **userService:**
+  - Open API descriptions: http://localhost:8081/api-docs
+  - Swagger UI: http://localhost:8081/swagger-ui/index.html
+- **categoryService:**
+  - Open API descriptions: http://localhost:8082/api-docs
+  - Swagger UI: http://localhost:8082/swagger-ui/index.html
+- **productService:**
+  - Open API descriptions: http://localhost:8083/api-docs
+  - Swagger UI: http://localhost:8083/swagger-ui/index.html
+- **orderService:**
+  - Open API descriptions: http://localhost:8084/api-docs
+  - Swagger UI: http://localhost:8084/swagger-ui/index.html
