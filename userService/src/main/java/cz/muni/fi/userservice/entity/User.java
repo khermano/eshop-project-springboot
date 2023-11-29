@@ -43,42 +43,4 @@ public class User {
 	@NotNull
 	@Temporal(TemporalType.DATE)
 	private Date joinedDate;
-
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((email == null) ? 0 : email.hashCode());
-        return result;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (!(obj instanceof User))
-            return false;
-        User other = (User) obj;
-        if (email == null) {
-            if (other.getEmail() != null)
-                return false;
-        } else if (!email.equals(other.getEmail()))
-            return false;
-        return true;
-    }
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", email='" + email + '\'' +
-                ", givenName='" + givenName + '\'' +
-                ", surname='" + surname + '\'' +
-                ", phone='" + phone + '\'' +
-                ", address='" + address + '\'' +
-                ", joinedDate=" + joinedDate +
-                '}';
-    }
 }
