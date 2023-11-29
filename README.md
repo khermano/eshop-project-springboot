@@ -11,7 +11,7 @@ https://github.com/khermano/433511_Master_thesis_project
 
 ## **Prerequisites**
 - Java 21
-- Maven 3.9.4
+- Maven 3.9.4+
 
 ## **Build application**
 
