@@ -32,8 +32,8 @@ public class CategoryRepositoryTest {
 		cat1assert.setName("cat1");
 		cat2assert.setName("cat2");
 
-		Assertions.assertTrue(categories.contains(cat1assert));
-		Assertions.assertTrue(categories.contains(cat2assert));
+		Assertions.assertEquals(categories.get(0).getName(), cat1assert.getName());
+		Assertions.assertEquals(categories.get(1).getName(), cat2assert.getName());
 	}
 	
 	@Test
