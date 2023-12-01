@@ -67,3 +67,9 @@ https://github.com/khermano/433511_Master_thesis_project
 
 - is available at http://localhost:8080/swagger-ui.html
 - you can choose a service with "Select a definition"
+
+### Spring Boot Dev Tools
+
+- we can use Live Reload in IntelliJ IDEA following this video https://www.youtube.com/watch?v=BvIM9gNTDM4&ab_channel=coder4life
+- NOTE: you need to run the application from IntelliJ IDEA
+- NOTE: you need to wait a couple of seconds until the application reloads itself
