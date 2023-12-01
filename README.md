@@ -3,7 +3,7 @@
 This repository contains a migration of the backend of the monolith application to the microservice
 architecture with Spring Boot framework. 
 
-This migration was done for the master thesis which can be found here: 
+This migration was done for the master thesis which, can be found here: 
 https://is.muni.cz/auth/rozpis/tema?fakulta=1433;balik=58;tema=418130;uplne_info=1
 
 The most relevant part of the project we migrated can be found here: 
@@ -47,15 +47,15 @@ https://github.com/khermano/433511_Master_thesis_project
 
 ## About the service
 
-- every project of this repository have to be up and running for application to work correct
+- every project of this repository has to be up and running for the application to work correctly
 - application endpoints will be then available at http://localhost:8080
 - Eureka server info can be found here: http://localhost:8761
-  - here we can see in one place if applications are UP or DOWN
 
 ### Health info details
 
-- application is using Spring Actuator to provide information about health od the services
-- more details about projects can be found on endpoints:
+- application uses Spring Actuator to provide information about the health of the services
+- the status of individual services can be found on the Eureka server: http://localhost:8761
+- more details about the health of the application can be found on endpoints:
   - serviceRegistry: http://localhost:8761/actuator/health
   - userService: http://localhost:8081/actuator/health
   - categoryService: http://localhost:8082/actuator/health
@@ -66,4 +66,4 @@ https://github.com/khermano/433511_Master_thesis_project
 ### Swagger UI
 
 - is available at http://localhost:8080/swagger-ui.html
-- you can choose service with "Select a definition"
+- you can choose a service with "Select a definition"
