@@ -67,19 +67,19 @@ public class OrderServiceTest {
 
     @Test
     public void ship() {
-        orderService.shipOrder(orderReceived);
+        orderService.shipOrder(orderReceived, OrderState.SHIPPED);
         Assertions.assertEquals(orderReceived.getState(), OrderState.SHIPPED);
     }
 
     @Test
     public void finish() {
-        orderService.finishOrder(orderShipped);
+        orderService.shipOrder(orderShipped, OrderState.DONE);
         Assertions.assertEquals(orderShipped.getState(), OrderState.DONE);
     }
 
     @Test
     public void cancel() {
-        orderService.cancelOrder(orderReceived);
+        orderService.shipOrder(orderReceived, OrderState.CANCELED);
         Assertions.assertEquals(orderReceived.getState(), OrderState.CANCELED);
     }
 }

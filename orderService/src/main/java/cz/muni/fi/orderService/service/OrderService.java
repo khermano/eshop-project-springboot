@@ -16,11 +16,7 @@ public interface OrderService {
 	 */
 	List<Order> getAllOrdersLastWeek(OrderState state);
 
-	void shipOrder(Order order);
-
-	void finishOrder(Order order);
-
-	void cancelOrder(Order order);
+	void shipOrder(Order order, OrderState state);
 
 	OrderDTO getOrderDTOFromOrder(Order order);
 }

@@ -157,7 +157,7 @@ public class OrderControllerTest {
     @Test
     public void shipOrder() throws Exception {
         doReturn(Optional.of(createOrders().get(0))).when(orderRepository).findById(1L);
-        doNothing().when(orderService).shipOrder(any(Order.class));
+        doNothing().when(orderService).shipOrder(any(Order.class), any(OrderState.class));
         doReturn(getMockedOrderDTOList().get(0)).when(orderService).getOrderDTOFromOrder(any(Order.class));
 
         mockMvc.perform(post("/1").param("action", "SHIP"))

@@ -167,11 +167,11 @@ public class OrderController {
         }*/
 
         if (action.equalsIgnoreCase("CANCEL")) {
-            orderService.cancelOrder(order.get());
+            orderService.shipOrder(order.get(), OrderState.CANCELED);
         } else if (action.equalsIgnoreCase("SHIP")) {
-            orderService.shipOrder(order.get());
+            orderService.shipOrder(order.get(), OrderState.SHIPPED);
         } else if (action.equalsIgnoreCase("FINISH")) {
-            orderService.finishOrder(order.get());
+            orderService.shipOrder(order.get(), OrderState.DONE);
         } else {
             throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE);
         }

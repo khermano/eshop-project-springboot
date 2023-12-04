@@ -2,11 +2,9 @@ package cz.muni.fi.orderService.service.impl;
 
 import cz.muni.fi.orderService.dto.OrderDTO;
 import cz.muni.fi.orderService.dto.OrderItemDTO;
-import cz.muni.fi.orderService.dto.PriceDTO;
 import cz.muni.fi.orderService.dto.ProductDTO;
 import cz.muni.fi.orderService.entity.Order;
 import cz.muni.fi.orderService.entity.OrderItem;
-import cz.muni.fi.orderService.enums.Currency;
 import cz.muni.fi.orderService.enums.OrderState;
 import cz.muni.fi.orderService.exception.EshopServiceException;
 import cz.muni.fi.orderService.feign.ProductInterface;
@@ -16,16 +14,8 @@ import cz.muni.fi.orderService.repository.OrderRepository;
 import cz.muni.fi.orderService.service.BeanMappingService;
 import cz.muni.fi.orderService.service.OrderService;
 import cz.muni.fi.orderService.utils.Transition;
-import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.math.BigDecimal;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -87,23 +77,9 @@ public class OrderServiceImpl implements OrderService {
 	}
 
 	@Override
-	public void shipOrder(Order order) {
-		checkTransition(order.getState(), OrderState.SHIPPED);
-		order.setState(OrderState.SHIPPED);
-		orderRepository.save(order);
-	}
-
-	@Override
-	public void finishOrder(Order order) {
-		checkTransition(order.getState(), OrderState.DONE);
-		order.setState(OrderState.DONE);
-		orderRepository.save(order);
-	}
-
-	@Override
-	public void cancelOrder(Order order) {
-		checkTransition(order.getState(), OrderState.CANCELED);
-		order.setState(OrderState.CANCELED);
+	public void shipOrder(Order order, OrderState state) {
+		checkTransition(order.getState(), state);
+		order.setState(state);
 		orderRepository.save(order);
 	}
 
