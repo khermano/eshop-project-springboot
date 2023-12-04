@@ -12,6 +12,9 @@ import java.util.List;
 @OpenAPIDefinition
 @Configuration
 public class OpenApiConfigs {
+    @Value( "${spring.application.name}" )
+    private String applicationName;
+
     @Bean
     public OpenAPI customOpenAPI(
             @Value("${openapi.service.title}") String serviceTitle,
@@ -20,9 +23,9 @@ public class OpenApiConfigs {
         final String securitySchemeName = "bearerAuth";
         return new OpenAPI()
                 //Swagger UI server has to be defined the way API Gateway recognize it thanks to the Eureka server and Feign Client!
-                //that is why we need to hardcode application name here
+                //that is why we need an application name here
                 //we also added /eshop-rest into the API Gateway path so the path is as in original project
-                .servers(List.of(new Server().url(url + "/eshop-rest/categories/")))
+                .servers(List.of(new Server().url(url + "/eshop-rest/" + applicationName)))
                 .info(new Info().title(serviceTitle).version(serviceVersion));
     }
 }
