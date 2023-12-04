@@ -102,19 +102,25 @@ public class OrderController {
     public ResponseEntity<List<OrderDTO>> getOrdersByUserId(@PathVariable("user_id") long userId) {
         logger.debug("rest getOrderByUserId({})", userId);
 
-        if (userInterface.getUser(userId).getStatusCode() == HttpStatusCode.valueOf(200)) {
-            List<Order> orders = orderRepository.findByUserId(userId);
-            if (orders == null){
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The requested resource was not found");
+        List<OrderDTO> orderDTOs = new ArrayList<>();
+        List<Order> orders = new ArrayList<>();
+
+        try {
+            if (userInterface.getUser(userId).getStatusCode() == HttpStatusCode.valueOf(200)) {
+                orders = orderRepository.findByUserId(userId);
             }
-            List<OrderDTO> orderDTOs = new ArrayList<>();
-            for (Order order: orders) {
-                orderDTOs.add(orderService.getOrderDTOFromOrder(order));
-            }
-            return new ResponseEntity<>(orderDTOs, HttpStatus.OK);
-        } else {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (Exception e) {
+            // we needed to add to reproduce behaviour of the original project
         }
+
+        if (orders == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The requested resource was not found");
+        }
+        for (Order order : orders) {
+            orderDTOs.add(orderService.getOrderDTOFromOrder(order));
+        }
+
+        return new ResponseEntity<>(orderDTOs, HttpStatus.OK);
     }
 
     /**
