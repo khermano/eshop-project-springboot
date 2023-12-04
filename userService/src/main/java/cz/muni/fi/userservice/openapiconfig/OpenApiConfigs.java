@@ -21,7 +21,8 @@ public class OpenApiConfigs {
         return new OpenAPI()
                 //Swagger UI server has to be defined the way API Gateway recognize it thanks to the Eureka server and Feign Client!
                 //that is why we need to hardcode application name here
-                .servers(List.of(new Server().url(url + "/users/")))
+                //we also added /eshop-rest into the API Gateway path so the path is as in original project
+                .servers(List.of(new Server().url(url + "/eshop-rest/users/")))
                 .info(new Info().title(serviceTitle).version(serviceVersion));
     }
 }
