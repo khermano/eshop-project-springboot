@@ -161,9 +161,10 @@ public class OrderController {
         logger.debug("rest shipOrder({})", orderId);
 
         Optional<Order> order = orderRepository.findById(orderId);
-        if (order.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The requested resource was not found");
-        }
+        //I have to give up the check to get same behaviour as in the original project
+        /*if (order.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+        }*/
 
         if (action.equalsIgnoreCase("CANCEL")) {
             orderService.cancelOrder(order.get());

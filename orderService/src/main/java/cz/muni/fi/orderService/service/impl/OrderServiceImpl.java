@@ -90,18 +90,21 @@ public class OrderServiceImpl implements OrderService {
 	public void shipOrder(Order order) {
 		checkTransition(order.getState(), OrderState.SHIPPED);
 		order.setState(OrderState.SHIPPED);
+		orderRepository.save(order);
 	}
 
 	@Override
 	public void finishOrder(Order order) {
 		checkTransition(order.getState(), OrderState.DONE);
 		order.setState(OrderState.DONE);
+		orderRepository.save(order);
 	}
 
 	@Override
 	public void cancelOrder(Order order) {
 		checkTransition(order.getState(), OrderState.CANCELED);
 		order.setState(OrderState.CANCELED);
+		orderRepository.save(order);
 	}
 
 	@Override
