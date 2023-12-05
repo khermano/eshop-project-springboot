@@ -17,6 +17,7 @@ import java.util.Optional;
 
 /**
  * REST Controller for Users
+ * Methods are implemented in a way that they imitate the ones from the original project
  */
 @RestController
 public class UserController {
