@@ -52,13 +52,13 @@ public class OrderController {
      * @param status can be {ALL, RECEIVED, CANCELED, SHIPPED, DONE}
      *               defines orders with StateOrder (RECEIVED, CANCELED, SHIPPED, DONE) or ALL orders
      * @param lastWeek if true we consider only orders from last week
+     *                 default value is false
      * @return list of Orders by given parameters
      * @throws ResponseStatusException 406 if status parameter not valid
      */
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<OrderDTO>> getOrders(@RequestParam("status") String status,
-                                                      @RequestParam(value = "last_week", required = false, defaultValue = "false")
-                                       boolean lastWeek) {
+    public ResponseEntity<List<OrderDTO>> getOrders(@RequestParam("status") String status, @RequestParam(value = "last_week",
+            required = false, defaultValue = "false") boolean lastWeek) {
         logger.debug("rest getOrders({},{})", lastWeek, status);
 
         if (status.equalsIgnoreCase("ALL")) {

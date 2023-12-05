@@ -59,7 +59,6 @@ public class OrderRepositoryTest {
 		Optional<Order> found = orderRepository.findById(321321L);
 		Assertions.assertFalse(found.isPresent());
 	}
-
 	
 	@Test
 	public void find() {
