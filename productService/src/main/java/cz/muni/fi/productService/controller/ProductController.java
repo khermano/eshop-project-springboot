@@ -161,6 +161,7 @@ public class ProductController {
      *
      * @param id identified of the product to be updated
      * @param newPrice add only value and currency, the other parameters are added by the application!
+     *                 value of price can't be changed more than 10% otherwise HttpStatus.NOT_ACCEPTABLE is thrown
      * @return the updated product
      */
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -171,15 +172,15 @@ public class ProductController {
         // method need to imitate behaviour of the original project's method!
 
         Optional<Product> product = productRepository.findById(id);
-        if (product.isPresent()) {
-            try {
-                productService.changePrice(product.get(), newPrice);
-            } catch (EshopServiceException e) {
-                throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE);
-            }
-        } else {
+        if (product.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+        try {
+            productService.changePrice(product.get(), newPrice);
+        } catch (EshopServiceException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE);
+        }
+
         product = productRepository.findById(id);
         if (product.isPresent()) {
             ProductDTO productDTO = beanMappingService.mapTo(product.get(), ProductDTO.class);
