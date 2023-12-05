@@ -149,7 +149,7 @@ public class ProductController {
             productDTO.setCategories(getCategoriesFromIds(product.getCategoriesId()));
             return new ResponseEntity<>(productDTO, HttpStatus.OK);
         } catch (Exception ex) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "the requested resource already exists");
         }
     }
 
