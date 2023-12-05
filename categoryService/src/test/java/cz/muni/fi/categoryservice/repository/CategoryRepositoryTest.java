@@ -60,10 +60,7 @@ public class CategoryRepositoryTest {
 		Assertions.assertNotNull(categoryRepository.findByName("Electronics"));
 		Assertions.assertEquals(categoryRepository.findByName("Electronics").getName(), "Electronics");
 	}
-	
-	/**
-	 * Checks that null repository object will be empty for not existent ID and also that delete operation works.
-	 */
+
 	@Test()
 	public void delete(){
 		Category cat = new Category();
