@@ -30,13 +30,12 @@ public class ProductServiceTest {
     @InjectMocks
     private ProductServiceImpl productService;
 
+    private Product testProduct;
+
     @BeforeEach
-    public void setup() throws ServiceException
-    {
+    public void setup() throws ServiceException {
         MockitoAnnotations.openMocks(this);
     }
-
-    private Product testProduct;
     
     @BeforeEach
     public void prepareTestProduct(){
