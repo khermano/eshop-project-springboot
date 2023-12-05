@@ -161,10 +161,9 @@ public class OrderController {
         logger.debug("rest shipOrder({})", orderId);
 
         Optional<Order> order = orderRepository.findById(orderId);
-        //I have to give up the check to get same behaviour as in the original project
-        /*if (order.isEmpty()) {
+        if (order.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
-        }*/
+        }
 
         if (action.equalsIgnoreCase("CANCEL")) {
             orderService.shipOrder(order.get(), OrderState.CANCELED);
