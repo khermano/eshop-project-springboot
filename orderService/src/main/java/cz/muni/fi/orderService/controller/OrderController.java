@@ -110,12 +110,9 @@ public class OrderController {
                 orders = orderRepository.findByUserId(userId);
             }
         } catch (Exception e) {
-            // we needed to add to reproduce behaviour of the original project
+            // we needed to catch the error caused by not existing user to reproduce behaviour of the original project
         }
 
-        if (orders == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The requested resource was not found");
-        }
         for (Order order : orders) {
             orderDTOs.add(orderService.getOrderDTOFromOrder(order));
         }
