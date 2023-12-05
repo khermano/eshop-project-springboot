@@ -27,8 +27,9 @@ public class UserController {
 
     /**
      * Returns all users
-     * curl -i -X GET
-     * http://localhost:8081
+     *
+     * example for userService:
+     * curl -i -X GET http://localhost:8081
      *
      * @return list of Users
      */
@@ -41,8 +42,9 @@ public class UserController {
 
     /**
      * Getting user according to id
-     * curl -i -X GET
-     * http://localhost:8081/1
+     *
+     * example for userService:
+     * curl -i -X GET http://localhost:8081/1
      * 
      * @param id user identifier
      * @return User
