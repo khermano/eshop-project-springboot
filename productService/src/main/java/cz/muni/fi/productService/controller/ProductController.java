@@ -110,9 +110,9 @@ public class ProductController {
     public void deleteProduct(@PathVariable("id") long id) {
         logger.debug("rest deleteProduct({})", id);
 
-        try {
+        if (productRepository.existsById(id)) {
             productRepository.deleteById(id);
-        } catch (Exception ex) {
+        } else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The requested resource was not found");
         }
     }
