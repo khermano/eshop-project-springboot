@@ -10,8 +10,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
@@ -30,8 +28,9 @@ public class CategoryController {
 
     /**
      * Get list of Categories
-     * curl -i -X GET
-     * http://localhost:8082
+     *
+     * example in categoryService:
+     * curl -i -X GET http://localhost:8082
      *
      * @return list of Categories
      */
@@ -44,8 +43,9 @@ public class CategoryController {
 
     /**
      * Get Category specified by ID
-     * curl -i -X GET
-     * http://localhost:8082/1
+     *
+     * example in categoryService:
+     * curl -i -X GET http://localhost:8082/1
      * 
      * @param id identifier for the category
      * @return Category with given ID
@@ -59,40 +59,6 @@ public class CategoryController {
             return new ResponseEntity<>(category.get(), HttpStatus.OK);
         } else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The requested resource was not found");
-        }
-    }
-
-    /**
-     * Create a new product by POST method
-     * curl -X POST -i -H "Content-Type: application/json" --data
-     * '{"id":"6","name":"test"}'
-     * http://localhost:8082/create
-     *
-     * (This method is not from the original project, it needed to be created for the
-     * ProductService's addCategory method, so the original functionality stays)
-     *
-     * @param categoryInfo Category with required fields for creation
-     * @return the created category
-     */
-    @PostMapping(value = "/create", consumes = MediaType.APPLICATION_JSON_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Category> createCategory(@RequestBody Category categoryInfo) {
-        logger.debug("rest createCategory()");
-
-        Optional<Category> category = categoryRepository.findById(categoryInfo.getId());
-        if (category.isPresent()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-        }
-        if (categoryInfo.getId() == null || categoryInfo.getName() == null || categoryInfo.getName().isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-        }
-
-        try {
-            categoryRepository.save(categoryInfo);
-            category = categoryRepository.findById(categoryInfo.getId());
-            return new ResponseEntity<>(category.get(), HttpStatus.OK);
-        } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

@@ -26,20 +26,16 @@ public class CategoryRepositoryTest {
 		
 		List<Category> categories  = categoryRepository.findAll();
 		Assertions.assertEquals(categories.size(), 2);
-		
-		Category cat1assert = new Category();
-		Category cat2assert = new Category();
-		cat1assert.setName("cat1");
-		cat2assert.setName("cat2");
 
-		Assertions.assertEquals(categories.get(0).getName(), cat1assert.getName());
-		Assertions.assertEquals(categories.get(1).getName(), cat2assert.getName());
+		Assertions.assertEquals(categories.get(0).getName(), cat1.getName());
+		Assertions.assertEquals(categories.get(1).getName(), cat2.getName());
 	}
 	
 	@Test
 	public void nullCategoryNameNotAllowed(){
 		Category cat = new Category();
 		cat.setName(null);
+
 		Assertions.assertThrows(ConstraintViolationException.class, () -> categoryRepository.save(cat));
 	}
 	
@@ -48,8 +44,10 @@ public class CategoryRepositoryTest {
 		Category cat = new Category();
 		cat.setName("Electronics");
 		categoryRepository.save(cat);
+
 		Category cat2 = new Category();
 		cat2.setName("Electronics");
+
 		Assertions.assertThrows(DataAccessException.class, () -> categoryRepository.save(cat2));
 	}
 	
@@ -58,6 +56,7 @@ public class CategoryRepositoryTest {
 		Category cat = new Category();
 		cat.setName("Electronics");
 		categoryRepository.save(cat);
+
 		Assertions.assertNotNull(categoryRepository.findByName("Electronics"));
 		Assertions.assertEquals(categoryRepository.findByName("Electronics").getName(), "Electronics");
 	}
@@ -70,6 +69,7 @@ public class CategoryRepositoryTest {
 		Category cat = new Category();
 		cat.setName("Electronics");
 		categoryRepository.save(cat);
+
 		Assertions.assertTrue(categoryRepository.findById(cat.getId()).isPresent());
 		categoryRepository.delete(cat);
 		Assertions.assertFalse(categoryRepository.findById(cat.getId()).isPresent());
