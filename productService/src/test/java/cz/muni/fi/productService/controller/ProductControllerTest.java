@@ -121,13 +121,15 @@ public class ProductControllerTest {
 
 	@Test
 	public void deleteProduct() throws Exception {
+		doReturn(true).when(productRepository).existsById(any(Long.class));
+
 		mockMvc.perform(delete("/10"))
 				.andExpect(status().isOk());
 	}
 
 	@Test
 	public void deleteProductNonExisting() throws Exception {
-		doThrow(new RuntimeException("the product does not exist")).when(productRepository).deleteById(20L);
+		doReturn(false).when(productRepository).existsById(any(Long.class));
 
 		mockMvc.perform(delete("/20"))
 				.andExpect(status().isNotFound());
