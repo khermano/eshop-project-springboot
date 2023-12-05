@@ -64,7 +64,6 @@ public class OrderServiceTest {
         Assertions.assertEquals(4L, orders.get(0).getId());
     }
 
-
     @Test
     public void ship() {
         orderService.shipOrder(orderReceived, OrderState.SHIPPED);

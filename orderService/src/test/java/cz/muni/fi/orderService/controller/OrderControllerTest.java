@@ -4,10 +4,8 @@ import cz.muni.fi.orderService.dto.OrderDTO;
 import cz.muni.fi.orderService.dto.UserDTO;
 import cz.muni.fi.orderService.entity.Order;
 import cz.muni.fi.orderService.enums.OrderState;
-import cz.muni.fi.orderService.feign.ProductInterface;
 import cz.muni.fi.orderService.feign.UserInterface;
 import cz.muni.fi.orderService.repository.OrderRepository;
-import cz.muni.fi.orderService.service.BeanMappingService;
 import cz.muni.fi.orderService.service.OrderService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -38,7 +36,6 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standal
 
 @ExtendWith(MockitoExtension.class)
 public class OrderControllerTest {
-
     @Mock
     private OrderService orderService;
 
@@ -47,12 +44,6 @@ public class OrderControllerTest {
 
     @Mock
     private UserInterface userInterface;
-
-    @Mock
-    private ProductInterface productInterface;
-
-    @Mock
-    private BeanMappingService beanMappingService;
 
     @InjectMocks
     private OrderController orderController;
@@ -68,6 +59,7 @@ public class OrderControllerTest {
     @Test
     public void getAllOrders() throws Exception {
         List<Order> orders = Arrays.asList(createOrders().get(0), createOrders().get(1), createOrders().get(5));
+
         doReturn(orders).when(orderRepository).findAll();
         doReturn(getMockedOrderDTOList().get(0)).when(orderService).getOrderDTOFromOrder(orders.get(0));
         doReturn(getMockedOrderDTOList().get(1)).when(orderService).getOrderDTOFromOrder(orders.get(1));
@@ -174,7 +166,6 @@ public class OrderControllerTest {
         mockMvc.perform(post("/1").param("action", "INVALID"))
                 .andExpect(status().isNotAcceptable());
     }
-
 
     private List<Order> createOrders() {
         Order orderOne = new Order();

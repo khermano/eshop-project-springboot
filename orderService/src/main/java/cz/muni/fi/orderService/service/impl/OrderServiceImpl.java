@@ -59,6 +59,7 @@ public class OrderServiceImpl implements OrderService {
 		calendar.setTime(new Date());
 		calendar.add(Calendar.DAY_OF_YEAR, -7);
 		Date lastWeek = calendar.getTime();
+
         return orderRepository.getOrdersCreatedBetween(lastWeek, new Date(), state);
 	}
 
@@ -88,12 +89,14 @@ public class OrderServiceImpl implements OrderService {
 		OrderDTO orderDTO = beanMappingService.mapTo(order, OrderDTO.class);
 		orderDTO.setUser(userInterface.getUser(order.getUserId()).getBody());
 		List<OrderItemDTO> orderItemDTOs = new ArrayList<>();
+
 		for (OrderItem orderItem : order.getOrderItems()) {
 			OrderItemDTO orderItemDTO = beanMappingService.mapTo(orderItem, OrderItemDTO.class);
 			ProductDTO productDTO = productInterface.getProduct(orderItem.getProductId()).getBody();
 			orderItemDTO.setProduct(productDTO);
 			orderItemDTOs.add(orderItemDTO);
 		}
+
 		orderDTO.setOrderItems(orderItemDTOs);
 		return orderDTO;
 	}

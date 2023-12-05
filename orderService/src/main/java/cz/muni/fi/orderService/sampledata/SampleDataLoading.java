@@ -42,8 +42,6 @@ public class SampleDataLoading {
     }
     @PostConstruct
     public void loadProductSampleData() {
-        //TODO HTTP calls to get IDs
-
         createOrder(1L, daysBeforeNow(10), OrderState.DONE, createOrderItem(24L, 5), createOrderItem(10L, 1));
         createOrder(1L, daysBeforeNow(6), OrderState.SHIPPED, createOrderItem(13L, 3), createOrderItem(8L, 3));
         createOrder(1L, daysBeforeNow(3), OrderState.CANCELED, createOrderItem(24L, 10), createOrderItem(13L, 1));

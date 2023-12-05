@@ -10,7 +10,6 @@ public class Transition {
 	private OrderState endState;
 
 	public Transition(OrderState startState, OrderState endState) {
-		super();
 		this.startState = startState;
 		this.endState = endState;
 	}

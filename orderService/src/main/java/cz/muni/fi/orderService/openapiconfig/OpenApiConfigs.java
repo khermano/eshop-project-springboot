@@ -12,7 +12,7 @@ import java.util.List;
 @OpenAPIDefinition
 @Configuration
 public class OpenApiConfigs {
-    @Value( "${spring.application.name}" )
+    @Value("${spring.application.name}")
     private String applicationName;
 
     @Bean
