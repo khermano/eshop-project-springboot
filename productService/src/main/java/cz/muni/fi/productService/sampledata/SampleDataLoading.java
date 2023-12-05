@@ -49,6 +49,7 @@ public class SampleDataLoading {
         Price price = createPrice(priceValue, day, currency);
         product.setCurrentPrice(price);
         product.addHistoricalPrice(price);
+
         //generate randomly higher historical prices
         for (int i = 0, n = 1 + RANDOM.nextInt(8); i <= n; i++) {
             day = day.minusMonths(1);

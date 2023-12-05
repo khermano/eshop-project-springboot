@@ -15,6 +15,7 @@ import java.util.Optional;
 @SpringBootTest
 public class SampleDataLoadingTest {
     final static Logger log = LoggerFactory.getLogger(SampleDataLoadingTest.class);
+
     @Autowired
     private ProductRepository productRepository;
 
@@ -22,7 +23,8 @@ public class SampleDataLoadingTest {
     public void createSampleData() {
         log.debug("Starting test");
 
-        Assertions.assertFalse(productRepository.findAll().isEmpty(), "No products");
+        List<Product> found = (List<Product>) productRepository.findAll();
+        Assertions.assertFalse(found.isEmpty(), "No products");
 
         Optional<Product> product = productRepository.findById(1L);
         Assertions.assertTrue(product.isPresent());

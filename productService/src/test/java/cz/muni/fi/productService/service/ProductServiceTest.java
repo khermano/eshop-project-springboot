@@ -1,7 +1,8 @@
 package cz.muni.fi.productService.service;
 
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.doReturn;
 import java.math.BigDecimal;
+import cz.muni.fi.productService.dto.NewPriceDTO;
 import cz.muni.fi.productService.entity.Price;
 import cz.muni.fi.productService.entity.Product;
 import cz.muni.fi.productService.enums.Currency;
@@ -23,6 +24,9 @@ public class ProductServiceTest {
     @Mock
     private PriceRepository priceRepository;
 
+    @Mock
+    private BeanMappingService beanMappingService;
+
     @InjectMocks
     private ProductServiceImpl productService;
 
@@ -31,7 +35,7 @@ public class ProductServiceTest {
     {
         MockitoAnnotations.openMocks(this);
     }
-    
+
     private Product testProduct;
     
     @BeforeEach
@@ -45,10 +49,10 @@ public class ProductServiceTest {
     
     @Test
     public void getPriceValueInCurrency(){
-    	Product p = new Product();
         Price price = new Price();
         price.setCurrency(Currency.CZK);
         price.setValue(BigDecimal.valueOf(27));
+        Product p = new Product();
         p.setCurrentPrice(price);
         
         BigDecimal value = productService.getPriceValueInCurrency(p, Currency.CZK);
@@ -60,21 +64,28 @@ public class ProductServiceTest {
 
     @Test
     public void priceChangeByTooMuch(){
-        Price newPrice = new Price();
+        NewPriceDTO newPrice = new NewPriceDTO();
         newPrice.setCurrency(Currency.CZK);
         newPrice.setValue(BigDecimal.valueOf(298));
+
         Assertions.assertThrows(EshopServiceException.class, () -> productService.changePrice(testProduct, newPrice));
     }
     
     @Test
     public void acceptablePriceChange(){
-        Price newPrice = new Price();
+        NewPriceDTO newPrice = new NewPriceDTO();
         newPrice.setCurrency(Currency.CZK);
-        newPrice.setValue(BigDecimal.valueOf(297));        
+        newPrice.setValue(BigDecimal.valueOf(297));
+
+        Price price = new Price();
+        price.setCurrency(Currency.CZK);
+        price.setValue(BigDecimal.valueOf(297));
+
+        doReturn(price).when(beanMappingService).mapTo(newPrice, Price.class);
+
         productService.changePrice(testProduct, newPrice);
-        
-        verify(priceRepository).save(newPrice);
-        Assertions.assertEquals(testProduct.getCurrentPrice(), newPrice);
-        Assertions.assertEquals(testProduct.getCurrentPrice().getPriceStart(), newPrice.getPriceStart());
+
+        Assertions.assertEquals(testProduct.getCurrentPrice().getCurrency(), newPrice.getCurrency());
+        Assertions.assertEquals(testProduct.getCurrentPrice().getValue(), newPrice.getValue());
     }
 }

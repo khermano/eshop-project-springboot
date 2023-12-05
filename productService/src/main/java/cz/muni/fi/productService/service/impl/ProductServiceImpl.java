@@ -1,6 +1,8 @@
 package cz.muni.fi.productService.service.impl;
 
 import cz.muni.fi.productService.dto.CategoryDTO;
+import cz.muni.fi.productService.dto.NewPriceDTO;
+import cz.muni.fi.productService.dto.ProductDTO;
 import cz.muni.fi.productService.entity.Price;
 import cz.muni.fi.productService.entity.Product;
 import cz.muni.fi.productService.enums.Currency;
@@ -8,6 +10,7 @@ import cz.muni.fi.productService.exception.EshopServiceException;
 import cz.muni.fi.productService.feign.CategoryInterface;
 import cz.muni.fi.productService.repository.PriceRepository;
 import cz.muni.fi.productService.repository.ProductRepository;
+import cz.muni.fi.productService.service.BeanMappingService;
 import cz.muni.fi.productService.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
@@ -40,6 +43,9 @@ public class ProductServiceImpl implements ProductService {
 
 	@Autowired
 	private CategoryInterface categoryInterface;
+
+	@Autowired
+	private BeanMappingService beanMappingService;
 
 	private static final Map<AbstractMap.SimpleEntry<Currency, Currency>, BigDecimal> currencyRateCache = new HashMap<>();
 
@@ -98,7 +104,7 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-	public void changePrice(Product p, Price newPrice) {
+	public void changePrice(Product p, NewPriceDTO newPrice) {
 		BigDecimal oldPriceInNewCurrency = getPriceValueInCurrency(p, newPrice.getCurrency());
 
 		BigDecimal difference = oldPriceInNewCurrency
@@ -109,10 +115,11 @@ public class ProductServiceImpl implements ProductService {
 			throw new EshopServiceException(
 					"It is not allowed to change the price by more than 10%");
 		}
-		newPrice.setPriceStart(new Date());
-		priceRepository.save(newPrice);
+		Price price = beanMappingService.mapTo(newPrice, Price.class);
+		price.setPriceStart(new Date());
+		priceRepository.save(price);
 		p.addHistoricalPrice(p.getCurrentPrice());
-		p.setCurrentPrice(newPrice);
+		p.setCurrentPrice(price);
 	}
 
 	@Override

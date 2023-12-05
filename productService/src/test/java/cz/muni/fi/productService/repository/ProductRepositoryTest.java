@@ -24,6 +24,7 @@ public class ProductRepositoryTest {
 	public PriceRepository priceRepository;
 
 	private Product p1;
+
 	private Product p3;
 
 	@BeforeEach
@@ -60,20 +61,16 @@ public class ProductRepositoryTest {
 
 	@Test
 	public void findAll() {
-		List<Product> found = productRepository.findAll();
+		List<Product> found = (List<Product>) productRepository.findAll();
 		Assertions.assertEquals(found.size(), 5);
 	}
-
 
 	@Test
 	public void findCategoryId() {
 		Optional<Product> found = productRepository.findById(p1.getId());
-		if (found.isPresent()) {
-			Assertions.assertEquals(found.get().getCategoriesId().size(), 1);
-			Assertions.assertEquals(found.get().getCategoriesId().iterator().next(), 1L);
-		} else {
-			throw new IllegalArgumentException("Product is null");
-		}
+		Assertions.assertTrue(found.isPresent());
+		Assertions.assertEquals(found.get().getCategoriesId().size(), 1);
+		Assertions.assertEquals(found.get().getCategoriesId().iterator().next(), 1L);
 	}
 
 	
@@ -85,22 +82,12 @@ public class ProductRepositoryTest {
 	}
 
 	@Test
-	public void findByName() {
-		Assertions.assertEquals(productRepository.findByNameContaining("p").size(), 5);
-		Assertions.assertEquals(productRepository.findByNameContaining("asdf").size(), 0);
-		Assertions.assertEquals(productRepository.findByNameContaining("product3").size(), 1);
-	}
-
-	@Test
 	public void find() {
 		Optional<Product> found = productRepository.findById(p1.getId());
-		if (found.isPresent()) {
-			Assertions.assertEquals(found.get().getName(), "p1");
-			Assertions.assertEquals(found.get().getColor(), Color.RED);
-			Assertions.assertEquals(found.get().getCurrentPrice().getValue(), BigDecimal.TEN);
-		} else {
-			throw new IllegalArgumentException("Product is null");
-		}
+		Assertions.assertTrue(found.isPresent());
+		Assertions.assertEquals(found.get().getName(), "p1");
+		Assertions.assertEquals(found.get().getColor(), Color.RED);
+		Assertions.assertEquals(found.get().getCurrentPrice().getValue(), BigDecimal.TEN);
 	}
 
 	@Test
@@ -127,5 +114,4 @@ public class ProductRepositoryTest {
 		p.setImage(new byte[] {});
 		productRepository.save(p);
 	}
-
 }

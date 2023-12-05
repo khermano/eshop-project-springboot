@@ -3,6 +3,7 @@ package cz.muni.fi.productService.controller;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import cz.muni.fi.productService.dto.CategoryDTO;
+import cz.muni.fi.productService.dto.NewPriceDTO;
 import cz.muni.fi.productService.dto.ProductCreateDTO;
 import cz.muni.fi.productService.dto.ProductDTO;
 import cz.muni.fi.productService.entity.Price;
@@ -34,7 +35,6 @@ import java.util.Optional;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.doThrow;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -167,7 +167,7 @@ public class ProductControllerTest {
 		product.addCategoryId(1L);
 
 		doReturn(Optional.of(product)).when(productRepository).findById(10L);
-		doNothing().when(productService).changePrice(any(Product.class), any(Price.class));
+		doNothing().when(productService).changePrice(any(Product.class), any(NewPriceDTO.class));
 		doReturn(new ProductDTO()).when(beanMappingService).mapTo(product, ProductDTO.class);
 		doReturn(new ResponseEntity<>(new CategoryDTO(), HttpStatus.OK)).when(categoryInterface).getCategory(1L);
 

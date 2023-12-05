@@ -1,9 +1,7 @@
 package cz.muni.fi.productService.repository;
 
 import cz.muni.fi.productService.entity.Product;
-import org.springframework.data.jpa.repository.JpaRepository;
-import java.util.List;
+import org.springframework.data.repository.CrudRepository;
 
-public interface ProductRepository extends JpaRepository<Product, Long> {
-	List<Product> findByNameContaining(String name);
+public interface ProductRepository extends CrudRepository<Product, Long> {
 }

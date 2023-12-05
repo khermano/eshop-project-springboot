@@ -14,6 +14,7 @@ import java.util.Date;
 public class PriceRepositoryTest{
     @Autowired
     public PriceRepository priceRepository;
+
     private Price savedPrice;
 
     @BeforeEach
