@@ -160,7 +160,7 @@ public class ProductController {
      * http://localhost:8083/4
      *
      * @param id identified of the product to be updated
-     * @param newPrice required fields as specified in Price (value and currency)
+     * @param newPrice add only value and currency, the other parameters are added by the application!
      * @return the updated product
      */
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -168,22 +168,24 @@ public class ProductController {
     public ResponseEntity<ProductDTO> changePrice(@PathVariable("id") long id, @RequestBody Price newPrice) {
         logger.debug("rest changePrice({})", id);
 
-        try {
-            Optional<Product> product = productRepository.findById(id);
-            if (product.isPresent()) {
+        // method need to imitate behaviour of the original project's method!
+
+        Optional<Product> product = productRepository.findById(id);
+        if (product.isPresent()) {
+            try {
                 productService.changePrice(product.get(), newPrice);
-            } else {
+            } catch (EshopServiceException e) {
                 throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE);
             }
-            product = productRepository.findById(id);
-            if (product.isPresent()) {
-                ProductDTO productDTO = beanMappingService.mapTo(product.get(), ProductDTO.class);
-                productDTO.setCategories(getCategoriesFromIds(product.get().getCategoriesId()));
-                return new ResponseEntity<>(productDTO, HttpStatus.OK);
-            } else {
-                throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE);
-            }
-         } catch (EshopServiceException e) {
+        } else {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        product = productRepository.findById(id);
+        if (product.isPresent()) {
+            ProductDTO productDTO = beanMappingService.mapTo(product.get(), ProductDTO.class);
+            productDTO.setCategories(getCategoriesFromIds(product.get().getCategoriesId()));
+            return new ResponseEntity<>(productDTO, HttpStatus.OK);
+        } else {
             throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE);
         }
     }
