@@ -15,32 +15,39 @@ https://github.com/khermano/433511_Master_thesis_project
 
 ## **Build application**
 
-***Run serviceRegistry (Eureka server):***
+**Run script:**
+- `cd eshop-project-springboot/`
+- `chmod +x start-app.sh`
+- `./start-app.sh`
+
+**Or start services individually:**
+
+*Run serviceRegistry (Eureka server):*
 - `cd eshop-project-springboot/serviceRegistry`
 - `mvn clean install`
 - `mvn spring-boot:run`
 
-***Run userService (Eureka client - service):***
+*Run userService (Eureka client - service):*
 - `cd eshop-project-springboot/userService`
 - `mvn clean install`
 - `mvn spring-boot:run`
 
-***Run categoryService (Eureka client - service):***
+*Run categoryService (Eureka client - service):*
 - `cd eshop-project-springboot/categoryService`
 - `mvn clean install`
 - `mvn spring-boot:run`
 
-***Run productService (Eureka client - service):***
+*Run productService (Eureka client - service):*
 - `cd eshop-project-springboot/productService`
 - `mvn clean install`
 - `mvn spring-boot:run`
 
-***Run orderService (Eureka client - service):***
+*Run orderService (Eureka client - service):*
 - `cd eshop-project-springboot/orderService`
 - `mvn clean install`
 - `mvn spring-boot:run`
 
-***Run apiGateway (Eureka client - API Gateway):***
+*Run apiGateway (Eureka client - API Gateway):*
 - `cd eshop-project-springboot/apiGateway`
 - `mvn clean install`
 - `mvn spring-boot:run`
