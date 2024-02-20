@@ -4,7 +4,6 @@ import cz.muni.fi.productService.enums.Color;
 import cz.muni.fi.productService.enums.Currency;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.Data;
 import java.math.BigDecimal;
 
@@ -15,11 +14,8 @@ public class ProductCreateDTO {
     private String imageMimeType;
 
     @NotNull
-    @Size(min = 3, max = 50)
     private String name;
 
-    @NotNull
-    @Size(min = 3, max = 500)
     private String description;
 
     private Color color;
