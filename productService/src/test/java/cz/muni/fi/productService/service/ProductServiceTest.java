@@ -8,6 +8,7 @@ import cz.muni.fi.productService.entity.Product;
 import cz.muni.fi.productService.enums.Currency;
 import cz.muni.fi.productService.exception.EshopServiceException;
 import cz.muni.fi.productService.repository.PriceRepository;
+import cz.muni.fi.productService.repository.ProductRepository;
 import cz.muni.fi.productService.service.impl.ProductServiceImpl;
 import org.hibernate.service.spi.ServiceException;
 import org.junit.jupiter.api.Assertions;
@@ -23,6 +24,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 public class ProductServiceTest {
     @Mock
     private PriceRepository priceRepository;
+
+    @Mock
+    private ProductRepository productRepository;
 
     @Mock
     private BeanMappingService beanMappingService;

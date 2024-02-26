@@ -124,8 +124,7 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-	public void addCategory(Long productId, CategoryDTO category) {
-		Long categoryId = category.getId();
+	public void addCategory(Long productId, Long categoryId) {
 		Optional<Product> product = productRepository.findById(productId);
 
 		if(product.isEmpty()) {
@@ -137,7 +136,7 @@ public class ProductServiceImpl implements ProductService {
 							+ productId + ", category: "
 							+ categoryId);
 		}
-		if (categoryInterface.getCategory(category.getId()).getStatusCode() == HttpStatusCode.valueOf(200)) {
+		if (categoryInterface.getCategory(categoryId).getStatusCode() == HttpStatusCode.valueOf(200)) {
 			product.get().addCategoryId(categoryId);
 			productRepository.save(product.get());
 		} else {

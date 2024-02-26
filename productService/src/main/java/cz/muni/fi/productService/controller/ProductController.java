@@ -204,18 +204,18 @@ public class ProductController {
      * Be aware that categoryService must be running for this to work!
      *
      * @param id the identifier of the Product to have the Category added
-     * @param category the category to be added
+     * @param categoryId id of category to be added
      *                 we need only ID of existing category we want to add
      * @return the updated product as defined by ProductDTO
      * @throws ResponseStatusException 406 if something went wrong
      */
     @PostMapping(value = "/{id}/categories", consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ProductDTO> addCategory(@PathVariable("id") long id, @RequestBody CategoryDTO category) {
+    public ResponseEntity<ProductDTO> addCategory(@PathVariable("id") long id, @RequestBody long categoryId) {
         logger.debug("rest addCategory({})", id);
 
         try {
-            productService.addCategory(id, category);
+            productService.addCategory(id, categoryId);
             Optional<Product> product = productRepository.findById(id);
             if (product.isPresent()) {
                 ProductDTO productDTO = beanMappingService.mapTo(product.get(), ProductDTO.class);

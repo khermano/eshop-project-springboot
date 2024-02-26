@@ -189,7 +189,7 @@ public class ProductControllerTest {
 		doReturn(new ProductDTO()).when(beanMappingService).mapTo(mockedProduct, ProductDTO.class);
 		doReturn(new ResponseEntity<>(new CategoryDTO(), HttpStatus.OK)).when(categoryInterface).getCategory(1L);
 
-		String json = convertObjectToJsonBytes(new CategoryDTO());
+		String json = convertObjectToJsonBytes(1L);
 
 		mockMvc.perform(
 				post("/10/categories").contentType(
