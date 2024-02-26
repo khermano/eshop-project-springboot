@@ -120,6 +120,7 @@ public class ProductServiceImpl implements ProductService {
 		priceRepository.save(price);
 		p.addHistoricalPrice(p.getCurrentPrice());
 		p.setCurrentPrice(price);
+		productRepository.save(p);
 	}
 
 	@Override
