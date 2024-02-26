@@ -1,8 +1,6 @@
 package cz.muni.fi.productService.service.impl;
 
-import cz.muni.fi.productService.dto.CategoryDTO;
 import cz.muni.fi.productService.dto.NewPriceDTO;
-import cz.muni.fi.productService.dto.ProductDTO;
 import cz.muni.fi.productService.entity.Price;
 import cz.muni.fi.productService.entity.Product;
 import cz.muni.fi.productService.enums.Currency;
@@ -13,14 +11,10 @@ import cz.muni.fi.productService.repository.ProductRepository;
 import cz.muni.fi.productService.service.BeanMappingService;
 import cz.muni.fi.productService.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.AbstractMap;
 import java.util.Date;
 import java.util.HashMap;
@@ -154,18 +148,5 @@ public class ProductServiceImpl implements ProductService {
 							+ currencyFrom + "->" + currencyTo);
 		}
 		return currencyRateCache.get(convertCouple);
-	}
-
-	private HttpURLConnection createConnectionForPost(URL url) throws IOException {
-		HttpURLConnection con = createConnection(url, HttpMethod.POST.name());
-		con.setRequestProperty("Content-Type", "application/json");
-		con.setDoOutput(true);
-		return con;
-	}
-
-	private HttpURLConnection createConnection(URL url, String requestMethod) throws IOException {
-		HttpURLConnection con = (HttpURLConnection) url.openConnection();
-		con.setRequestMethod(requestMethod);
-		return con;
 	}
 }
