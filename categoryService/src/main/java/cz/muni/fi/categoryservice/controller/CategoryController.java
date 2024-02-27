@@ -17,7 +17,6 @@ import java.util.Optional;
 
 /**
  * REST Controller for Categories
- * Methods are implemented in a way that they imitate the ones from the original project
  */
 @RestController
 public class CategoryController {
@@ -28,9 +27,7 @@ public class CategoryController {
 
     /**
      * Get list of Categories
-     *
-     * example in categoryService:
-     * curl -i -X GET http://localhost:8082
+     * e.g.: curl -i -X GET http://localhost:8080/eshop-rest/categories
      *
      * @return list of Categories
      */
@@ -43,9 +40,7 @@ public class CategoryController {
 
     /**
      * Get Category specified by ID
-     *
-     * example in categoryService:
-     * curl -i -X GET http://localhost:8082/1
+     * e.g.: curl -i -X GET http://localhost:8080/eshop-rest/categories/1
      * 
      * @param id identifier for the category
      * @return Category with given ID
