@@ -17,7 +17,6 @@ import java.util.Optional;
 
 /**
  * REST Controller for Users
- * Methods are implemented in a way that they imitate the ones from the original project
  */
 @RestController
 public class UserController {
@@ -28,9 +27,7 @@ public class UserController {
 
     /**
      * Returns all users
-     *
-     * example for userService:
-     * curl -i -X GET http://localhost:8081
+     * e.g.: curl -i -X GET http://localhost:8080/eshop-rest/users
      *
      * @return list of Users
      */
@@ -43,12 +40,10 @@ public class UserController {
 
     /**
      * Getting user according to id
-     *
-     * example for userService:
-     * curl -i -X GET http://localhost:8081/1
+     * e.g.: curl -i -X GET http://localhost:8080/eshop-rest/users/1
      * 
-     * @param id user identifier
-     * @return User
+     * @param id of the user
+     * @return User with given id
      */
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<User> getUser(@PathVariable("id") long id) {
