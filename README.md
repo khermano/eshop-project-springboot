@@ -147,6 +147,14 @@ https://github.com/khermano/433511_Master_thesis_project
   - e.g.: `curl -i -X GET http://localhost:8080/eshop-rest/products/1`
 
 
+- **DELETE http://localhost:8080/eshop-rest/products/{id}**
+  - *deletes a product with the given id*
+  - **parameters**:
+    - id:
+      - id of the product
+  - e.g.: `curl -i -X DELETE http://localhost:8080/eshop-rest/products/1`
+
+
 - **POST http://localhost:8080/eshop-rest/products/create**
   - *create a new product*
   - **request body**:
