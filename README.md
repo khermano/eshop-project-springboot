@@ -13,46 +13,51 @@ https://github.com/khermano/433511_Master_thesis_project
 - Java 21
 - Maven 3.9.5
 
-## **Build application**
+## **Start application**
 
-**Run script:**
+### Run the script to start the application locally:
 - `cd eshop-project-springboot/`
-- `chmod +x start-app.sh`
 - `./start-app.sh`
 
-**Or start services individually:**
+### Stop the script:
+- pres q and wait for it to kill all child processes
+- press CTRL+C to kill script
 
-*Run serviceRegistry (Eureka server):*
+### Individual services:
+
+*Build and run serviceRegistry (Eureka server) [port 8761]:*
 - `cd eshop-project-springboot/serviceRegistry`
 - `mvn clean install`
 - `mvn spring-boot:run`
 
-*Run userService (Eureka client - service):*
+*Build and run userService (Eureka client - service) [port 8081]:*
 - `cd eshop-project-springboot/userService`
 - `mvn clean install`
 - `mvn spring-boot:run`
 
-*Run categoryService (Eureka client - service):*
+*Build and run categoryService (Eureka client - service) [port 8082]:*
 - `cd eshop-project-springboot/categoryService`
 - `mvn clean install`
 - `mvn spring-boot:run`
 
-*Run productService (Eureka client - service):*
+*Build and run productService (Eureka client - service) [port 8083]:*
 - `cd eshop-project-springboot/productService`
 - `mvn clean install`
 - `mvn spring-boot:run`
 
-*Run orderService (Eureka client - service):*
+*Build and run orderService (Eureka client - service) [port 8084]:*
 - `cd eshop-project-springboot/orderService`
 - `mvn clean install`
 - `mvn spring-boot:run`
 
-*Run apiGateway (Eureka client - API Gateway):*
+*Build and run apiGateway (Eureka client - API Gateway) [port 8080]:*
 - `cd eshop-project-springboot/apiGateway`
 - `mvn clean install`
 - `mvn spring-boot:run`
 
 ## Endpoints info
+
+- all endpoints are available also with Swagger UI (see bellow)
 
 **Users**
 
@@ -214,7 +219,7 @@ https://github.com/khermano/433511_Master_thesis_project
   - **parameters**:
     - id (required):
       - id of the product 
-  - e.g.: `curl -i -X GET http://localhost:8080/products/2/currentPrice`
+  - e.g.: `curl -i -X GET http://localhost:8080/eshop-rest/products/2/currentPrice`
 
 
 - **GET http://localhost:8080/products/getCurrencyRate/{currency1}/{currency2}**
@@ -225,18 +230,18 @@ https://github.com/khermano/433511_Master_thesis_project
       - Available values: CZK, EUR, USD
     - currency2 (required):
       - Available values: CZK, EUR, USD
-  - e.g.: `curl -i -X GET http://localhost:8080/products/getCurrencyRate/CZK/EUR`
+  - e.g.: `curl -i -X GET http://localhost:8080/eshop-rest/products/getCurrencyRate/CZK/EUR`
 
 ## About the app
 
 - every service of this repository has to be up and running for the application to work correctly
-- application endpoints will then be available at http://localhost:8080
+- application endpoints will then be available at http://localhost:8080/eshop-rest
 - Eureka server info can be found here: http://localhost:8761
 
 ### Health info details
 
-- application uses Spring Actuator to provide information about the health of the services
 - the status of individual services can be found on the Eureka server: http://localhost:8761
+- application uses Spring Actuator to provide information about the health of the services
 - more details about the health of the application can be found on endpoints:
   - serviceRegistry: http://localhost:8761/actuator/health
   - userService: http://localhost:8081/actuator/health
