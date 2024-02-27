@@ -25,7 +25,6 @@ import java.util.Optional;
 
 /**
  * REST Controller for Orders
- * Methods are implemented in a way that they imitate the ones from the original project
  */
 @RestController
 public class OrderController {
@@ -42,18 +41,15 @@ public class OrderController {
 
 
     /**
-     * Getting all the orders according to the given parameters
-     *
-     * example in orderService:
-     * curl -i -X GET http://localhost:8084?status=ALL
-     * or
-     * curl -i -X GET http://localhost:8084?status=ALL&last_week=TRUE
+     * Returns all orders according to the given parameters
+     * e.g.: curl -i -X GET http://localhost:8080/eshop-rest/orders?status=ALL
+     * or curl -i -X GET http://localhost:8080/eshop-rest/orders?status=ALL&last_week=TRUE
      * 
      * @param status can be {ALL, RECEIVED, CANCELED, SHIPPED, DONE}
      *               defines orders with StateOrder (RECEIVED, CANCELED, SHIPPED, DONE) or ALL orders
-     * @param lastWeek if true we consider only orders from last week
+     * @param lastWeek if true we consider only orders from last 7 days
      *                 default value is false
-     * @return list of Orders by given parameters
+     * @return list of orders by given parameters
      * @throws ResponseStatusException 406 if status parameter not valid
      */
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
@@ -89,15 +85,11 @@ public class OrderController {
     }
 
     /**
-     * Getting all the orders created by user given by the ID
+     * Returns all orders created by a user with the given id
+     * e.g.: curl -i -X GET http://localhost:8080/eshop-rest/orders/by_user_id/1
      *
-     * example in orderService:
-     * curl -i -X GET http://localhost:8084/by_user_id/1
-     *
-     * Be aware that userService must be running!
-     *
-     * @param userId ID of user who created orders
-     * @return list of Orders by given parameter
+     * @param userId id of the user who created orders
+     * @return list of orders created by user with given id
      */
     @GetMapping(value = "by_user_id/{user_id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<OrderDTO>> getOrdersByUserId(@PathVariable("user_id") long userId) {
@@ -123,14 +115,12 @@ public class OrderController {
     }
 
     /**
-     * Get Order by identifier ID
+     * Returns order with given id
+     * e.g.: curl -i -X GET http://localhost:8080/eshop-rest/orders/1
      *
-     * example in orderService:
-     * curl -i -X GET http://localhost:8084/1
-     *
-     * @param id identifier for an order
-     * @return Order with given id
-     * @throws ResponseStatusException 404 if order with given ID doesn't exist
+     * @param id of the order
+     * @return order with given id
+     * @throws ResponseStatusException 404 if order with given id doesn't exist
      */
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<OrderDTO> getOrder(@PathVariable("id") long id) {
@@ -149,13 +139,11 @@ public class OrderController {
      * Either cancelling, shipping or finishing the order
      * The only allowed changes of state are: RECEIVED -> CANCELED (action=CANCEL),
      * RECEIVED -> SHIPPED (action=SHIP), SHIPPED -> DONE (action=FINISH)
+     * e.g.: curl -i -X POST http://localhost:8080/eshop-rest/orders/2?action=FINISH
      *
-     * example in orderService:
-     * curl -i -X POST http://localhost:8084/2?action=FINISH
-     *
-     * @param orderId identifier for an order
+     * @param orderId id of the order
      * @param action one of CANCEL, SHIP, FINISH
-     * @return Order on which action was performed
+     * @return order on which action was performed
      * @throws ResponseStatusException 406 if the action parameter is invalid
      * @throws ResponseStatusException 500 if order with given ID doesn't exist or something else went wrong
      */
