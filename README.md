@@ -18,10 +18,11 @@ https://github.com/khermano/433511_Master_thesis_project
 ### Run the script to start the application locally:
 - `cd eshop-project-springboot/`
 - `./start-app.sh`
+- application endpoints are now available at http://localhost:8080/swagger-ui.html (see Swagger UI)
+- statuses if individual services can be found here http://localhost:8761 (see Health info details)
 
 ### Stop the script:
-- pres q and wait for it to kill all child processes
-- press CTRL+C to kill script
+- pres q to quit and to kill all child processes
 
 ### Individual services:
 
@@ -57,7 +58,7 @@ https://github.com/khermano/433511_Master_thesis_project
 
 ## Endpoints info
 
-- all endpoints are available also with Swagger UI (see bellow)
+- all endpoints are available with Swagger UI (see Swagger UI)
 
 **Users**
 
@@ -235,7 +236,7 @@ https://github.com/khermano/433511_Master_thesis_project
 ## About the app
 
 - every service of this repository has to be up and running for the application to work correctly
-- application endpoints will then be available at http://localhost:8080/eshop-rest
+- application endpoints will then be available at http://localhost:8080/swagger-ui.html
 - Eureka server info can be found here: http://localhost:8761
 
 ### Health info details
@@ -252,6 +253,8 @@ https://github.com/khermano/433511_Master_thesis_project
 
 ### Swagger UI
 
+- allows to visualize and interact with the API's resources without having any of the implementation logic in place
+- it's automatically generated from our OpenAPI (formerly known as Swagger)
 - is available at http://localhost:8080/swagger-ui.html
 - you can choose a service with "Select a definition"
 
