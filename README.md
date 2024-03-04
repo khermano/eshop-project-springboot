@@ -1,6 +1,6 @@
 # Eshop-Project-SpringBoot
 
-This repository contains a migration of the backend of the monolith application to the microservice
+This repository contains a migration of the backend of the monolithic application to the microservice
 architecture with the Spring Boot framework. 
 
 This migration was done for the master thesis, which can be found here: 
