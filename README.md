@@ -18,11 +18,11 @@ https://github.com/khermano/433511_Master_thesis_project
 ### Run the script to start the application locally:
 - `cd eshop-project-springboot/`
 - `./start-app.sh`
-- application endpoints are now available at http://localhost:8080/swagger-ui.html (see Swagger UI)
-- statuses if individual services can be found here http://localhost:8761 (see Health info details)
+- application endpoints are now available at http://localhost:8080 (see Swagger UI)
+- statuses of individual services can be found here http://localhost:8761 (see Health info details)
 
 ### Stop the script:
-- pres q to quit and to kill all child processes
+- press any button and wait for "Application shutdown completed..."
 
 ### Individual services:
 
@@ -56,9 +56,40 @@ https://github.com/khermano/433511_Master_thesis_project
 - `mvn clean install`
 - `mvn spring-boot:run`
 
+## About the app
+
+- every service of this repository has to be up and running for the application to work correctly
+- application endpoints will then be available at http://localhost:8080
+- Eureka server info can be found here: http://localhost:8761
+
+### Swagger UI
+
+- allows to visualize and interact with the API's resources without having any of the implementation logic in place
+- it's automatically generated from our OpenAPI (formerly known as Swagger)
+- is available at http://localhost:8080
+- you can choose a service with "Select a definition"
+
+### Health info details
+
+- the status of individual services can be found on the Eureka server: http://localhost:8761
+- application uses Spring Actuator to provide information about the health of the services
+- more details about the health of the application can be found on endpoints:
+  - serviceRegistry: http://localhost:8761/actuator/health
+  - userService: http://localhost:8081/actuator/health
+  - categoryService: http://localhost:8082/actuator/health
+  - productService: http://localhost:8083/actuator/health
+  - orderService: http://localhost:8084/actuator/health
+  - apiGateway: http://localhost:8080/actuator/health
+
+### Spring Boot Dev Tools
+
+- we can use Live Reload in IntelliJ IDEA following this video: https://www.youtube.com/watch?v=BvIM9gNTDM4&ab_channel=coder4life
+- NOTE: you need to run the application from IntelliJ IDEA
+- NOTE: you need to wait a couple of seconds until the application reloads itself
+
 ## Endpoints info
 
-- all endpoints are available with Swagger UI (see Swagger UI)
+- all endpoints are available with Swagger UI at http://localhost:8080 (see Swagger UI)
 
 **Users**
 
@@ -232,34 +263,3 @@ https://github.com/khermano/433511_Master_thesis_project
     - currency2 (required):
       - Available values: CZK, EUR, USD
   - e.g.: `curl -i -X GET http://localhost:8080/eshop-rest/products/getCurrencyRate/CZK/EUR`
-
-## About the app
-
-- every service of this repository has to be up and running for the application to work correctly
-- application endpoints will then be available at http://localhost:8080/swagger-ui.html
-- Eureka server info can be found here: http://localhost:8761
-
-### Health info details
-
-- the status of individual services can be found on the Eureka server: http://localhost:8761
-- application uses Spring Actuator to provide information about the health of the services
-- more details about the health of the application can be found on endpoints:
-  - serviceRegistry: http://localhost:8761/actuator/health
-  - userService: http://localhost:8081/actuator/health
-  - categoryService: http://localhost:8082/actuator/health
-  - productService: http://localhost:8083/actuator/health
-  - orderService: http://localhost:8084/actuator/health
-  - apiGateway: http://localhost:8080/actuator/health
-
-### Swagger UI
-
-- allows to visualize and interact with the API's resources without having any of the implementation logic in place
-- it's automatically generated from our OpenAPI (formerly known as Swagger)
-- is available at http://localhost:8080/swagger-ui.html
-- you can choose a service with "Select a definition"
-
-### Spring Boot Dev Tools
-
-- we can use Live Reload in IntelliJ IDEA following this video: https://www.youtube.com/watch?v=BvIM9gNTDM4&ab_channel=coder4life
-- NOTE: you need to run the application from IntelliJ IDEA
-- NOTE: you need to wait a couple of seconds until the application reloads itself

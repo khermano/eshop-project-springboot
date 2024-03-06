@@ -29,7 +29,7 @@ run_service orderService 4
 run_service apiGateway 5
 sleep 8
 echo
-echo "You can now access the application's endpoint at http://localhost:8080/swagger-ui.html"
+echo "You can now access the application's endpoint at http://localhost:8080"
 read -rsn1 -p "For quit press any button and wait until application shutdown is completed"
 echo
 pkill -P $$
