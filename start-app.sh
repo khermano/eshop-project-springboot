@@ -1,51 +1,41 @@
 #!/bin/bash
 
-if [ "$(lsof -i tcp:8761)" != "" ]; then
-    echo "Error! Port 8761 in use!"
-elif [ "$(lsof -i tcp:8081)" != "" ]; then
-    echo "Error! Port 8081 in use!"
-elif [ "$(lsof -i tcp:8082)" != "" ]; then
-    echo "Error! Port 8082 in use!"
-elif [ "$(lsof -i tcp:8083)" != "" ]; then
-    echo "Error! Port 8083 in use!"
-elif [ "$(lsof -i tcp:8084)" != "" ]; then
-    echo "Error! Port 8084 in use!"
-elif [ "$(lsof -i tcp:8080)" != "" ]; then
-    echo "Error! Port 8080 in use!"
-else
-    cd serviceRegistry
-    mvn clean install
-    mvn spring-boot:run &
-    cd ..
-    cd userService
-    mvn clean install
-    mvn spring-boot:run &
-    cd ..
-    cd categoryService
-    mvn clean install
-    mvn spring-boot:run &
-    cd ..
-    cd productService
-    mvn clean install
-    mvn spring-boot:run &
-    cd ..
-    cd orderService
-    mvn clean install
-    mvn spring-boot:run &
-    cd ..
-    cd apiGateway
-    mvn clean install
-    mvn spring-boot:run &
-    cd ..
-    sleep 8
-    echo ""
-    echo "You can now access the application's endpoint at http://localhost:8080/swagger-ui.html"
-    echo "Press q to quit"
-    read -rsn1 input
-    if [ "$input" = "q" ]; then
-        pkill -P $$
-    fi
-    sleep 8
-    echo ""
-    echo "Application shutdown completed..."
-fi
+test_port () {
+  if [ "$(lsof -i tcp:$1)" != "" ]; then
+      echo "Error! Port $1 in use!"
+      exit 1
+  fi
+}
+
+run_service () {
+  cd $1
+  mvn clean install
+  java -jar target/$1-0.0.1-SNAPSHOT.jar &
+  pids[$2]=$!
+  cd ..
+}
+
+test_port 8761
+test_port 8081
+test_port 8082
+test_port 8083
+test_port 8084
+test_port 8080
+run_service serviceRegistry 0
+run_service userService 1
+run_service categoryService 2
+run_service productService 3
+run_service orderService 4
+run_service apiGateway 5
+sleep 8
+echo
+echo "You can now access the application's endpoint at http://localhost:8080/swagger-ui.html"
+read -rsn1 -p "For quit press any button and wait until application shutdown is completed"
+echo
+pkill -P $$
+for pid in ${pids[*]}
+do
+wait $pid
+done
+echo
+echo "Application shutdown completed..."
