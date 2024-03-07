@@ -18,8 +18,8 @@ https://github.com/khermano/433511_Master_thesis_project
 ### Run the script to start the application locally:
 - `cd eshop-project-springboot/`
 - `./start-app.sh`
+- first check that all services are up and running http://localhost:8761 (see Health info details)
 - application endpoints are now available at http://localhost:8080 (see Swagger UI)
-- statuses of individual services can be found here http://localhost:8761 (see Health info details)
 
 ### Stop the script:
 - press any button and wait for "Application shutdown completed..."
@@ -59,8 +59,8 @@ https://github.com/khermano/433511_Master_thesis_project
 ## About the app
 
 - every service of this repository has to be up and running for the application to work correctly
+- first check that all services are up and running at http://localhost:8761
 - application endpoints will then be available at http://localhost:8080
-- Eureka server info can be found here: http://localhost:8761
 
 ### Swagger UI
 
@@ -72,6 +72,7 @@ https://github.com/khermano/433511_Master_thesis_project
 ### Health info details
 
 - the status of individual services can be found on the Eureka server: http://localhost:8761
+- NOTE: sometimes Eureka service discovery needs couple more seconds to load everything up
 - application uses Spring Actuator to provide information about the health of the services
 - more details about the health of the application can be found on endpoints:
   - serviceRegistry: http://localhost:8761/actuator/health
@@ -81,6 +82,14 @@ https://github.com/khermano/433511_Master_thesis_project
   - orderService: http://localhost:8084/actuator/health
   - apiGateway: http://localhost:8080/actuator/health
 
+### Dockerizing an application
+
+- `cd eshop-project-springboot/`
+- `podman compose up --build` 
+  - this command build images and then start containers defined in a docker-compose.yml file
+- `podman compose down`
+  - this command stops and removes containers created by docker-compose.yml
+
 ### Spring Boot Dev Tools
 
 - we can use Live Reload in IntelliJ IDEA following this video: https://www.youtube.com/watch?v=BvIM9gNTDM4&ab_channel=coder4life
@@ -89,7 +98,8 @@ https://github.com/khermano/433511_Master_thesis_project
 
 ## Endpoints info
 
-- all endpoints are available with Swagger UI at http://localhost:8080 (see Swagger UI)
+- first check that all services are up and running at http://localhost:8761
+- after that all endpoints are available with Swagger UI at http://localhost:8080 (see Swagger UI)
 
 **Users**
 

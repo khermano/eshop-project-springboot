@@ -1,18 +1,4 @@
-FROM alpine:latest
-
-ENV JAVA_HOME=/usr/lib/jvm/java-21-openjdk
-ENV MAVEN_HOME=/usr/share/maven
-
-RUN apk add --no-cache openjdk21 maven
-
+FROM docker.io/library/openjdk:21
 LABEL maintainer="433511@mail.muni.cz"
-
-WORKDIR /app
-
-COPY . /app
-
-RUN mvn clean install
-
-CMD ["java", "-jar", "target/orderService-0.0.1-SNAPSHOT.jar"]
-
-EXPOSE 8084
+COPY target/orderService-0.0.1-SNAPSHOT.jar orderService-0.0.1-SNAPSHOT.jar
+ENTRYPOINT ["java", "-jar", "/orderService-0.0.1-SNAPSHOT.jar"]

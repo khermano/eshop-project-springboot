@@ -1,0 +1,70 @@
+version: '3.8'
+services:
+  serviceRegistry:
+    container_name: service-registry-container
+    build:
+      context: serviceRegistry
+      dockerfile: Dockerfile
+    image: service-registry-image
+    ports:
+      - "8761:8761"
+    network_mode: host
+  userService:
+    container_name: user-service-container
+    build:
+      context: userService
+      dockerfile: Dockerfile
+    image: user-service-image
+    ports:
+      - "8081:8081"
+    network_mode: host
+    depends_on:
+      - serviceRegistry
+  categoryService:
+    container_name: category-service-container
+    build:
+      context: categoryService
+      dockerfile: Dockerfile
+    image: category-service-image
+    ports:
+      - "8082:8082"
+    network_mode: host
+    depends_on:
+      - serviceRegistry
+  productService:
+    container_name: product-service-container
+    build:
+      context: productService
+      dockerfile: Dockerfile
+    image: product-service-image
+    ports:
+      - "8083:8083"
+    network_mode: host
+    depends_on:
+      - serviceRegistry
+  orderService:
+    container_name: order-service-container
+    build:
+      context: orderService
+      dockerfile: Dockerfile
+    image: order-service-image
+    ports:
+      - "8084:8084"
+    network_mode: host
+    depends_on:
+      - serviceRegistry
+  apiGateway:
+    container_name: api-gateway-container
+    build:
+      context: apiGateway
+      dockerfile: Dockerfile
+    image: api-gateway-image
+    ports:
+      - "8080:8080"
+    network_mode: host
+    depends_on:
+      - serviceRegistry
+      - userService
+      - categoryService
+      - productService
+      - orderService
