@@ -1,16 +1,16 @@
 #!/bin/bash
 
 test_port () {
-  if [ "$(lsof -i tcp:$1)" != "" ]; then
+  if [ "$(lsof -i tcp:"$1")" != "" ]; then
       echo "Error! Port $1 in use!"
       exit 1
   fi
 }
 
 run_service () {
-  cd $1
+  cd "$1" || exit
   mvn clean install
-  java -jar target/$1-0.0.1-SNAPSHOT.jar &
+  java -jar target/"$1"-0.0.1-SNAPSHOT.jar &
   pids[$2]=$!
   cd ..
 }
