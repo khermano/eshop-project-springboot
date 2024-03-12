@@ -100,6 +100,9 @@ https://github.com/khermano/433511_Master_thesis_project
 
 - first check that all services are up and running at http://localhost:8761
 - after that all endpoints are available with Swagger UI at http://localhost:8080 (see Swagger UI)
+- you can use a verification script to make all example calls (the script should be executed once per one application run to work properly because of POST methods)
+  - `cd eshop-project-springboot`
+  - `./verification.sh`
 
 **Users**
 

@@ -38,4 +38,4 @@ do
 wait $pid
 done
 echo
-echo "Application shutdown completed..."
+echo "Application shutdown completed"
