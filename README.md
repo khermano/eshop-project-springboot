@@ -4,91 +4,76 @@ This repository contains a migration of the backend of the monolithic applicatio
 architecture with the Spring Boot framework. 
 
 This migration was done for the master thesis, which can be found here: 
-https://is.muni.cz/auth/rozpis/tema?fakulta=1433;balik=58;tema=418130;uplne_info=1
+https://is.muni.cz/auth/rozpis/tema?fakulta=1433;balik=58;tema=418130;uplne_info=1.
 
 The most relevant part of the project we migrated can be found here: 
-https://github.com/khermano/433511_Master_thesis_project
+https://github.com/khermano/433511_Master_thesis_project.
 
 ## **Prerequisites**
 - Java 21
 - Maven 3.9.5
-
-## **Start application**
-
-### Run the script to start the application locally:
-- `cd eshop-project-springboot/`
-- `./start-app.sh`
-- first check that all services are up and running http://localhost:8761 (see Health info details)
-- application endpoints are now available at http://localhost:8080 (see Swagger UI)
-
-### Stop the script:
-- press any button and wait for "Application shutdown completed..."
-
-### Individual services:
-
-*Build and run serviceRegistry (Eureka server) [port 8761]:*
-- `cd eshop-project-springboot/serviceRegistry`
-- `mvn clean install`
-- `mvn spring-boot:run`
-
-*Build and run userService (Eureka client - service) [port 8081]:*
-- `cd eshop-project-springboot/userService`
-- `mvn clean install`
-- `mvn spring-boot:run`
-
-*Build and run categoryService (Eureka client - service) [port 8082]:*
-- `cd eshop-project-springboot/categoryService`
-- `mvn clean install`
-- `mvn spring-boot:run`
-
-*Build and run productService (Eureka client - service) [port 8083]:*
-- `cd eshop-project-springboot/productService`
-- `mvn clean install`
-- `mvn spring-boot:run`
-
-*Build and run orderService (Eureka client - service) [port 8084]:*
-- `cd eshop-project-springboot/orderService`
-- `mvn clean install`
-- `mvn spring-boot:run`
-
-*Build and run apiGateway (Eureka client - API Gateway) [port 8080]:*
-- `cd eshop-project-springboot/apiGateway`
-- `mvn clean install`
-- `mvn spring-boot:run`
 
 ## About the app
 
 - every service of this repository has to be up and running for the application to work correctly
 - first check that all services are up and running at http://localhost:8761
 - application endpoints will then be available at http://localhost:8080
+- the application consists of 6 microservices:
 
-### Swagger UI
+|     Service     |   Port   |
+|:---------------:|:--------:|
+| serviceRegistry |   8761   |
+|   userService   |   8081   |
+| categoryService |   8082   |
+| productService  |   8083   |
+|  orderService   |   8084   |
+|   apiGateway    |   8080   |
 
-- allows to visualize and interact with the API's resources without having any of the implementation logic in place
-- it's automatically generated from our OpenAPI (formerly known as Swagger)
-- is available at http://localhost:8080
-- you can choose a service with "Select a definition"
+## **Start application**
 
-### Health info details
+### Run the script to start the application locally:
+- `cd eshop-project-springboot/scripts/`
+- `./start_app.sh` or
+- `./start_app_with_tests.sh`
+- first check that all services are up and running http://localhost:8761 (see Health info details)
+- application endpoints are now available at http://localhost:8080 (see Swagger UI)
 
-- the status of individual services can be found on the Eureka server: http://localhost:8761
-- NOTE: sometimes Eureka service discovery needs couple more seconds to load everything up
-- application uses Spring Actuator to provide information about the health of the services
-- more details about the health of the application can be found on endpoints:
-  - serviceRegistry: http://localhost:8761/actuator/health
-  - userService: http://localhost:8081/actuator/health
-  - categoryService: http://localhost:8082/actuator/health
-  - productService: http://localhost:8083/actuator/health
-  - orderService: http://localhost:8084/actuator/health
-  - apiGateway: http://localhost:8080/actuator/health
+### Stop the script:
+- press any button and wait for "Application shutdown completed."
 
-### Dockerizing an application
+### Individual services:
 
-- `cd eshop-project-springboot/`
-- `podman compose up --build` 
-  - this command build images and then start containers defined in a docker-compose.yml file
-- `podman compose down`
-  - this command stops and removes containers created by docker-compose.yml
+*Build and run serviceRegistry (Eureka server) [port 8761]:*
+- `cd eshop-project-springboot/serviceRegistry/`
+- `mvn clean install`
+- `mvn spring-boot:run`
+
+*Build and run userService (Eureka client - service) [port 8081]:*
+- `cd eshop-project-springboot/userService/`
+- `mvn clean install`
+- `mvn spring-boot:run`
+
+*Build and run categoryService (Eureka client - service) [port 8082]:*
+- `cd eshop-project-springboot/categoryService/`
+- `mvn clean install`
+- `mvn spring-boot:run`
+
+*Build and run productService (Eureka client - service) [port 8083]:*
+- `cd eshop-project-springboot/productService/`
+- `mvn clean install`
+- `mvn spring-boot:run`
+
+*Build and run orderService (Eureka client - service) [port 8084]:*
+- `cd eshop-project-springboot/orderService/`
+- `mvn clean install`
+- `mvn spring-boot:run`
+
+*Build and run apiGateway (Eureka client - API Gateway) [port 8080]:*
+- `cd eshop-project-springboot/apiGateway/`
+- `mvn clean install`
+- `mvn spring-boot:run`
+
+## Development
 
 ### Spring Boot Dev Tools
 
@@ -101,14 +86,14 @@ https://github.com/khermano/433511_Master_thesis_project
 - first check that all services are up and running at http://localhost:8761
 - after that all endpoints are available with Swagger UI at http://localhost:8080 (see Swagger UI)
 - you can use a verification script to make all example calls (the script should be executed once per one application run to work properly because of POST methods)
-  - `cd eshop-project-springboot`
+  - `cd eshop-project-springboot/scripts/`
   - `./verification.sh`
 
 **Users**
 
 - **GET http://localhost:8080/eshop-rest/users**
   - *returns all users*
-  - e.g.: `curl -i -X GET http://localhost:8080/eshop-rest/users`
+  - e.g.: `curl -X GET "http://localhost:8080/eshop-rest/users" | jq`
 
 
 - **GET http://localhost:8080/eshop-rest/users/{id}**
@@ -116,13 +101,13 @@ https://github.com/khermano/433511_Master_thesis_project
   - **parameters**:
     - id: 
       - id of the user
-  - e.g.: `curl -i -X GET http://localhost:8080/eshop-rest/users/1`
+  - e.g.: `curl -X GET "http://localhost:8080/eshop-rest/users/1" | jq`
 
 **Categories**
 
 - **GET http://localhost:8080/eshop-rest/categories**
   - *returns all categories*
-  - e.g.: `curl -i -X GET http://localhost:8080/eshop-rest/categories`
+  - e.g.: `curl -X GET "http://localhost:8080/eshop-rest/categories" | jq`
 
 
 - **GET http://localhost:8080/eshop-rest/categories/{id}**
@@ -130,7 +115,7 @@ https://github.com/khermano/433511_Master_thesis_project
   - **parameters**:
     - id: 
       - id of the category
-  - e.g.: `curl -i -X GET http://localhost:8080/eshop-rest/categories/1`
+  - e.g.: `curl -X GET "http://localhost:8080/eshop-rest/categories/1" | jq`
 
 **Orders**
 - **GET http://localhost:8080/eshop-rest/orders**
@@ -148,8 +133,8 @@ https://github.com/khermano/433511_Master_thesis_project
         - true - returns orders by status created in last 7 days
         - false - returns all orders defined by status
   - e.g.: 
-    - `curl -i -X GET http://localhost:8080/eshop-rest/orders?status=ALL` 
-    - `curl -i -X GET http://localhost:8080/eshop-rest/orders?status=ALL&last_week=TRUE`
+    - `curl -X GET "http://localhost:8080/eshop-rest/orders?status=ALL" | jq` 
+    - `curl -X GET "http://localhost:8080/eshop-rest/orders?status=ALL&last_week=TRUE" | jq`
 
 
 - **GET http://localhost:8080/eshop-rest/orders/by_user_id/{user_id}**
@@ -157,7 +142,7 @@ https://github.com/khermano/433511_Master_thesis_project
   - **parameters**:
     - user_id: 
       - id of the user
-  - e.g.: `curl -i -X GET http://localhost:8080/eshop-rest/orders/by_user_id/1`
+  - e.g.: `curl -X GET "http://localhost:8080/eshop-rest/orders/by_user_id/1" | jq`
 
 
 - **GET http://localhost:8080/eshop-rest/orders/{id}**
@@ -165,7 +150,7 @@ https://github.com/khermano/433511_Master_thesis_project
   - **parameters**:
     - id: 
       - id of the order
-  - e.g.: `curl -i -X GET http://localhost:8080/eshop-rest/orders/1`
+  - e.g.: `curl -X GET "http://localhost:8080/eshop-rest/orders/1" | jq`
   
   
 - **POST http://localhost:8080/eshop-rest/orders/{order_id}**
@@ -179,14 +164,14 @@ https://github.com/khermano/433511_Master_thesis_project
         - CANCEL: RECEIVED -> CANCELED
         - SHIP: RECEIVED -> SHIPPED
         - FINISH: SHIPPED -> DONE
-  - e.g.: `curl -i -X POST http://localhost:8080/eshop-rest/orders/2?action=FINISH`
+  - e.g.: `curl -X POST "http://localhost:8080/eshop-rest/orders/2?action=FINISH" | jq`
 
 
 **Products**
 
 - **GET http://localhost:8080/eshop-rest/products**
   - *returns all products*
-  - e.g.: `curl -i -X GET http://localhost:8080/eshop-rest/products`
+  - e.g.: `curl -X GET "http://localhost:8080/eshop-rest/products" | jq`
 
 
 - **GET http://localhost:8080/eshop-rest/products/{id}**
@@ -194,7 +179,7 @@ https://github.com/khermano/433511_Master_thesis_project
   - **parameters**:
     - id: 
       - id of the product
-  - e.g.: `curl -i -X GET http://localhost:8080/eshop-rest/products/1`
+  - e.g.: `curl -X GET "http://localhost:8080/eshop-rest/products/1" | jq`
 
 
 - **DELETE http://localhost:8080/eshop-rest/products/{id}**
@@ -202,7 +187,7 @@ https://github.com/khermano/433511_Master_thesis_project
   - **parameters**:
     - id:
       - id of the product
-  - e.g.: `curl -i -X DELETE http://localhost:8080/eshop-rest/products/1`
+  - e.g.: `curl -X DELETE "http://localhost:8080/eshop-rest/products/1" | jq`
 
 
 - **POST http://localhost:8080/eshop-rest/products/create**
@@ -224,7 +209,7 @@ https://github.com/khermano/433511_Master_thesis_project
       - Available values: CZK, EUR, USD
     - categoryId (required): 
       - id of category that exists
-  - e.g.: `curl -X POST -i -H "Content-Type: application/json" --data '{"name":"test","description":"test","color":"UNDEFINED","price":"200", "currency":"CZK", "categoryId":"1"}' http://localhost:8080/eshop-rest/products/create`
+  - e.g.: `curl -X POST -H "Content-Type: application/json" --data '{"name":"test","description":"test","color":"UNDEFINED","price":"200", "currency":"CZK", "categoryId":"1"}' "http://localhost:8080/eshop-rest/products/create" | jq`
 
 
 - **PUT http://localhost:8080/eshop-rest/products/{id}**
@@ -237,7 +222,7 @@ https://github.com/khermano/433511_Master_thesis_project
       - It is not allowed to change the price by more than 10%!
     - currency (required): 
       - Available values: CZK, EUR, USD
-  - e.g.: `curl -X PUT -i -H "Content-Type: application/json" --data '{"value":"16.33","currency":"CZK"}' http://localhost:8080/eshop-rest/products/4`
+  - e.g.: `curl -X PUT -H "Content-Type: application/json" --data '{"value":"16.33","currency":"CZK"}' "http://localhost:8080/eshop-rest/products/4" | jq`
 
 
 - **POST http://localhost:8080/eshop-rest/products/{id}/categories**
@@ -248,7 +233,7 @@ https://github.com/khermano/433511_Master_thesis_project
   - **request body**:
     - id (required):
       - id of existing category we want to add to the product
-  - e.g.: `curl -X POST -i -H "Content-Type: application/json" --data '5' http://localhost:8080/eshop-rest/products/2/categories`
+  - e.g.: `curl -X POST -H "Content-Type: application/json" --data '5' "http://localhost:8080/eshop-rest/products/2/categories" | jq`
   - **original project request body**:
     - *it was changed because only the ID parameter of the required body is used for adding a category*
       - id (required):
@@ -264,7 +249,7 @@ https://github.com/khermano/433511_Master_thesis_project
   - **parameters**:
     - id (required):
       - id of the product 
-  - e.g.: `curl -i -X GET http://localhost:8080/eshop-rest/products/2/currentPrice`
+  - e.g.: `curl -X GET "http://localhost:8080/eshop-rest/products/2/currentPrice" | jq`
 
 
 - **GET http://localhost:8080/products/getCurrencyRate/{currency1}/{currency2}**
@@ -275,4 +260,32 @@ https://github.com/khermano/433511_Master_thesis_project
       - Available values: CZK, EUR, USD
     - currency2 (required):
       - Available values: CZK, EUR, USD
-  - e.g.: `curl -i -X GET http://localhost:8080/eshop-rest/products/getCurrencyRate/CZK/EUR`
+  - e.g.: `curl -X GET "http://localhost:8080/eshop-rest/products/getCurrencyRate/CZK/EUR" | jq`
+
+## Swagger UI
+
+- is available at http://localhost:8080
+- you can choose a service with "Select a definition"
+- allows to visualize and interact with the API's resources without having any of the implementation logic in place
+- more info here: https://swagger.io/tools/swagger-ui/?ref=the-best-recipe
+
+## Health info details
+
+- the status of individual services can be found on the Eureka server: http://localhost:8761
+- NOTE: sometimes Eureka service discovery needs couple more seconds to load everything up
+- application uses Spring Actuator to provide information about the health of the services
+- more details about the health of the application can be found on endpoints:
+  - serviceRegistry: http://localhost:8761/actuator/health
+  - userService: http://localhost:8081/actuator/health
+  - categoryService: http://localhost:8082/actuator/health
+  - productService: http://localhost:8083/actuator/health
+  - orderService: http://localhost:8084/actuator/health
+  - apiGateway: http://localhost:8080/actuator/health
+
+## Dockerizing an application
+
+- `cd eshop-project-springboot/`
+- `podman compose up -d --build`
+  - this command build images and then in background start containers defined in a docker-compose.yml file, detaching it from the current shell
+- `podman compose down`
+  - this command stops and removes containers created by docker-compose.yml
