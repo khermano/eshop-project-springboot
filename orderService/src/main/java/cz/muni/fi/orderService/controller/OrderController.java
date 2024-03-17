@@ -103,8 +103,8 @@ public class OrderController {
                 orders = orderRepository.findByUserId(userId);
             }
         } catch (Exception e) {
-            // we needed to catch the error caused by not existing user to reproduce behaviour of the original project
-            // and return empty list instead
+            // we needed to catch the error caused by not existing user to reproduce behaviour of the original project and return empty list instead
+            return new ResponseEntity<>(orderDTOs, HttpStatus.OK);
         }
 
         for (Order order : orders) {
