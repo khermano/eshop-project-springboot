@@ -23,11 +23,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-/**
- * Implementation of the {@link OrderService}. This class is part of the service
- * module of the application that provides the implementation of the business
- * logic (main logic of the application).
- */
 @Service
 public class OrderServiceImpl implements OrderService {
     @Autowired
@@ -63,10 +58,6 @@ public class OrderServiceImpl implements OrderService {
         return orderRepository.getOrdersCreatedBetween(lastWeek, new Date(), state);
 	}
 
-	/**
-	 * The only allowed changes of state are: RECEIVED - CANCELED,
-	 * RECEIVED - SHIPPED, SHIPPED - DONE
-	 */
 	private final Set<Transition> allowedTransitions = new HashSet<>();
 	{
 		allowedTransitions.add(new Transition(OrderState.RECEIVED,

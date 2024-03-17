@@ -22,11 +22,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-/**
- * Implementation of the {@link ProductService}. This class is part of the
- * service module of the application that provides the implementation of the
- * business logic (main logic of the application).
- */
 @Service
 public class ProductServiceImpl implements ProductService {
 	@Autowired
