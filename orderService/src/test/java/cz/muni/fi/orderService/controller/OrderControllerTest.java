@@ -161,10 +161,8 @@ public class OrderControllerTest {
 
     @Test
     public void shipOrderInvalidAction() throws Exception {
-        doReturn(Optional.of(createOrders().get(0))).when(orderRepository).findById(1L);
-
         mockMvc.perform(post("/1").param("action", "INVALID"))
-                .andExpect(status().isNotAcceptable());
+                .andExpect(status().isBadRequest());
     }
 
     private List<Order> createOrders() {

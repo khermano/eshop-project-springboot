@@ -2,6 +2,7 @@ package cz.muni.fi.orderService.controller;
 
 import cz.muni.fi.orderService.dto.OrderDTO;
 import cz.muni.fi.orderService.entity.Order;
+import cz.muni.fi.orderService.enums.Action;
 import cz.muni.fi.orderService.enums.OrderState;
 import cz.muni.fi.orderService.feign.UserInterface;
 import cz.muni.fi.orderService.repository.OrderRepository;
@@ -148,7 +149,7 @@ public class OrderController {
      * @throws ResponseStatusException 500 if order with given ID doesn't exist or something else went wrong
      */
     @PostMapping(value = "{order_id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<OrderDTO> shipOrder(@PathVariable("order_id") long orderId, @RequestParam("action") String action) {
+    public ResponseEntity<OrderDTO> shipOrder(@PathVariable("order_id") long orderId, @RequestParam("action") Action action) {
         logger.debug("rest shipOrder({})", orderId);
 
         Optional<Order> order = orderRepository.findById(orderId);
@@ -156,14 +157,12 @@ public class OrderController {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        if (action.equalsIgnoreCase("CANCEL")) {
+        if (action == Action.CANCEL) {
             orderService.shipOrder(order.get(), OrderState.CANCELED);
-        } else if (action.equalsIgnoreCase("SHIP")) {
+        } else if (action == Action.SHIP) {
             orderService.shipOrder(order.get(), OrderState.SHIPPED);
-        } else if (action.equalsIgnoreCase("FINISH")) {
+        } else if (action == Action.FINISH) {
             orderService.shipOrder(order.get(), OrderState.DONE);
-        } else {
-            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE);
         }
 
         order = orderRepository.findById(orderId);
