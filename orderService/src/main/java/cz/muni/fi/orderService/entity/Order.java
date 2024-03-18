@@ -11,9 +11,6 @@ import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import jakarta.validation.constraints.NotNull;
-import lombok.AccessLevel;
-import lombok.Data;
-import lombok.Getter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -21,7 +18,6 @@ import java.util.List;
 
 @Entity
 @Table(name="PRODUCT_ORDER")
-@Data
 public class Order {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -32,7 +28,6 @@ public class Order {
 	
 	@OneToMany
 	@NotNull
-	@Getter(AccessLevel.NONE)
 	private List<OrderItem> orderItems = new ArrayList<>();
 		
 	@NotNull
@@ -49,5 +44,41 @@ public class Order {
 
 	public void addOrderItem(OrderItem p) {
 		orderItems.add(p);
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public Long getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Long userId) {
+		this.userId = userId;
+	}
+
+	public void setOrderItems(List<OrderItem> orderItems) {
+		this.orderItems = orderItems;
+	}
+
+	public Date getCreated() {
+		return created;
+	}
+
+	public void setCreated(Date created) {
+		this.created = created;
+	}
+
+	public OrderState getState() {
+		return state;
+	}
+
+	public void setState(OrderState state) {
+		this.state = state;
 	}
 }
