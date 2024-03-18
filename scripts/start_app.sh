@@ -16,7 +16,7 @@ run_service () {
 }
 
 app_available () {
-  if echo "$output" | grep -q "USERS" && echo "$output" | grep -q "CATEGORIES" && echo "$output" | grep -q "PRODUCTS" && echo "$output" | grep -q "ORDERS" && echo "$output" | grep -q "API-GATEWAY-SERVICE"; then
+  if echo "$output" | grep -q "users" && echo "$output" | grep -q "categories" && echo "$output" | grep -q "products" && echo "$output" | grep -q "orders" && echo "$output" | grep -q "api-gateway-service"; then
           return 0
       else
           return 1
@@ -39,14 +39,14 @@ run_service orderService 4
 run_service apiGateway 5
 
 while true; do
-  output=$(curl localhost:8761)
+  output=$(curl localhost:8080/actuator/health | jq)
   if app_available; then
     echo
     echo "All services registered."
     break
   else
-    echo "One or more services not found. Retrying..."
-    sleep 1
+    echo "One or more services are not registered yet. Retrying..."
+    sleep 3
   fi
 done
 

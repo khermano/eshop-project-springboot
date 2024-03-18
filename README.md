@@ -35,7 +35,7 @@ https://github.com/khermano/433511_Master_thesis_project.
 - `cd eshop-project-springboot/scripts/`
 - `./start_app.sh` or
 - `./start_app_with_tests.sh`
-- first check that all services are up and running http://localhost:8761 (see Health info details)
+- wait for the message "All services registered." because registration of services and making it available through the API gateway can take a moment
 - application endpoints are now available at http://localhost:8080 (see Swagger UI)
 
 ### Stop the script:
