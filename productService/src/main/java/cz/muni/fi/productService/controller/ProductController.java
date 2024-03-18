@@ -146,6 +146,7 @@ public class ProductController {
             productDTO.setCategories(getCategoriesFromIds(product.getCategoriesId()));
             return new ResponseEntity<>(productDTO, HttpStatus.OK);
         } catch (Exception ex) {
+            // we needed to throw the 422 exception here to reproduce behaviour of the original project
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "the requested resource already exists");
         }
     }
