@@ -18,7 +18,6 @@ public class OpenApiConfigs {
     @Bean
     public OpenAPI customOpenAPI(
             @Value("${openapi.service.title}") String serviceTitle,
-            @Value("${openapi.service.version}") String serviceVersion,
             @Value("${openapi.service.url}") String url) {
         final String securitySchemeName = "bearerAuth";
         return new OpenAPI()
@@ -26,6 +25,6 @@ public class OpenApiConfigs {
                 //that is why we need an application name here
                 //we also added /eshop-rest into the API Gateway path so the path is as in original project
                 .servers(List.of(new Server().url(url + "/eshop-rest/" + applicationName)))
-                .info(new Info().title(serviceTitle).version(serviceVersion));
+                .info(new Info().title(serviceTitle));
     }
 }
