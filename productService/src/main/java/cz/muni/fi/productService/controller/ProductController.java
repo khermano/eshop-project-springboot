@@ -221,7 +221,7 @@ public class ProductController {
      * get the current price of the product with the given id
      * this method is not from the original project, it needed to be created for the
      * OrderService's getTotalPrice method, so the original functionality stays
-     * e.g.: curl -i -X GET http://localhost:8080/products/2/currentPrice
+     * e.g.: curl -i -X GET http://localhost:8080/eshop-rest/products/2/currentPrice
      *
      * @param id of the product
      * @return current price of the product with the given id
@@ -243,7 +243,7 @@ public class ProductController {
      * get the currency rate for a given currency pair
      * this method is not from the original project, it needed to be created for the
      * OrderService's getTotalPrice method, so the original functionality stays
-     * e.g.: curl -i -X GET http://localhost:8080/products/getCurrencyRate/CZK/EUR
+     * e.g.: curl -i -X GET http://localhost:8080/eshop-rest/products/getCurrencyRate/CZK/EUR
      *
      * @param currency1 first currency of the pair [available values: CZK, EUR, USD]
      * @param currency2 second currency of the pair [available values: CZK, EUR, USD]

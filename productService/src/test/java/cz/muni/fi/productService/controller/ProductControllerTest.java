@@ -151,13 +151,9 @@ public class ProductControllerTest {
 		doReturn(new ProductDTO()).when(beanMappingService).mapTo(mockedProduct, ProductDTO.class);
 		doReturn(new ResponseEntity<>(new CategoryDTO(), HttpStatus.OK)).when(categoryInterface).getCategory(1L);
 
-		String json = convertObjectToJsonBytes(productCreateDTO);
-
-		System.out.println(json);
-
 		mockMvc.perform(
 				post("/create").contentType(MediaType.APPLICATION_JSON)
-						.content(json))
+						.content(convertObjectToJsonBytes(productCreateDTO)))
 				.andExpect(status().isOk());
 	}
 
@@ -171,11 +167,9 @@ public class ProductControllerTest {
 		doReturn(new ProductDTO()).when(beanMappingService).mapTo(product, ProductDTO.class);
 		doReturn(new ResponseEntity<>(new CategoryDTO(), HttpStatus.OK)).when(categoryInterface).getCategory(1L);
 
-		String json = convertObjectToJsonBytes(new Price());
-
 		mockMvc.perform(
 				put("/10").contentType(MediaType.APPLICATION_JSON)
-						.content(json))
+						.content(convertObjectToJsonBytes(new Price())))
 				.andExpect(status().isOk());
 	}
 
@@ -189,11 +183,9 @@ public class ProductControllerTest {
 		doReturn(new ProductDTO()).when(beanMappingService).mapTo(mockedProduct, ProductDTO.class);
 		doReturn(new ResponseEntity<>(new CategoryDTO(), HttpStatus.OK)).when(categoryInterface).getCategory(1L);
 
-		String json = convertObjectToJsonBytes(1L);
-
 		mockMvc.perform(
 				post("/10/categories").contentType(
-						MediaType.APPLICATION_JSON).content(json))
+						MediaType.APPLICATION_JSON).content(convertObjectToJsonBytes(1L)))
 				.andExpect(status().isOk());
 	}
 
