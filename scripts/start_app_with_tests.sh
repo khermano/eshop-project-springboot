@@ -50,7 +50,7 @@ while true; do
   fi
 done
 
-echo "You can now access the application's endpoint at http://localhost:8080."
+echo "You can now access the application endpoints at http://localhost:8080."
 echo "In Swagger UI choose a service with Select a definition."
 read -rsn1 -p "For quit press any button and wait until application shutdown is completed."
 echo

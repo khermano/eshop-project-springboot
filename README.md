@@ -1,4 +1,4 @@
-# Eshop-Project-SpringBoot
+# eshop-project-springboot
 
 This repository contains a migration of the backend of the monolithic application to the microservice
 architecture with the Spring Boot framework. 
@@ -11,7 +11,7 @@ https://github.com/khermano/433511_Master_thesis_project.
 
 ## **Prerequisites**
 - Java 21
-- Maven 3.9.5
+- Maven 3.9.6
 
 ## About the app
 
@@ -46,32 +46,32 @@ https://github.com/khermano/433511_Master_thesis_project.
 *Build and run serviceRegistry (Eureka server) [port 8761]:*
 - `cd eshop-project-springboot/serviceRegistry/`
 - `mvn clean install`
-- `mvn spring-boot:run`
+- `java -jar serviceRegistry/target/serviceRegistry-0.0.1-SNAPSHOT.jar`
 
 *Build and run userService (Eureka client - service) [port 8081]:*
 - `cd eshop-project-springboot/userService/`
 - `mvn clean install`
-- `mvn spring-boot:run`
+- `java -jar userService/target/userService-0.0.1-SNAPSHOT.jar`
 
 *Build and run categoryService (Eureka client - service) [port 8082]:*
 - `cd eshop-project-springboot/categoryService/`
 - `mvn clean install`
-- `mvn spring-boot:run`
+- `java -jar categoryService/target/categoryService-0.0.1-SNAPSHOT.jar`
 
 *Build and run productService (Eureka client - service) [port 8083]:*
 - `cd eshop-project-springboot/productService/`
 - `mvn clean install`
-- `mvn spring-boot:run`
+- `java -jar productService/target/productService-0.0.1-SNAPSHOT.jar`
 
 *Build and run orderService (Eureka client - service) [port 8084]:*
 - `cd eshop-project-springboot/orderService/`
 - `mvn clean install`
-- `mvn spring-boot:run`
+- `java -jar orderService/target/orderService-0.0.1-SNAPSHOT.jar`
 
 *Build and run apiGateway (Eureka client - API Gateway) [port 8080]:*
 - `cd eshop-project-springboot/apiGateway/`
 - `mvn clean install`
-- `mvn spring-boot:run`
+- `java -jar apiGateway/target/apiGateway-0.0.1-SNAPSHOT.jar`
 
 ## Development
 
