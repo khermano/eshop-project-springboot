@@ -12,6 +12,7 @@ https://github.com/khermano/433511_Master_thesis_project.
 ## **Prerequisites**
 - Java 21
 - Maven 3.9.6
+- optionally, newest Docker, or Podman 4.9.4 with podman-docker (see Podman )
 
 ## About the app
 
@@ -31,6 +32,9 @@ https://github.com/khermano/433511_Master_thesis_project.
 
 ## **Start application**
 
+- you can use one of the two starting scripts available in the /scripts directory
+- or you can use the docker-compose.yml file (with Docker/Podman)
+
 ### Run the script to start the application locally:
 - `cd eshop-project-springboot/scripts/`
 - `./start_app.sh` or
@@ -40,6 +44,15 @@ https://github.com/khermano/433511_Master_thesis_project.
 
 ### Stop the script:
 - press any button and wait for "Application shutdown completed."
+
+### Start app using docker-compose.yml:
+
+- for this option you need to have a Docker or Podman (see Podman)
+- `cd eshop-project-springboot/`
+- `podman compose up -d --build`
+  - this command build images and then in background start containers defined in a docker-compose.yml file, detaching it from the current shell
+- `podman compose down`
+  - this command stops and removes containers created by docker-compose.yml
 
 ### Individual services:
 
@@ -282,10 +295,7 @@ https://github.com/khermano/433511_Master_thesis_project.
   - orderService: http://localhost:8084/actuator/health
   - apiGateway: http://localhost:8080/actuator/health
 
-## Dockerizing an application
-
-- `cd eshop-project-springboot/`
-- `podman compose up -d --build`
-  - this command build images and then in background start containers defined in a docker-compose.yml file, detaching it from the current shell
-- `podman compose down`
-  - this command stops and removes containers created by docker-compose.yml
+## Podman:
+- if you are having Podman, you can install podman-docker to use docker aliases
+  - `sudo dnf install podman-docker`
+- after that you should be able to use Docker commands in Podman 
