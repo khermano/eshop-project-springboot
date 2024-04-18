@@ -1,8 +1,8 @@
 package cz.muni.fi.orderService.service.impl;
 
+import com.github.dozermapper.core.DozerBeanMapperBuilder;
+import com.github.dozermapper.core.Mapper;
 import cz.muni.fi.orderService.service.BeanMappingService;
-import org.dozer.DozerBeanMapper;
-import org.dozer.Mapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 public class BeanMappingServiceImpl implements BeanMappingService {
 	@Bean
     private Mapper getDozer() {
-        return new DozerBeanMapper();
+        return DozerBeanMapperBuilder.buildDefault();
     }
 
     @Override
