@@ -159,8 +159,8 @@ public class ProductController {
      * @param id of product to be updated
      * @param newPrice NewPriceDTO with required fields for creation (value, and currency [available values: CZK, EUR, USD] can't be null)
      * @return the updated product
-     * @throws ResponseStatusException 500 if there is no product with given id
-     * @throws ResponseStatusException 406 if value of price is changed more than 10% or something else went wrong
+     * @throws ResponseStatusException 500 if there is no product with given id or something went wrong
+     * @throws ResponseStatusException 406 if value of price is changed more than 10% or something else went wrong with changing the price
      */
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
@@ -169,11 +169,13 @@ public class ProductController {
 
         Optional<Product> product = productRepository.findById(id);
         if (product.isEmpty()) {
+            // we needed to return 500 here to reproduce behaviour of the original project
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
         try {
             productService.changePrice(product.get(), newPrice);
         } catch (EshopServiceException e) {
+            // we needed to return 406 here to reproduce behaviour of the original project
             throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE);
         }
 
@@ -183,6 +185,7 @@ public class ProductController {
             productDTO.setCategories(getCategoriesFromIds(product.get().getCategoriesId()));
             return new ResponseEntity<>(productDTO, HttpStatus.OK);
         } else {
+            // we needed to return 406 here to reproduce behaviour of the original project
             throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE);
         }
     }
