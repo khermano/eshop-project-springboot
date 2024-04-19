@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -66,7 +67,7 @@ public class OrderController {
             return new ResponseEntity<>(orderDTOs, HttpStatus.OK);
         }
 
-        if (!OrderState.contains(status)) {
+        if (Arrays.stream(OrderState.values()).noneMatch(os -> os.name().equals(status))) {
             throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE);
         }
 

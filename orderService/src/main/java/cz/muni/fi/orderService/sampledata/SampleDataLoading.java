@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import java.time.ZonedDateTime;
 import java.util.Date;
+import java.util.Random;
 
 @Component
 public class SampleDataLoading {
@@ -49,6 +50,16 @@ public class SampleDataLoading {
         createOrder(2L, daysBeforeNow(1), OrderState.RECEIVED, createOrderItem(24L, 1), createOrderItem(13L, 1), createOrderItem(8L, 1));
         createOrder(3L, daysBeforeNow(1), OrderState.RECEIVED, createOrderItem(24L, 15), createOrderItem(13L, 7), createOrderItem(8L, 2));
 
+        this.createTestOrders();
+
         log.info("Loaded eShop orders.");
+    }
+
+    private void createTestOrders() {
+        Random random = new Random();
+        OrderState[] orderStates = OrderState.values();
+        for (int i = 1; i <= 1000; i++) {
+            createOrder(random.nextLong(1000) + 1, daysBeforeNow(random.nextInt(100)), orderStates[i % 4], createOrderItem(random.nextLong(1000) + 1, random.nextInt(5) + 1));
+        }
     }
 }

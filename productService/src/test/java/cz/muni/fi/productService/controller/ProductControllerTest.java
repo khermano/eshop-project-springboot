@@ -71,11 +71,6 @@ public class ProductControllerTest {
     }
 
 	@Test
-	public void debugTest() throws Exception {
-		mockMvc.perform(get("/"));
-	}
-
-	@Test
 	public void getAllProducts() throws Exception {
 		doReturn(Collections.unmodifiableList(this.createProducts())).when(productRepository).findAll();
 		doReturn(getMockedProductDTOList().get(0)).when(beanMappingService).mapTo(createProducts().get(0), ProductDTO.class);

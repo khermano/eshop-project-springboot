@@ -73,7 +73,7 @@ public class ProductRepositoryTest {
 		Assertions.assertEquals(found.get().getCategoriesId().iterator().next(), 1L);
 	}
 
-	
+
 	@Test
 	public void remove() {
 		Assertions.assertTrue(productRepository.findById(p3.getId()).isPresent());

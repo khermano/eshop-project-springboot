@@ -32,7 +32,7 @@ public class OrderRepositoryTest {
 		Date date2 = cal.getTime();
 		cal.set(2015, Calendar.JUNE, 6);
 		Date date3 = cal.getTime();
-		
+
 		o1 = new Order();
 		o1.setCreated(date1);
 		o1.setState(OrderState.CANCELED);
@@ -48,18 +48,18 @@ public class OrderRepositoryTest {
 		o3.setState(OrderState.CANCELED);
 		Long user2Id = 2L;
 		o3.setUserId(user2Id);
-		
+
 		orderRepository.save(o1);
 		orderRepository.save(o2);
 		orderRepository.save(o3);
 	}
-	
+
 	@Test
 	public void nonExistentReturnsNull() {
 		Optional<Order> found = orderRepository.findById(321321L);
 		Assertions.assertFalse(found.isPresent());
 	}
-	
+
 	@Test
 	public void find() {
 		Optional<Order> found = orderRepository.findById(o1.getId());
@@ -79,7 +79,7 @@ public class OrderRepositoryTest {
 	@Test
 	public void getOrdersWithState() {
 		Assertions.assertEquals(orderRepository.findByState(OrderState.SHIPPED).size(),0);
-		
+
 		List<Order> canceled = orderRepository.findByState(OrderState.CANCELED);
 		List<Order> received = orderRepository.findByState(OrderState.RECEIVED);
 
@@ -96,7 +96,7 @@ public class OrderRepositoryTest {
 		Date date2 = cal.getTime();
 
 		Assertions.assertEquals(orderRepository.getOrdersCreatedBetween(date1, date2, OrderState.RECEIVED).size(),0);
-		
+
 		cal.set(2015, Calendar.JANUARY, 1,0,0,0);
 		Date date3 = cal.getTime();
 		cal.set(2015, Calendar.MAY, 5,0,0,0);

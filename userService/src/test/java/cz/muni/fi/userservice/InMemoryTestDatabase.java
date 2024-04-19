@@ -1,4 +1,4 @@
-package cz.muni.fi.categoryservice.db;
+package cz.muni.fi.userservice;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -7,9 +7,9 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import javax.sql.DataSource;
 
 @Configuration
-public class InMemoryDatabase {
+public class InMemoryTestDatabase {
 	@Bean
 	public DataSource db(){
-        return new EmbeddedDatabaseBuilder().setType(EmbeddedDatabaseType.DERBY).setName("categoryService").build();
+        return new EmbeddedDatabaseBuilder().setType(EmbeddedDatabaseType.DERBY).setName("userService").build();
 	}
 }

@@ -27,6 +27,7 @@ public class User {
 	private String email;
 
 	@NotNull
+	@Column(name = "givenname")
 	private String givenName;
 
 	@NotNull
@@ -40,6 +41,7 @@ public class User {
 
 	@NotNull
 	@Temporal(TemporalType.DATE)
+	@Column(name = "joineddate")
 	private Date joinedDate;
 
 	public Long getId() {

@@ -51,7 +51,7 @@ public class SampleDataLoading {
         product.addHistoricalPrice(price);
 
         //generate randomly higher historical prices
-        for (int i = 0, n = 1 + RANDOM.nextInt(8); i <= n; i++) {
+        for (int i = 0; i <= 5; i++) {
             day = day.minusMonths(1);
             priceValue = priceValue + 1 + RANDOM.nextInt((int) (priceValue / 5L));
             product.addHistoricalPrice(createPrice(priceValue, day, currency));
@@ -113,6 +113,17 @@ public class SampleDataLoading {
         createProduct("Strawberries", "Very tasty and exceptionally red strawberries.", "strawberries.jpg", 80, Currency.CZK, Color.RED, foodId);
         createProduct("Tulip", "", "tulip.jpg", 220, Currency.CZK, Color.RED, flowersId);
 
+        this.createTestProducts();
+
         log.info("Loaded eShop products.");
+    }
+
+    private void createTestProducts() throws IOException {
+        Random price = new Random();
+        Currency[] currencies = Currency.values();
+        Color[] colors = Color.values();
+        for (int i = 1; i <= 1000; i++) {
+            createProduct("Product" + i, "", "blueberries.jpg", price.nextInt(1000, 20000), currencies[i % 3], colors[i % 12], Long.valueOf(i));
+        }
     }
 }

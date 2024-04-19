@@ -59,32 +59,32 @@ https://github.com/khermano/433511_Master_thesis_project.
 *Build and run serviceRegistry (Eureka server) [port 8761]:*
 - `cd eshop-project-springboot/serviceRegistry/`
 - `mvn clean install`
-- `java -jar serviceRegistry/target/serviceRegistry-0.0.1-SNAPSHOT.jar`
+- `java -jar target/serviceRegistry-0.0.1-SNAPSHOT.jar`
 
 *Build and run userService (Eureka client - service) [port 8081]:*
 - `cd eshop-project-springboot/userService/`
 - `mvn clean install`
-- `java -jar userService/target/userService-0.0.1-SNAPSHOT.jar`
+- `java -jar target/userService-0.0.1-SNAPSHOT.jar`
 
 *Build and run categoryService (Eureka client - service) [port 8082]:*
 - `cd eshop-project-springboot/categoryService/`
 - `mvn clean install`
-- `java -jar categoryService/target/categoryService-0.0.1-SNAPSHOT.jar`
+- `java -jar target/categoryService-0.0.1-SNAPSHOT.jar`
 
 *Build and run productService (Eureka client - service) [port 8083]:*
 - `cd eshop-project-springboot/productService/`
 - `mvn clean install`
-- `java -jar productService/target/productService-0.0.1-SNAPSHOT.jar`
+- `java -jar target/productService-0.0.1-SNAPSHOT.jar`
 
 *Build and run orderService (Eureka client - service) [port 8084]:*
 - `cd eshop-project-springboot/orderService/`
 - `mvn clean install`
-- `java -jar orderService/target/orderService-0.0.1-SNAPSHOT.jar`
+- `java -jar target/orderService-0.0.1-SNAPSHOT.jar`
 
 *Build and run apiGateway (Eureka client - API Gateway) [port 8080]:*
 - `cd eshop-project-springboot/apiGateway/`
 - `mvn clean install`
-- `java -jar apiGateway/target/apiGateway-0.0.1-SNAPSHOT.jar`
+- `java -jar target/apiGateway-0.0.1-SNAPSHOT.jar`
 
 ## Development
 
@@ -299,3 +299,27 @@ https://github.com/khermano/433511_Master_thesis_project.
 - if you are having Podman, you can install podman-docker to use docker aliases
   - `sudo dnf install podman-docker`
 - after that you should be able to use Docker commands in Podman 
+
+
+## For testing
+- you only need to run:
+  - `cd eshop-project-springboot/scripts/`
+  - `./start_app.sh` or 
+  - `./start_app_with_tests.sh`
+
+#### Run Postgres services in Docker/Podman individually:
+  - for userService [port 5431]: 
+    - `docker run --rm   --name dev-postgres-user  -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=userService  -p 5431:5432  postgres`
+  - for categoryService [port 5432]: 
+    - `docker run --rm   --name dev-postgres-category  -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=categoryService  -p 5432:5432  postgres`
+  - for productService [port 5433]: 
+    - `docker run --rm   --name dev-postgres-product  -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=productService  -p 5433:5432  postgres`
+  - for orderService [port 5434]: 
+    - `docker run --rm   --name dev-postgres-order  -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=orderService  -p 5434:5432  postgres`
+
+
+## Locust
+- quick easy instruction can be found here https://www.youtube.com/watch?v=SOu6hgklQRA&ab_channel=NicolaiGram
+- install it: `pip install locust`
+- start it: `locust -f ~/path_to_your_directory/eshop-project-springboot/scripts/locust/locust.py`
+- use it on http://localhost:8089

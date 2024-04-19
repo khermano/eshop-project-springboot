@@ -1,6 +1,7 @@
 package cz.muni.fi.userservice.repository;
 
 import cz.muni.fi.userservice.entity.User;
+import org.hibernate.SessionFactory;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,6 +13,9 @@ import java.util.Date;
 public class UserRepositoryTest{
 	@Autowired
 	private UserRepository userRepository;
+
+	@Autowired
+	private SessionFactory sessionFactory;
 
 	@BeforeEach
 	public void createUsers() {
