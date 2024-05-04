@@ -21,7 +21,7 @@ public class SampleDataLoadingTest {
     public void createSampleData() {
         log.debug("Starting test");
 
-        List<User> users = userRepository.findAll();
+        List<User> users = (List<User>)userRepository.findAll();
         Assertions.assertFalse(users.isEmpty());
     }
 }

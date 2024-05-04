@@ -35,7 +35,7 @@ public class CategoryController {
     public ResponseEntity<List<Category>> getCategories() {
         logger.debug("rest getCategories()");
 
-        return new ResponseEntity<>(categoryRepository.findAll(), HttpStatus.OK);
+        return new ResponseEntity<>((List<Category>)categoryRepository.findAll(), HttpStatus.OK);
     }
 
     /**

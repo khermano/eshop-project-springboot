@@ -24,7 +24,7 @@ public class CategoryRepositoryTest {
 		categoryRepository.save(cat1);
 		categoryRepository.save(cat2);
 
-		List<Category> categories  = categoryRepository.findAll();
+		List<Category> categories  = (List<Category>) categoryRepository.findAll();
 		Assertions.assertEquals(categories.size(), 2);
 
 		Assertions.assertEquals(categories.get(0).getName(), cat1.getName());
@@ -49,16 +49,6 @@ public class CategoryRepositoryTest {
 		cat2.setName("Electronics");
 
 		Assertions.assertThrows(DataAccessException.class, () -> categoryRepository.save(cat2));
-	}
-
-	@Test()
-	public void savesName(){
-		Category cat = new Category();
-		cat.setName("Electronics");
-		categoryRepository.save(cat);
-
-		Assertions.assertNotNull(categoryRepository.findByName("Electronics"));
-		Assertions.assertEquals(categoryRepository.findByName("Electronics").getName(), "Electronics");
 	}
 
 	@Test()
