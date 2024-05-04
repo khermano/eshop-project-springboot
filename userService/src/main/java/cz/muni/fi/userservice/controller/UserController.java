@@ -35,7 +35,7 @@ public class UserController {
     public ResponseEntity<Collection<User>> getUsers() {
         logger.debug("rest getUsers()");
 
-        return new ResponseEntity<>(userRepository.findAll(), HttpStatus.OK);
+        return new ResponseEntity<>((Collection<User>) userRepository.findAll(), HttpStatus.OK);
     }
 
     /**

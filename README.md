@@ -59,32 +59,32 @@ https://github.com/khermano/433511_Master_thesis_project.
 *Build and run serviceRegistry (Eureka server) [port 8761]:*
 - `cd eshop-project-springboot/serviceRegistry/`
 - `mvn clean install`
-- `java -jar serviceRegistry/target/serviceRegistry-0.0.1-SNAPSHOT.jar`
+- `java -jar target/serviceRegistry-0.0.1-SNAPSHOT.jar`
 
 *Build and run userService (Eureka client - service) [port 8081]:*
 - `cd eshop-project-springboot/userService/`
 - `mvn clean install`
-- `java -jar userService/target/userService-0.0.1-SNAPSHOT.jar`
+- `java -jar target/userService-0.0.1-SNAPSHOT.jar`
 
 *Build and run categoryService (Eureka client - service) [port 8082]:*
 - `cd eshop-project-springboot/categoryService/`
 - `mvn clean install`
-- `java -jar categoryService/target/categoryService-0.0.1-SNAPSHOT.jar`
+- `java -jar target/categoryService-0.0.1-SNAPSHOT.jar`
 
 *Build and run productService (Eureka client - service) [port 8083]:*
 - `cd eshop-project-springboot/productService/`
 - `mvn clean install`
-- `java -jar productService/target/productService-0.0.1-SNAPSHOT.jar`
+- `java -jar target/productService-0.0.1-SNAPSHOT.jar`
 
 *Build and run orderService (Eureka client - service) [port 8084]:*
 - `cd eshop-project-springboot/orderService/`
 - `mvn clean install`
-- `java -jar orderService/target/orderService-0.0.1-SNAPSHOT.jar`
+- `java -jar target/orderService-0.0.1-SNAPSHOT.jar`
 
 *Build and run apiGateway (Eureka client - API Gateway) [port 8080]:*
 - `cd eshop-project-springboot/apiGateway/`
 - `mvn clean install`
-- `java -jar apiGateway/target/apiGateway-0.0.1-SNAPSHOT.jar`
+- `java -jar target/apiGateway-0.0.1-SNAPSHOT.jar`
 
 ## Development
 

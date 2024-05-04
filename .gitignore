@@ -19,6 +19,8 @@ apiGateway/target
 !**/src/main/**/target/
 !**/src/test/**/target/
 
+scripts/locust
+
 ### STS ###
 .apt_generated
 .classpath
