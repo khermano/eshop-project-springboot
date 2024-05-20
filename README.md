@@ -11,6 +11,9 @@ https://is.muni.cz/auth/rozpis/tema?fakulta=1433;balik=58;tema=418130;uplne_info
 The most relevant part of the project we migrated can be found here: 
 https://github.com/khermano/433511_Master_thesis_project.
 
+The original project without changes can be found here:
+https://github.com/fi-muni/PA165
+
 ## **Prerequisites**
 - Java 21
 - Maven 3.9.6
