@@ -1,5 +1,8 @@
 # eshop-project-springboot
 
+- available at: https://github.com/khermano/eshop-project-springboot/tree/test_app
+- this project is edited for load testing
+
 This repository contains a migration of the backend of the monolithic application to the microservice
 architecture with the Spring Boot framework. 
 
