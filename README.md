@@ -1,5 +1,7 @@
 # eshop-project-springboot
 
+- available at: https://github.com/khermano/eshop-project-springboot/
+
 This repository contains a migration of the backend of the monolithic application to the microservice
 architecture with the Spring Boot framework. 
 
